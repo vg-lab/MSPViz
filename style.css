@@ -1,0 +1,131 @@
+
+ .node circle {
+   fill: #fff;
+   stroke: steelblue;
+   stroke-width: 3px;
+ }
+
+ .node text { font: 12px sans-serif; }
+
+ .link {
+   fill: none;
+   stroke: #ccc;
+   stroke-width: 2px;
+ }
+
+/****************************************/
+.graph-svg-component {
+    stroke: black;
+  	stroke-width: 4.5px;  
+    background-color: AliceBlue; 	
+}
+
+.node .selected {
+  /*stroke: black;*/
+  stroke-width: 4.5px;  
+}
+
+ path {
+	fill: yellow; 					/* Color de relleno en reposo */
+	stroke: black; 					/* Color del borde en reposo */
+	stroke-width: 1.5px;			/* Grosor del borde */
+/*  transition: fill 250ms linear; 	Transiciones de color
+	transition-delay: 150ms;
+ */
+ }
+
+path.selected {
+  /*stroke: black;*/
+  stroke-width: 4.5px;  
+}
+
+
+.overlay {
+  fill: none;
+  pointer-events: all;
+}
+
+.path .selected {
+  stroke: black;
+  stroke-width: 4.5px;
+}
+ 
+.brush .extent {
+  fill-opacity: .4;
+  stroke: #fff;
+  shape-rendering: crispEdges;
+}
+
+ 
+ .bar {
+  fill: steelblue;
+}
+
+.bar:hover {
+  fill: brown;
+}
+
+.axis {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+/* .x.axis path {
+  display: none;
+}
+ */
+ 
+.text {
+  fill: blue;
+}
+
+#tooltip{
+    position: absolute;
+	background-color: white;
+    width: 220px;
+    height: auto;
+    padding: 10px;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+	-webkit-box-shadow: 4px 4px 10px rgba(0,0,0,0.4);
+	-moz-box-shadow: 4px 4px 10px rgba(0,0,0,0.4);
+	box-shadow: 4px 4px 10px rgba(0,0,0,0.4);
+	pointer-events: none;
+}
+
+#tooltip.hidden{
+	display: none;
+}
+
+#tooltip p{
+	margin: 0;
+	font-family: sans-serif;
+	font-size: 16px;
+	line-height: 20px;
+}
+
+
+/*	
+.node {
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+
+.link {
+  stroke: #999;
+  stroke-opacity: .6;
+}
+
+path:hover {
+	fill: red; 				Color de relleno extendido
+	stroke: black; 			Color del borde extendido
+ 	transition-delay: 0;
+ } 
+ */

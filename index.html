@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>MSP Visualizator</title>
+	<meta charset="utf-8">
+
+	<!-- Styles of components -->
+    <link rel="stylesheet" href="./libs/jqwidgets/styles/jqx.base.css" type="text/css" />
+	<link rel="stylesheet" href="./libs/jqwidgets/styles/jqx.custom.css" type="text/css" />
+	<link rel="stylesheet" href="./style.css" type="text/css" />
+
+    <!-- D3 library -->
+	<script type="text/javascript" src="./libs/d3/d3.js"></script>
+
+	<!-- jQuery library -->
+    <script type="text/javascript" src="./libs/scripts/jquery-1.11.1.min.js"></script>
+
+	<!-- underscore library -->
+    <script type="text/javascript" src="./libs/unders/underscore.js"></script>
+
+	<!-- KolorWheel -->
+    <script type="text/javascript" src="./libs/kolorWheel/kolorWheel.min.js"></script>
+    
+    <!-- Interface objects -->
+    <script type="text/javascript" src="./libs/jqwidgets/jqxcore.js"></script>
+    <script type="text/javascript" src="./libs/jqwidgets/jqxbuttons.js"></script>
+    <script type="text/javascript" src="./libs/jqwidgets/jqxcheckbox.js"></script>  
+    <script type="text/javascript" src="./libs/jqwidgets/jqxmenu.js"></script>    
+    <script type="text/javascript" src="./libs/jqwidgets/jqxtabs.js"></script>
+	<script type="text/javascript" src="./libs/jqwidgets/jqxslider.js"></script>
+    <script type="text/javascript" src="./libs/jqwidgets/jqxnumberinput.js"></script>
+    <script type="text/javascript" src="./libs/jqwidgets/jqxwindow.js"></script>
+    <script type="text/javascript" src="./libs/jqwidgets/jqxcolorpicker.js"></script>
+    <script type="text/javascript" src="./libs/jqwidgets/jqxdropdownbutton.js"></script>
+    <script type="text/javascript" src="./libs/jqwidgets/jqxscrollview.js"></script>
+	<script type="text/javascript" src="./libs/jqwidgets/jqxscrollbar.js"></script>	
+	<script type="text/javascript" src="./libs/jqwidgets/jqxlistbox.js"></script>            
+    <script type="text/javascript" src="./libs/jqwidgets/jqxcombobox.js"></script>
+	<script type="text/javascript" src="./libs/jqwidgets/jqxradiobutton.js"></script>
+	<script type="text/javascript" src="./libs/jqwidgets/jqxprogressbar.js"></script>    
+
+    <!-- libs -->
+    <script type="text/javascript" src="./libs/MSPlib/Utils.js"></script>
+    <script type="text/javascript" src="./libs/MSPlib/SingletonConfig.js"></script>
+    <script type="text/javascript" src="./libs/MSPlib/MacroscopicView.js"></script>
+    <script type="text/javascript" src="./libs/MSPlib/MicroscopicView.js"></script>
+	<script type="text/javascript" src="./libs/MSPlib/GlobalConnectionsView.js"></script>
+	<script type="text/javascript" src="./libs/MSPlib/DetailMicroscopicView.js"></script>
+    
+    <script type="text/javascript" src="./libs/MSPlib/SimulationData.js"></script>
+    <script type="text/javascript" src="./libs/MSPlib/SimulationController.js"></script>
+
+    <script> 
+	    $(function()
+	   	{
+	      	$("#interface").load("./libs/MSPlib/InterfaceComponents.html"); 
+	    });
+    </script> 
+
+</head>
+<body>
+	<div id="interface"></div>
+</body>
+</html>
