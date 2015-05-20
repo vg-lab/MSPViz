@@ -1,7 +1,12 @@
-
+ /**
+ * @brief
+ * @author  Juan Pedro Brito Mendez <juanpebm@gmail.com>
+ * @date
+ * @remarks Do not distribute without further notice.
+ */
 
 //Namespaces
-var MSP = MSP || {}; //MSP model DE
+var MSP = MSP || {};
 var UI = UI || {};
 
 function removeA(arr) 

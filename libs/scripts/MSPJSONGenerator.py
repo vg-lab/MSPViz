@@ -4,6 +4,11 @@ Options for the script:
 -d pathDirectory ->Working directory, with all the simulation files
 """
 
+## @brief
+# @author  Juan Pedro Brito Mendez <juanpebm@gmail.com>
+# @date
+# @remarks Do not distribute without further notice.
+
 import io, json, random
 import sys
 import getopt

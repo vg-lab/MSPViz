@@ -1,3 +1,9 @@
+ /**
+ * @brief
+ * @author  Juan Pedro Brito Mendez <juanpebm@gmail.com>
+ * @date
+ * @remarks Do not distribute without further notice.
+ */
 
 MSP.SimulationController = function ()
 {
