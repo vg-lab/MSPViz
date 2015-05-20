@@ -84,7 +84,9 @@ MSP.GlobalConnectionsView.prototype =
 						.append("rect")
 					    .attr("class", "overlay")
 					    .attr("width", _SigletonConfig.width)
-					    .attr("height", _SigletonConfig.height);
+					    .attr("height", _SigletonConfig.height)
+					    .style("opacity","0.0")
+					    ;
 		
 		// Add the object for the x axis
 		_SigletonConfig.svg.append("g")

@@ -73,7 +73,9 @@ MSP.MacroscopicView.prototype =
 						.append("rect")
 					    .attr("class", "overlay")
 					    .attr("width", _SigletonConfig.width)
-					    .attr("height", _SigletonConfig.height);		
+					    .attr("height", _SigletonConfig.height)
+					    .style("opacity","0.0")
+					    ;		
 		
 		//Create the neuronsrep
 		_SimulationData.gNeuronsRep = _SigletonConfig.svg

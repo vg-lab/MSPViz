@@ -34,7 +34,7 @@ function saveAsImage()
 					.attr("version", 1.1)
 					.attr("xmlns", "http://www.w3.org/2000/svg")
 					        .node().parentNode.innerHTML;
-	 
+	  
 	  var imgsrc = 'data:image/svg+xml;base64,'+ btoa(html);
 	  var img = '<img src="'+imgsrc+'">'; 
 	  d3.select("#svgdataurl").html(img);
@@ -59,6 +59,57 @@ function saveAsImage()
 		  a.click();
 	  };
 	  delete image;
+
+//// Canvasg	
+//	  var html = d3.select("svg")
+//				.attr("version", 1.1)
+//				.attr("xmlns", "http://www.w3.org/2000/svg")
+//				        .node().parentNode.innerHTML;
+//	
+//	//	// the canvg call that takes the svg xml and converts it to a canvas
+//	//	canvg('canvas', $("#svg").html());
+//	  
+//	// the canvas calls to output a png
+//	  var imgsrc = 'data:image/svg+xml;base64,'+ btoa(html);
+//	  var img = '<img src="'+imgsrc+'">'; 
+//	  
+//	  canvg(document.getElementById('canvas'), img);
+//
+//	  var c = document.getElementById('canvas');
+//	  var ctx = c.getContext('2d');
+////	  ctx.drawSvg(html, 0, 0, 1024, 768);
+//	  
+////	  //Export to file
+////	  var canvas = document.getElementById("canvas");
+////	  var imgExp    = canvas.toDataURL("image/png");
+////	  document.write('<img src="'+imgExp+'"/>');
+
+	// Otro canvasg
+//	//document.createElement('canvas')
+//	var svg = $("#svg").html();
+//	
+//	var c = document.getElementById('canvas');		
+//	c.width = 1024;
+//	c.height = 768;
+//	document.getElementById('canvas').innerHTML = '';
+//	document.getElementById('canvas').appendChild(c);
+//	
+//	canvg(c, svg, { log: true, renderCallback: function (dom) {
+//		if (typeof FlashCanvas != "undefined") 
+//		{
+//			document.getElementById('svg').innerHTML = 'svg not supported';
+//		} else 
+//		{
+//			var svg = (new XMLSerializer()).serializeToString(dom);
+//			document.getElementById('svg').innerHTML = svg;
+//			if (overrideTextBox) 
+//			{
+//				document.getElementById('input').value = svg;
+//				overrideTextBox = false;
+//			}
+//		}
+//	}});
+	
 }
 
 function make_base_auth(user, password) 

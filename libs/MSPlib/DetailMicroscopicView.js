@@ -47,16 +47,18 @@ MSP.DetailMicroscopicView.prototype =
 													)								
 								.call(self.zoombehavior)
 								;
-		//Zooming
+		//For zooming
 		_SigletonConfig.svg
 						.append("rect")
 					    .attr("class", "overlay")
 					    .attr("width", _SigletonConfig.width)
 					    .attr("height", _SigletonConfig.height)
-						.attr("transform", "translate(" + -_SigletonConfig.width/2 + "," + (-_SigletonConfig.height/2) + ")"													
-						)
-						;
-
+						.attr("transform", "translate(" + -_SigletonConfig.width/2 + "," + (-_SigletonConfig.height/2) + ")")																		    
+					    .style("opacity","0.0")
+					    ;
+		
+		
+		
 		//Soma
 		var lVect = [];		
 		lVect.push(_SimulationData.gNeurons[_SigletonConfig.neuronSelected]);

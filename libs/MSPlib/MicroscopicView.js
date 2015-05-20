@@ -101,6 +101,7 @@ MSP.MicroscopicView.prototype =
 					    .attr("class", "overlay")
 					    .attr("width", _SigletonConfig.width)
 					    .attr("height", _SigletonConfig.height)
+					    .style("opacity","0.0")
 						.on("mousedown", function() 
 										 {
 											d3.selectAll("path").classed("selected", false);

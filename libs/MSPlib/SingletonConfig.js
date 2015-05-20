@@ -11,7 +11,7 @@ SigletonConfig = function()
 	this.svg		=	null;
 	
 	this.gSelectionIds = [];
-	this.neuronSelected= 0;
+	this.neuronSelected= -1;
 	
 	//Scales for the canvas
 	this.xScale;	

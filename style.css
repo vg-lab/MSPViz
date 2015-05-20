@@ -13,7 +13,6 @@
    stroke-width: 2px;
  }
 
-/****************************************/
 .graph-svg-component {
     stroke: black;
   	stroke-width: 4.5px;  
@@ -26,12 +25,9 @@
 }
 
  path {
-	fill: yellow; 					/* Color de relleno en reposo */
-	stroke: black; 					/* Color del borde en reposo */
-	stroke-width: 1.5px;			/* Grosor del borde */
-/*  transition: fill 250ms linear; 	Transiciones de color
-	transition-delay: 150ms;
- */
+	fill: yellow; 					
+	stroke: black; 					
+	stroke-width: 1.5px;			
  }
 
 path.selected {
@@ -111,21 +107,3 @@ path.selected {
 	line-height: 20px;
 }
 
-
-/*	
-.node {
-  stroke: #fff;
-  stroke-width: 1.5px;
-}
-
-.link {
-  stroke: #999;
-  stroke-opacity: .6;
-}
-
-path:hover {
-	fill: red; 				Color de relleno extendido
-	stroke: black; 			Color del borde extendido
- 	transition-delay: 0;
- } 
- */

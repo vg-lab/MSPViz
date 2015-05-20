@@ -3,13 +3,13 @@
 <input type="file" id="fileDialog" multiple name="fileDialog" accept=".json" style="display:none;" />
 
 <div id='jqxWidgets'>
+
 	<!-- Main menu -->
 	<div id='jqxMenu' style='visibility: hidden; margin-bottom: 2px'>
 		<ul>
 			<li>File
 				<ul>
 					<li><a href="#jqxMenuOpenSimulation">Open local simulation</a></li>
-					<!-- <li><a href="#jqxMenuOpenSimulation">Open remote simulation</a></li> -->
 					<li><a href="#jqxMenuReset">Reset Visualizator</a></li>
 				</ul>
 			</li>
@@ -67,6 +67,24 @@
 			<div style='margin-top: 2px; margin-left: 5px; overflow: hidden;' id='jqxBottomControls_ProgressBar'>
 		</div>
 	</div>
+</div>
+
+<div id="jqxWindow_LoadSimulation">
+	<div id="windowHeader_loadSimul">
+		<span> <img src="./gears.png" alt="" style="margin-right: 15px" />Load Simulation
+		</span>
+	</div>
+	<div>
+		<div>
+			<input id='jqxConfWindow_ButtonSelectSimulationFiles' type="button" value="Select Simulation Files" align="center" valign="center" />
+			<br><input type="text" id="jqxInputLocalFile"/>
+			<br><input type="text" id="jqxInputGlobalFile"/>
+			<br><input type="text" id="jqxInputConnectivityFile"/>			
+		</div>	
+		<div>
+			<input id='jqxConfWindow_ButtonLoadSimulationFiles' type="button" value="Load/Reload Simulation Files" align="center" valign="center" />			
+		</div>
+	</div>		
 </div>
 
 <!-- Window config -->
@@ -346,7 +364,8 @@
 				<strong><span style="text-decoration: underline;">MSPViz</span></strong>
 			</p>
 			<p style="text-align: justify;">This is a visualization tool for
-				the data of the model of structural plasticity.</p>
+				the data of the model of structural plasticity. The data musb be in JSON format, 
+				the user can use the <a title="MSPJSONGenerator.py" href="./libs/scripts/MSPJSONGenerator.py">MSPJSONGenerator.py</a> script to transform the data, and be able to load in the visualization tool.</p>
 			<p style="text-align: justify;">
 				<strong>All the views lets the use of</strong>:
 			</p>
@@ -494,9 +513,6 @@
 					<td align="center" valign="center">
 						<a title="KolorWheel" href="http://www.javascriptoo.com/kolorwheel-js"> KolorWheel</a>
 					</td>
-					<td align="center" valign="center">
-						<a title="canvasg" href="https://jquery.com">Canvasg</a>
-					</td>		
 				</tr>
 			</table>
 		</div>	
@@ -513,7 +529,7 @@
 	
  	<div id="svgdataurl"></div>
 <!-- 	<div id="pngdataurl"></div> -->
-	<canvas width="1280" height="600" style="display:none"></canvas>
+	<canvas id="canvas" width="1280" height="600" style="display:none"></canvas>
  </div>
 
 <!-- para los tooltips -->

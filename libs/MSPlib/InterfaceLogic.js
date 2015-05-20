@@ -5,7 +5,8 @@ _SimulationData = 	null;
 
 UI.Visualizator = function()
 {
-	this.activeView = null;	
+	this.activeView 		= null;		
+	this.simulationFiles 	= null;
 	
 	this.generateUI();
 };
@@ -13,32 +14,65 @@ UI.Visualizator = function()
 UI.Visualizator.prototype = 
 {	
 	constructor: UI.Visualizator
-			
+	
 	,generateUI: function()
 	{
 		var self = this;
-				 
-		 document.getElementById('fileDialog').onchange = function() 
+		
+		//Dont reload the files form the same place in Chrome
+		document.getElementById('fileDialog').addEventListener('change',
+		function (evt) //selectFiles()
 		 {
-				var lOrederedFiles = self.loadLocalFiles();
-				
-				if (lOrederedFiles.length==3)
-				{
-					if (_SimulationData!=null) 	delete _SimulationData;
-					_SimulationData 	= 		new MSP.SimulationData();					
-	
-					_SimulationData.LoadLocalSimulation(lOrederedFiles);
-					
-					if (_SimulationController 	!= null)	delete _SimulationController;
-					_SimulationController 		= new 		MSP.SimulationController();
-					
-					_SigletonConfig.recalculatePosScales();			
-				}
-				else
-				{
-					alert ("Please, select the LocalNeuronInformation.json, GlobalSimulationParams.json and the Connectivity.json");			
-				}
-		 };
+		    var files = document.getElementById('fileDialog').files;
+		    
+		    var lOrderOfFiles = ["LocalNeuronInformation.json", "GlobalSimulationParams.json","Connectivity.json"];
+		    var lOrederedFiles=[];
+		    
+		    if ( (!files.length) || (files.length!=3) )
+		    {
+		    	self.simulationFiles = null;
+
+		    	$("#jqxInputLocalFile").jqxInput({placeHolder: ""});
+		    	$("#jqxInputGlobalFile").jqxInput({placeHolder: ""});
+		    	$("#jqxInputConnectivityFile").jqxInput({placeHolder: ""});
+		    	
+		    	$("#jqxConfWindow_ButtonLoadSimulationFiles").jqxButton({ disabled: true});
+		    	
+		    	alert('Please select the 3 simulation files: ... !');
+		    }
+		    else 
+		    {
+		    	for (var i=0;i<3;++i)
+		    		for (var j=0;j<3;++j)
+		    			if (escape(files[j].name)==lOrderOfFiles[i])
+		    				lOrederedFiles.push(files[j]);
+
+			    if ( lOrederedFiles.length==3 )
+			    {
+			    	self.simulationFiles = lOrederedFiles;
+
+			    	$("#jqxInputLocalFile").jqxInput({placeHolder: self.simulationFiles[0].name});
+			    	$("#jqxInputGlobalFile").jqxInput({placeHolder: self.simulationFiles[1].name});
+			    	$("#jqxInputConnectivityFile").jqxInput({placeHolder: self.simulationFiles[2].name});
+			    	
+			    	$("#jqxConfWindow_ButtonLoadSimulationFiles").jqxButton({ disabled: false});
+			    }
+			    else
+			    {
+			    	self.simulationFiles = null;
+
+			    	$("#jqxInputLocalFile").jqxInput({placeHolder: ""});
+			    	$("#jqxInputGlobalFile").jqxInput({placeHolder: ""});
+			    	$("#jqxInputConnectivityFile").jqxInput({placeHolder: ""});
+			    	
+			    	$("#jqxConfWindow_ButtonLoadSimulationFiles").jqxButton({ disabled: true});
+			    	
+			    	alert('XXX Please select the 3 simulation files: LocalNeuronInformation.json, GlobalSimulationParams.json and Connectivity.json !');
+			    }
+		    }				
+		 }
+		,false)
+		;
 		
 	    $(document).ready(	function () 
 			{	    	
@@ -60,7 +94,7 @@ UI.Visualizator.prototype =
 
     						    	break;
     						    case "Open local simulation":
-    						    	self.loadLocalSimulation();
+    						    	self.showLoadSimulation();
     					        	break;
     						    case "Reset Visualizator":
     						    	self.resetSimulation();
@@ -91,17 +125,17 @@ UI.Visualizator.prototype =
     					}
                     });
 	             
-	             $("#jqxBottomControls_ButtonSimulate").jqxButton({ width: '150'});
+	             $("#jqxBottomControls_ButtonSimulate").jqxButton({ width: '150', disabled:true });
 	             $("#jqxBottomControls_ButtonSimulate").on('click', function (event) {
 	            	 self.Simulate();
 	             });
 	             
-	             $("#jqxBottomControls_ButtonStopSimulation").jqxButton({ width: '150'});	             
+	             $("#jqxBottomControls_ButtonStopSimulation").jqxButton({ width: '150', disabled:true });	             
 	             $("#jqxBottomControls_ButtonStopSimulation").on('click', function (event) {
 	            	 self.stopSimulation();
 	             });
 	             
-	             $('#jqxBottomControls_SliderTimeline').jqxSlider({ tooltip: true, mode: 'fixed', width:'400px', showTicks: false, max: 1000, showButtons: false });
+	             $('#jqxBottomControls_SliderTimeline').jqxSlider({ tooltip: true, mode: 'fixed', width:'400px', showTicks: false, max: 1000, showButtons: false, disabled:true });
 
 	             $('#jqxBottomControls_SliderTimeline').on('slideStart', function (event) { 
 	            	 _SimulationController.stopVisualization();
@@ -111,12 +145,34 @@ UI.Visualizator.prototype =
 	             }); 
 	             
 	             $("#jqxBottomControls_NumericInputStep").jqxNumberInput({ width: '100px', height: '25px', inputMode: 'simple'
-	            	 								, spinButtons: true, decimalDigits: 0, min:0 });
+	            	 								, spinButtons: true, decimalDigits: 0, min:0, disabled:true});
 	             $('#jqxBottomControls_NumericInputStep').on('change', function (event) {
 	            	 self.updateSimulationFromStep();
 	             });
 	             	             
 	             $("#jqxBottomControls_ProgressBar").jqxProgressBar({ width: 275, height: 25, value: 0, showText:true});
+	             
+				$('#jqxWindow_LoadSimulation').jqxWindow({
+				    showCollapseButton: true, maxHeight: 200, maxWidth: 350, minHeight: 100, minWidth: 275, height: 225, width: 275
+				    ,'resizable': true, 'draggable': true, autoOpen: false,
+				    initContent: function () 
+				    {
+			             $("#jqxConfWindow_ButtonSelectSimulationFiles").jqxButton({ width: '250'});
+			             $("#jqxConfWindow_ButtonSelectSimulationFiles").on('click', function (event) {
+			            	 self.loadLocalSimulation();
+			             });
+
+			             $("#jqxConfWindow_ButtonLoadSimulationFiles").jqxButton({ width: '250', disabled: true});
+			             $("#jqxConfWindow_ButtonLoadSimulationFiles").on('click', function (event) {
+			            	 self.loadLocalFiles();
+			             });
+			             
+			             $("#jqxInputLocalFile").jqxInput({placeHolder: "Local neuron information file", height: 25, width: 250, minLength: 1, disabled: true});
+			             $("#jqxInputGlobalFile").jqxInput({placeHolder: "Global scene information file", height: 25, width: 250, minLength: 1, disabled: true});
+			             $("#jqxInputConnectivityFile").jqxInput({placeHolder: "Conectivity file", height: 25, width: 250, minLength: 1, disabled: true});
+				    }
+				});
+	             
 	             
 	            //Window config
 				$('#jqxWindow_Config').jqxWindow({
@@ -371,55 +427,63 @@ UI.Visualizator.prototype =
 	}
 	
 	,generateView: function (pViewId)
-	{		
-		switch (pViewId) 
+	{	
+		if (_SimulationController!=null)
 		{
-			case 0:
-					if (this.activeView!=null) delete this.activeView;
-					this.activeView=null;
-					this.activeView = new MSP.GlobalConnectionsView();
-					this.activeView.generateGlobalConnectionsView();
-			break;			
-			case 1:	
-					if (this.activeView!=null) delete this.activeView;				
-					this.activeView	= null;
-					this.activeView = new MSP.MacroscopicView();
-					this.activeView.generateMacroscopicView();					
-				break;
-			case 2:
-					//Constraint
-					if (_SigletonConfig.gSelectionIds.length>0)
-					{
-						if (this.activeView!=null) delete this.activeView;
-						this.activeView	=null;
-						this.activeView = new MSP.MicroscopicView();
-						this.activeView.generateMicroscopicView();												
-					}
-					else
-					{
-						window.alert("Please, select some neurons in Macroscopic View");
-					}
-				break;
-			case 3:
-					if (_SigletonConfig.neuronSelected !=-1)					
-					{
+			switch (pViewId) 
+			{
+				case 0:
 						if (this.activeView!=null) delete this.activeView;
 						this.activeView=null;
-						this.activeView = new MSP.DetailMicroscopicView();
-						this.activeView.generateDetailMicroscopicView();												
-					}
-					else
-					{
-						window.alert("Please, select one neuron in Microscopic View");						
-					}
-				break;					
-			default:
-				break;
-		}
+						this.activeView = new MSP.GlobalConnectionsView();
+						this.activeView.generateGlobalConnectionsView();
+				break;			
+				case 1:	
+						if (this.activeView!=null) delete this.activeView;				
+						this.activeView	= null;
+						this.activeView = new MSP.MacroscopicView();
+						this.activeView.generateMacroscopicView();					
+					break;
+				case 2:
+						//Constraint
+						if (_SigletonConfig.gSelectionIds.length>0)
+						{
+							if (this.activeView!=null) delete this.activeView;
+							this.activeView	=null;
+							this.activeView = new MSP.MicroscopicView();
+							this.activeView.generateMicroscopicView();												
+						}
+						else
+						{
+							window.alert("Please, select some neurons in Macroscopic View");
+						}
+					break;
+				case 3:
+						if (_SigletonConfig.neuronSelected !=-1)					
+						{
+							if (this.activeView!=null) delete this.activeView;
+							this.activeView=null;
+							this.activeView = new MSP.DetailMicroscopicView();
+							this.activeView.generateDetailMicroscopicView();												
+						}
+						else
+						{
+							window.alert("Please, select one neuron in Microscopic View");						
+						}
+					break;					
+				default:
+					break;
+			}
 
-		_SimulationController.setView(this.activeView);
-		_SimulationController.concreteSimulationStep(_SimulationController.actSimStep);		
+			_SimulationController.setView(this.activeView);
+			_SimulationController.concreteSimulationStep(_SimulationController.actSimStep);					
+		}
+		else
+		{
+			window.alert("Please, load simulation files first.");
+		}
 	},
+	
 	
 	showPreferences: function ()
 	{
@@ -431,6 +495,10 @@ UI.Visualizator.prototype =
 		$('#jqxWindow_Info').jqxWindow('open');		
 	}
 	
+	,showLoadSimulation: function()
+	{
+		$('#jqxWindow_LoadSimulation').jqxWindow('open');		
+	}
 	
 	,updateSimulationFromTimeline: function  ()
 	{		
@@ -459,32 +527,52 @@ UI.Visualizator.prototype =
 	
 	,loadLocalSimulation: function()
 	{
-		this.generateCanvas("Loading simulation ...");
-
-		$("#fileDialog").click();		
+		$("#fileDialog").click();
+		//this.loadLocalFiles();
 	}
 
 	,loadLocalFiles: function()
 	{
-		
-	    var files = document.getElementById('fileDialog').files;
+//		//console.log("Entrnado en loadLocalFiles");
+//	    var files = document.getElementById('fileDialog').files;
+//		//var files = this.simulationFiles;
+//	    
+//	    var lOrderOfFiles = ["LocalNeuronInformation.json", "GlobalSimulationParams.json","Connectivity.json"];
+//	    var lOrederedFiles=[];
+//	    
+//	    if ( (!files.length) || (files.length!=3) )
+//	    {
+//	      alert('Please select the 3 simulation files: ... !');
+//	    }
+//	    else 
+//	    {
+//	    	for (var i=0;i<3;++i)
+//	    		for (var j=0;j<3;++j)
+//	    			if (escape(files[j].name)==lOrderOfFiles[i])
+//	    				lOrederedFiles.push(files[j]);
+//	    }
+//	    
+//	    return lOrederedFiles;
+	    var self = this;
 	    
-	    var lOrderOfFiles = ["LocalNeuronInformation.json", "GlobalSimulationParams.json","Connectivity.json"];
-	    var lOrederedFiles=[];
-	    
-	    if ( (!files.length) || (files.length!=3) )
-	    {
-	      alert('Please select the 3 simulation files: ... !');
-	    }
-	    else 
-	    {
-	    	for (var i=0;i<3;++i)
-	    		for (var j=0;j<3;++j)
-	    			if (escape(files[j].name)==lOrderOfFiles[i])
-	    				lOrederedFiles.push(files[j]);
-	    }
-	    	
-	    return lOrederedFiles;
+		if (self.simulationFiles.length==3)
+		{
+			this.generateCanvas("Loading simulation ...");
+			
+			if (_SimulationData!=null) 	delete _SimulationData;
+			_SimulationData 	= 		new MSP.SimulationData();					
+
+			_SimulationData.LoadLocalSimulation(self.simulationFiles);
+			
+			if (_SimulationController 	!= null)	delete _SimulationController;
+			_SimulationController 		= new 		MSP.SimulationController();
+			
+			_SigletonConfig.recalculatePosScales();			
+		}
+		else
+		{
+			alert ("Please, select the LocalNeuronInformation.json, GlobalSimulationParams.json and the Connectivity.json");			
+		}	    
 	}
 	
 	,loadRemoteSimulation: function()
@@ -514,6 +602,11 @@ UI.Visualizator.prototype =
 		_SimulationData 		= null;
 		_SimulationController 	= null;
 		this.activeView 		= null;
+				
+		$("#jqxBottomControls_ButtonSimulate").jqxButton({ disabled: true });
+		$("#jqxBottomControls_ButtonStopSimulation").jqxButton({ disabled: true });
+		$('#jqxBottomControls_SliderTimeline').jqxSlider({ disabled: true });
+		$("#jqxBottomControls_NumericInputStep").jqxNumberInput({ disabled: true });		
 	}
 	
 	
