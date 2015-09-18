@@ -204,8 +204,8 @@ def parseLocalNeuronInformationFiles(pWorkingDirectory, pCalciumsFiles, pSynapti
     f.close()
     for line in lines:
         columns = line.split()
-        if firstIteration:
-            JSONContainer[int(columns[0])]["SetPoint"]=float(columns[1])                                          
+#         if firstIteration:
+        JSONContainer[int(columns[0])]["SetPoint"]=float(columns[1])                                          
 
     #Number of vectors to fill     
     lKeys = gSynapticElementsAll.keys()
