@@ -39,6 +39,10 @@ SigletonConfig = function()
 	this.minCaColor;
 	this.maxCaColor;
 	
+	//0 = 	Values set from file
+	//1 =	Values from the values of the Ca values of each neuron
+	this.CaMaxMinValueTypes=0;
+	
 	this.macroVAlpha;
 	
 	this.ColorInerpolMethod=null;

@@ -275,9 +275,29 @@ UI.Visualizator.prototype =
 			            	 _SigletonConfig.macroVAlpha = event.args.value;
 			             });
 
-			            $("#jqxRadioButtonHSLColorInterpol").jqxRadioButton({ width: 250, height: 25, checked: true });			            
-			            $("#jqxRadioButtonRGBColorInterpol").jqxRadioButton({ width: 250, height: 25});
-			           			            
+			            
+			            
+			            $("#jqxRadioButtonCaSetPointFromFile").jqxRadioButton({groupName: '1', width: 250, height: 25, checked: true });			            
+			            $("#jqxRadioButtonCaSetPointFromNeuronValues").jqxRadioButton({groupName: '1', width: 250, height: 25});
+			            $("#jqxRadioButtonHSLColorInterpol").jqxRadioButton({groupName: '2', width: 250, height: 25, checked: true });			            
+			            $("#jqxRadioButtonRGBColorInterpol").jqxRadioButton({groupName: '2', width: 250, height: 25});
+
+			            $("#jqxRadioButtonCaSetPointFromFile").on('change', function (event) {
+			                var checked = event.args.checked;
+			                if (checked) 
+			                {
+			                	_SigletonConfig.CaMaxMinValueTypes=0;
+			                }
+			            });			            
+
+			            $("#jqxRadioButtonCaSetPointFromNeuronValues").on('change', function (event) {
+			                var checked = event.args.checked;
+			                if (checked) 
+			                {
+			                	_SigletonConfig.CaMaxMinValueTypes=1;
+			                }
+			            });			            			           
+			            
 			            $("#jqxRadioButtonHSLColorInterpol").on('change', function (event) {
 			                var checked = event.args.checked;
 			                if (checked) 
@@ -293,6 +313,9 @@ UI.Visualizator.prototype =
 			                	_SigletonConfig.ColorInerpolMethod="RGB";
 			                }
 			            });			            			           
+			            
+			            $("#jqxRadioButtonCaSetPointFromFile").jqxRadioButton('check');			            			            
+			            $("#jqxRadioButtonHSLColorInterpol").jqxRadioButton('check');			            
 			            
 				        var lCaInterpolMethods = [
 							                      "Linear",

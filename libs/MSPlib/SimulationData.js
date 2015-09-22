@@ -18,6 +18,14 @@ MSP.SimulationData = function()
 	this.minCalciumIValue	=	0;
 	this.maxCalciumTValue	=	0;
 	this.minCalciumTValue	=	0;
+
+	//Extreme calciums values from File
+	this.maxFileCalciumEValue	=	0;
+	this.minFileCalciumEValue	=	0;
+	this.maxFileCalciumIValue	=	0;
+	this.minFileCalciumIValue	=	0;
+	this.maxFileCalciumTValue	=	0;
+	this.minFileCalciumTValue	=	0;
 	
 	//Extreme values of global connections
 	this.maxTEConn	=	0;
@@ -102,6 +110,45 @@ MSP.SimulationData.prototype =
 	    {
 	    	self.gNeurons = JSON.parse( readerLocalNeuronInformation.result );			
 
+//	    	//Max-Min Ca values from file
+//			if (_SigletonConfig.CaMaxMinValueTypes==0)
+//			{
+//				self.minECalciumValue = 0;
+//				self.minICalciumValue = 0;
+//				self.maxECalciumValue = 0;
+//				self.maxICalciumValue = 0;
+//				
+//				for(var i=0;i<self.gNeurons.length;++i) 
+//				{
+//					if (self.gNeurons[i].NAct=="E")
+//					{
+//						if (self.maxECalciumValue<self.gNeurons[i].SetPoint)
+//							self.maxECalciumValue=self.gNeurons[i].SetPoint;
+//					}
+//					else
+//					{
+//						if (self.maxICalciumValue<self.gNeurons[i].SetPoint)
+//							self.maxICalciumValue=self.gNeurons[i].SetPoint;						
+//					}
+//				}
+//				
+//				//#### Nyapa!!! Se pued ehacer en el bucle anterior, but theri is no time
+//				for(var i=0;i<self.gNeurons.length;++i) 
+//				{
+//					if (self.gNeurons[i].NAct=="E")
+//					{
+//						if (self.maxECalciumValue!=self.gNeurons[i].SetPoint)
+//							window.alert("Different setPoint Ca values in setPoint files for E Neuron");
+//					}
+//					else
+//					{
+//						if (self.maxICalciumValue!=self.gNeurons[i].SetPoint)
+//							window.alert("Different setPoint Ca values in setPoint files for I Neuron");
+//					}
+//				}
+//				
+//			}
+	    	
 	    	lProgres+=33;
 	    	$("#jqxBottomControls_ProgressBar").jqxProgressBar({ value: lProgres });
 	    	
@@ -121,13 +168,23 @@ MSP.SimulationData.prototype =
 				self.IEConn = jsonGlobalNData.IEConn;
 				self.IIConn = jsonGlobalNData.IIConn;
                 
+				//###Calculated from file, but no setpoint file
+				self.maxFileECalciumValue = jsonGlobalNData.maxECalciumValue;
+				self.minFileECalciumValue = jsonGlobalNData.minECalciumValue;
+				self.maxFileICalciumValue = jsonGlobalNData.maxICalciumValue;
+				self.minFileICalciumValue = jsonGlobalNData.minICalciumValue;
+				
+				//Global calcium values
 				self.minCalciumValue = jsonGlobalNData.minCalciumValue;
 				self.maxCalciumValue = jsonGlobalNData.maxCalciumValue;
                 
-				self.maxECalciumValue = jsonGlobalNData.maxECalciumValue;
-				self.minECalciumValue = jsonGlobalNData.minECalciumValue;
-				self.maxICalciumValue = jsonGlobalNData.maxICalciumValue;
-				self.minICalciumValue = jsonGlobalNData.minICalciumValue;
+//				if (_SigletonConfig.CaMaxMinValueTypes==1)
+//				{
+//					self.maxECalciumValue = jsonGlobalNData.maxECalciumValue;
+//					self.minECalciumValue = jsonGlobalNData.minECalciumValue;
+//					self.maxICalciumValue = jsonGlobalNData.maxICalciumValue;
+//					self.minICalciumValue = jsonGlobalNData.minICalciumValue;
+//				}
 				
 				//Calculate max and min values
 				self.calculateMaxMinValues();
@@ -164,6 +221,61 @@ MSP.SimulationData.prototype =
 	
 	recalculateScales: function (pColorMin, pColorMax, pColorType)
 	{
+		var self = this;
+		
+    	//Max-Min Ca values from file
+		if (_SigletonConfig.CaMaxMinValueTypes==0)
+		{
+			console.log("Ca. from set points");
+			
+			self.minECalciumValue = 0;
+			self.minICalciumValue = 0;
+			self.maxECalciumValue = 0;
+			self.maxICalciumValue = 0;
+			
+			for(var i=0;i<self.gNeurons.length;++i) 
+			{
+				if (self.gNeurons[i].NAct=="E")
+				{
+					if (self.maxECalciumValue<self.gNeurons[i].SetPoint)
+						self.maxECalciumValue=self.gNeurons[i].SetPoint;
+				}
+				else
+				{
+					if (self.maxICalciumValue<self.gNeurons[i].SetPoint)
+						self.maxICalciumValue=self.gNeurons[i].SetPoint;						
+				}
+			}
+			
+			//#### Nyapa!!! Se pued ehacer en el bucle anterior, but theri is no time
+			for(var i=0;i<self.gNeurons.length;++i) 
+			{
+				if (self.gNeurons[i].NAct=="E")
+				{
+					if (self.maxECalciumValue!=self.gNeurons[i].SetPoint)
+						window.alert("Different setPoint Ca values in setPoint files for E Neuron");
+				}
+				else
+				{
+					if (self.maxICalciumValue!=self.gNeurons[i].SetPoint)
+						window.alert("Different setPoint Ca values in setPoint files for I Neuron");
+				}
+			}
+			
+		}
+		else
+		{
+			console.log("Ca. from Neuron values");
+			self.maxECalciumValue = self.maxFileECalciumValue;
+			self.minECalciumValue = self.minFileECalciumValue;
+			self.maxICalciumValue = self.maxFileICalciumValue;
+			self.minICalciumValue = self.minFileICalciumValue;
+		}
+		
+		console.log("self.maxECalciumValue: "+self.maxECalciumValue);
+		console.log("self.minECalciumValue: "+self.minECalciumValue);
+		console.log("self.maxICalciumValue: "+self.maxICalciumValue);
+		console.log("self.minICalciumValue: "+self.minICalciumValue);
 		
 		if (pColorType	==	"HSL")
 		{
@@ -173,17 +285,17 @@ MSP.SimulationData.prototype =
 
 			var lIncrements = [];
 			var lNumIncs 	= 5.0;
-			
-			var lIInc = (this.maxICalciumValue - this.minICalciumValue)/lNumIncs;
-			for (var i=0;i<lNumIncs;++i)	lIncrements.push(this.minICalciumValue + i*lIInc);
-			
+						
 			var lColorMin = new KolorWheel(pColorMin);
 			var lColorMax = new KolorWheel(pColorMax);
 			
 			var lhInc = (lColorMax.h - lColorMin.h)/lNumIncs;
 			var lsInc = (lColorMax.s - lColorMin.s)/lNumIncs;
 			var llInc = (lColorMax.l - lColorMin.l)/lNumIncs;
-			
+
+			//Inhibitory
+			var lIInc = (this.maxICalciumValue - this.minICalciumValue)/lNumIncs;
+			for (var i=0;i<lNumIncs;++i)	lIncrements.push(this.minICalciumValue + i*lIInc);			
 			for (var n = 0; n < lNumIncs; n++) 
 			{
 				lActColor = new KolorWheel([lColorMin.h + n*(lhInc)
@@ -199,6 +311,19 @@ MSP.SimulationData.prototype =
 							.range(lHSLColorRange)
 							.interpolate(d3.interpolateHsl)
 							;
+			//Excitatory
+			var lEInc = (this.maxECalciumValue - this.minECalciumValue)/lNumIncs;
+			lIncrements = [];
+			lHSLColorRange = [];
+			for (var i=0;i<lNumIncs;++i)	lIncrements.push(this.minECalciumValue + i*lEInc);
+			for (var n = 0; n < lNumIncs; n++) 
+			{
+				lActColor = new KolorWheel([lColorMin.h + n*(lhInc)
+				                            ,lColorMin.s + n*(lsInc)
+				                            ,lColorMin.l + n*(llInc)
+				                            ]);
+				lHSLColorRange.push(lActColor.getHex());
+			}
 			
 			this.CaEScale = d3.scale
 								.linear()
