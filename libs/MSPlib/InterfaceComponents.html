@@ -5,557 +5,862 @@
  * @remarks Do not distribute without further notice.
  */
  -->
- 
+
 <!-- Interface components -->
-<input type="file" id="fileDialog" multiple name="fileDialog" accept=".json" style="display:none;" />
+<div style="  position: fixed; top: 0; right: 0;">
+    <div style=' margin-left: 5px; overflow: hidden;' id='jqxBottomControls_ProgressBar'>
+    </div>
+</div>
+<input type="file" id="fileDialog" multiple name="fileDialog" accept=".scf,.json" style="display:none;" />
+<input type="file" id="fileDialogConfig" multiple name="fileDialogConfig" accept=".json" style="display:none;" />
+<div class="icon-bar">
+    <div class="views">
+        <a id="navClose" class="tabClose" style="background-color: #181a1d;">
+            <img id="closeTabs" src="menu.png" height="16" width="16"/>
+        </a>
+        <div class="separadorVertical" style="margin-top: 0"></div>
+        <a class="navViewButton" id="navViewGlobal">
+            <img src="bargraph.png" height="24" width="24"/>
+            <p class="tooltiptext">Global Connections View</p>
+        </a>
+        <a class="navViewButton" id="navViewMacro">
+            <img src="macro.png" height="24" width="24"/>
+            <p class="tooltiptext">Macroscopic View</p>
+        </a>
+        <a class="navViewButton" id="navViewMap">
+            <img src="map.png" height="22" width="22"/>
+            <p class="tooltiptext">Connectivity Matrix View</p>
+        </a>
+        <a class="navViewButton" id="navViewMicro">
+            <img src="micro.png" height="24" width="24"/>
+            <p class="tooltiptext">Microscopic View</p>
+        </a>
+        <a class="navViewButton" id="navViewMicroDetail">
+            <img src="DetailMicro.png" height="24" width="24"/>
+            <p class="tooltiptext">Detail Microscopic View</p>
+        </a>
+    </div>
+    <div class="separadorVertical"></div>
+    <div class="options">
+        <a class="navOptionsButton" id="navOptionsFile">
+            <img src="folder.png" height="20" width="20"/>
+            <p class="tooltiptext">File</p>
+        </a>
+        <a class="navOptionsButton" id="navOptionsColor">
+            <img src="pallete.png" height="20" width="20"/>
+            <p class="tooltiptext">Color preferences</p>
+        </a>
+        <a class="navOptionsButton" id="navOptionsGlobal">
+            <img src="setting.png" height="20" width="20"/>
+            <p class="tooltiptext">Global Configuration</p>
+        </a>
+        <a class="navOptionsButton" id="navOptionsConfig">
+            <img src="tool.png" height="20" width="20"/>
+            <p class="tooltiptext">View Configuration</p>
+        </a>
+        <a class="navOptionsButton" id="navOptionsFilter">
+            <img src="filter.png" height="20" width="20"/>
+            <p class="tooltiptext">Filter data</p>
+        </a>
+        <a class="navOptionsButton" id="navOptionsSort">
+            <img src="sort.png" height="20" width="20"/>
+            <p class="tooltiptext">Sort data</p>
+        </a>
+    </div>
+    <div class="info">
+        <a class="navOptionsButton" id="navInfoInfo">
+            <img src="info.png" height="20" width="20"/>
+            <p class="tooltiptext">View Instructions</p>
+        </a>
+        <a class="navOptionsButton" id="navInfoHelp">
+            <img src="help.png" height="20" width="20"/>
+            <p class="tooltiptext">About</p>
+        </a>
+    </div>
+</div>
+
+<div id="sideNav" class="sidenav">
+    <!-- Window config -->
+
+
+    <!-- Tabs -->
+
+    <!--<div>-->
+    <!--<input id='jqxConfWindow_ButtonUpdateView' type="button" value="Update View" align="center" valign="center" />-->
+    <!--</div>-->
+    <h1 id="optionsTitle">Options</h1>
+    <div id="fileTab" class="tabs" >
+        <!-- <input id='jqxWindow_Config_button' type="button" value="Set value"/> -->
+
+        <div class="navBarSectionTitle">
+            <label class="sectionHeader">Local Simulation</label>
+        </div>
+        <!-- Window load local simulation-->
+        <div class="centerFlex">
+            <div>
+                <input id='jqxConfWindow_ButtonSelectSimulationFiles' type="button" value="Select Simulation Files" align="center" valign="center" />
+                <!--		<br><input type="text" id="jqxInputSimulationConfigFile"/>-->
+                <br><input type="text" id="jqxInputSimulationFilesLocalPath"/>
+            </div>
+            <div>
+                <input id='jqxConfWindow_ButtonLoadSimulationFiles' type="button" value="Load/Reload Simulation Files" align="center" valign="center" />
+            </div>
+        </div>
+
+        <div class="navBarSectionTitle">
+            <label class="sectionHeader">Simulation from Server</label>
+        </div>
+        <!-- Window load remote simulation from server-->
+        <div class="centerFlex">
+            <div>
+                Select the simulation id.
+            </div>
+            <input type="text" 		id="jqxWindow_RemoteSimulationId"/>
+            <input id='jqxWindow__ButtonLoadRemoteSimulationFromServer' type="button" value="Load/Reload Remote Simulation" align="center" valign="center" />
+        </div>
+
+        <div class="navBarSectionTitle">
+            <label class="sectionHeader">Simulation from dCache</label>
+        </div>
+
+        <!-- Window load remote simulation from dCache-->
+        <div class="centerFlex">
+            <div class="centerFlex">
+                <div id='jqxWindow_LoadRemoteSimulation_ComboRemoteServers'>
+                </div>
+                <input type="text" 		id="jqxWindow_LoadRemoteSimulation_id"/>
+                <input type="text" 		id="jqxWindow_LoadRemoteSimulation_inputUser"/>
+                <input type="password" 	id="jqxWindow_LoadRemoteSimulation_inputPass"/>
+            </div>
+            <div>
+                <input id='jqxWindow_ButtonLoadRemoteSimulationFromDCache' type="button" value="Load/Reload Remote Simulation Files" align="center" valign="center" />
+            </div>
+        </div>
+
+
+        <div class="navBarSectionTitle">
+            <label class="sectionHeader">Load Configuration</label>
+        </div>
+        <!-- Window load local simulation-->
+        <div class="centerFlex">
+            <div>
+                <input id='jqxConfWindow_ButtonSelectConfig' type="button" value="Select Configuration File" align="center" valign="center" />
+                <!--		<br><input type="text" id="jqxInputSimulationConfigFile"/>-->
+                <br><input type="text" id="jqxInputConfigFilesLocalPath"/>
+            </div>
+            <div>
+                <input id='jqxConfWindow_ButtonLoadConfig' type="button" value="Load Configuration File" align="center" valign="center" />
+            </div>
+        </div>
+
+        <div class="navBarSectionTitle">
+            <label class="sectionHeader">Save Configuration</label>
+        </div>
+        <!-- Window load local simulation-->
+        <div class="centerFlex">
+            <div>
+                <input id='jqxConfWindow_ButtonSaveConfig' type="button" value="Save current configuration" align="center" valign="center" />
+            </div>
+        </div>
+    </div>
+
+    <div id="colorTab" class="tabs"  style="display: none">
+        <!-- <input id='jqxWindow_Config_button' type="button" value="Set value"/> -->
+
+        <div class="navBarSectionTitle">
+            <label class="sectionHeader">Elements</label>
+        </div>
+        <div class="centerFlex">
+            <label class="labelSubtitle">Color scheme</label>
+            <div style="margin: 3px; " class="centerFlex" id="dropDownNeuronScale">
+                <div style="padding: 3px;" id="neuronScalePicker">
+                </div>
+            </div>
+        </div>
+        <div class="centerFlex">
+            <label class="labelSubtitle">Excitatory color</label>
+            <div style="margin: 3px;" class="centerFlex" id="dropDownExcitatoryButton">
+                <div style="padding: 3px;" id="excitatoryColorPicker">
+                    <div id="colorPicker">
+                        <table id="back">
+                            <tr>
+                                <td class="postTitle">Color schemas</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div style="float: left; line-height:26px; padding-right: 5px"><span>Schema</span></div><div id="comboBox"  style="float: left;"></div>
+                                    <div style="float: left; line-height:26px; padding-left: 20px;padding-right: 5px"><span>Steps</span></div><div id="numSetps"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div id="color"></div>
+                                </td>
+                            </tr>
+
+                            <tr id="colorPicker2">
+                                <td class="postTitle">RGB Color Picker</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div id="genericColorPicker">
+                                    </div>
+                                <td>
+                            </tr>
+                            <tr >
+                                <td>
+                                    <div style="float:right;margin-top: 20px">
+                                        <a id="botonC" class="btn2" href="javascript:_ColorPicker.ocultar()">Cancel</a>
+                                        <a id="botonA" class="btn" href="javascript:_ColorPicker.aceptar()">Accept</a>
+                                    </div>
+                                <td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="centerFlex">
+            <label class="labelSubtitle">Inhibitory color</label>
+            <div style="margin: 3px; " id="dropDownInhibitoryButton">
+                <div style="padding: 3px;">
+                    <div id="inhibitoryColorPicker">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="centerFlex">
+            <label class="labelSubtitle">Axonal color</label>
+            <div style="margin: 3px; " id="dropDownAxonalButton">
+                <div style="padding: 3px;">
+                    <div id="axonalColorPicker">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="navBarSectionTitle">
+            <label class="sectionHeader">Connections</label>
+        </div>
+        <div class="centerFlex">
+            <label class="labelSubtitle">Color scheme</label>
+            <div style="margin: 3px; " id="dropDownConnectionsScale">
+                <div style="padding: 3px;" id="connectionsScalePicker">
+                </div>
+            </div>
+        </div>
+        <div class="centerFlex">
+            <label class="labelSubtitle">EE color</label>
+            <div style="margin: 3px; " id="dropDownEEButton">
+                <div style="padding: 3px;">
+                    <div id="EEColorPicker">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="centerFlex">
+            <label class="labelSubtitle">EI color</label>
+            <div style="margin: 3px; " id="dropDownEIButton">
+                <div style="padding: 3px;">
+                    <div id="EIColorPicker">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="centerFlex">
+            <label class="labelSubtitle">IE color</label>
+            <div style="margin: 3px; " id="dropDownIEButton">
+                <div style="padding: 3px;">
+                    <div id="IEColorPicker">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="centerFlex">
+            <label class="labelSubtitle">II color</label>
+            <div style="margin: 3px;" id="dropDownIIButton">
+                <div style="padding: 3px;">
+                    <div id="IIColorPicker">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="navBarSectionTitle">
+            <label class="sectionHeader">Calcium</label>
+        </div>
+        <div class="centerFlex">
+            <label class="labelSubtitle">Color scheme</label>
+            <div style="margin: 3px;" id="dropDownCalciumScale">
+                <div style="padding: 3px;" id="calciumScalePicker">
+                </div>
+            </div>
+            <div style="margin: 3px;" id="calciumColorScale">
+            </div>
+        </div>
+
+        <div class="centerFlex">
+            <label class="labelSubtitle">Ca. max. value color</label>
+            <div style="margin: 3px; " id="dropDownCaMaxValueColorButton">
+                <div style="padding: 3px;">
+                    <div id="CaMaxValueColorColorPicker">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="centerFlex">
+            <label class="labelSubtitle">Ca. min. value color</label>
+            <div style="margin: 3px;" id="dropDownCaMinValueColorButton">
+                <div style="padding: 3px;">
+                    <div id="CaMinValueColorColorPicker">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+    </div>
+    <!-- Global conf -->
+    <div  id="globalConfTab" class="tabs"  style="display: none">
+        <!-- <input id='jqxWindow_Config_button' type="button" value="Set value"/> -->
+        <table>
+            <tr>
+                <td>
+                    <div id='CaSetPoint'>
+                        <div style='margin-top: 10px;' id='jqxRadioButtonCaSetPointFromFile'>
+                            <span>Ca. set points from file</span>
+                        </div>
+                        <div style='margin-top: 10px;' id='jqxRadioButtonCaSetPointFromNeuronValues'>
+                            <span>Ca. set points from neuron values</span>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="labelSubtitle">Ca. color interpol. method</label>
+                    <br />
+                    <div style="margin: 3px; float: left;" id="dropDownCaInterpolMethodButton">
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div id='CaColorMethod'>
+                        <div style='margin-top: 10px; float: left;' id='jqxRadioButtonHSLColorInterpol'>
+                            HSL
+                        </div>
+                        <div style='margin-top: 10px; float: left;' id='jqxRadioButtonRGBColorInterpol'>
+                            RGB
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="labelSubtitle">Synaptic elements to view</label>
+                    <br />
+                    <div style="margin: 3px; float: left;" id="dropDownSynapticElementsToViewButton">
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="labelSubtitle">Simulation velocity</label>
+                    <br />
+                    <div style="float: left">
+                        <div id='jqxNumericInput_SimulationVelocity' style='margin-top: 3px;'></div>
+                    </div>
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <label class="labelSubtitle">Type of connections</label>
+                    <br />
+                    <div>
+                        <div style="margin: 3px; float: left;" id="chkOutgoingConn">Outgoing
+                        </div>
+                        <div style="margin: 3px; float: left;" id="chkIncomingConn">Incoming
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Global connections view -->
+    <div  id="gloablViewTab" class="tabs"  style="display: none">
+        <h3>
+            Representation type
+        </h3>
+        <div style='margin-top: 10px;' id='jqxRadioButtonGlobalVBarrs'>
+            <span>Bars representation</span>
+        </div>
+        <div style='margin-top: 10px;' id='jqxRadioButtonGlobalVFuncts'>
+            <span>Function representation</span>
+        </div>
+    </div>
+
+    <!-- Macro view -->
+    <div  id="macroViewTab" class="tabs"  style="display: none">
+        <table>
+            <tr>
+                <td>
+                    <div id='jqxCheckBox_EEConnect' style='margin-left: 10px; '> Draw EE connect.</div>
+                    <div id='jqxCheckBox_EIConnect' style='margin-left: 10px; '> Draw EI connect.</div>
+                    <div id='jqxCheckBox_IEConnect' style='margin-left: 10px; '> Draw IE connect.</div>
+                    <div id='jqxCheckBox_IIConnect' style='margin-left: 10px; '> Draw II connect.</div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label style="margin-left: 10px; font-size: 12px; font-family: Verdana;">Connect. alpha factor</label>
+                    <br/>
+                    <div style="margin-left: 20px; float: left">
+                        <div id='jqxMacroVControls_SliderApha'></div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+        <div  id="macroViewElipseTab"  style="display: none">
+
+            <table>
+                <tr>
+                    <td>
+                        <div id="idSelectorElipse" style="float: left; align-self: center;  ">
+                            <div id="numericImputElipse"></div>
+                        </div>
+                        <input id='btnAddID' type="button" value="Add ID" align="center" valign="center" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input id='btnAddSelected' type="button" value="Add Selected" align="center" valign="center" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input id='rmSelected' type="button" value="Remove Selected" align="center" valign="center" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input id='btnRmSelected' type="button" value="Remove all" align="center" valign="center" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div>
+                            <ul id="listaCentroElipse"></ul>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div id="detailedMicroViewTab" class="tabs" style="display: none">
+        <table >
+            <tr>
+                <td>
+                    <div class="navBarSectionTitle">
+                        <label class="sectionHeader">Number of history steps</label>
+                    </div>
+
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <div>
+                        <div id="numericBarElements"></div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+    </div>
+
+    <div id="filterTab" class="tabs" style="display: none">
+
+        <div class="navBarSectionTitle">
+            <label class="sectionHeader">Create filter</label>
+        </div>
+        <div class="centerFlex">
+            <div>
+                <div style="margin: 3px;" id="chkNeuronType1">Excitatory
+                </div>
+            </div>
+
+            <div>
+                <div style="margin: 3px; " id="chkNeuronType2">Inhibitory
+                </div>
+            </div>
+
+            <div style="margin: 3px; " id="comboBoxTypeFilter">Calcium
+            </div>
+
+            <div style="margin: 3px; " id="caRangeFilter">
+            </div>
+
+
+            <div style="margin: 3px; " id="caMinRangeFilter">
+            </div>
+
+            <div style="margin: 3px; " id="caMaxRangeFilter">
+            </div>
+            <br>
+            <div style="margin: 3px; ">
+                <input type="button" value="Apply Filter" id='btnApplyFilter' />
+            </div>
+        </div>
+        <div class="navBarSectionTitle">
+            <label class="sectionHeader">Current filters</label>
+        </div>
+        <div class="centerFlex">
+            <div id="listaFiltros">
+
+            </div>
+        </div>
+    </div>
+
+    <div id="sortTab" class="tabs" style="display: none">
+
+        <div class="navBarSectionTitle">
+            <label class="sectionHeader">Neurons Sorting</label>
+        </div>
+        <div class="leftFlex">
+            <div id='jqxCheckBoxMixNeurons' >Mix neuron's types</div>
+
+            <div id='jqxCheckBoxInverseSort' >Inverse order</div>
+
+            <div id='jqxRadioNoSort' >No sort</div>
+
+            <div id='jqxRadioSortByCa' >Sort by Calcium Ca.</div>
+
+            <div id='jqxRadioSortEConn' >Sort by Inhibitory Conn.</div>
+
+            <div id='jqxRadioSortIConn' >Sort by Excitatory Conn.</div>
+
+            <div id='jqxRadioSortAConn' >Sort by Axonal Conn.</div>
+        </div>
+    </div>
+    <!-- Fin tabs -->
+    <!-- Navigation bar -->
+
+    <!-- Navigation bar -->
+</div>
+
+
 
 <div id='jqxWidgets'>
 
-	<!-- Main menu -->
-	<div id='jqxMenu' style='visibility: hidden; margin-bottom: 2px'>
-		<ul>
-			<li>File
-				<ul>
-					<li><a href="#jqxMenuOpenSimulation">Open local simulation</a></li>
-					<li><a href="#jqxMenuReset">Reset Visualizator</a></li>
-				</ul>
-			</li>
+    <!-- Main menu -->
 
-			<li>Edit
-				<ul style='width: 250px;'>
-					<li><a href="#jqxMenuTakeSnapShot">Take a snapshot</a></li>
-					<li><a href="#jqxMenuPreferences">Preferences</a></li>
-				</ul>
-			</li>
-			<li>View
-				<ul>
-					<li><a href="#jqxMenuGlobalConnectionsView">Global Connections View</a></li>
-					<li><a href="#jqxMenuMacroscopicView">Macroscopic View</a></li>
-					<li><a href="#jqxMenuMicroscopicView">Microscopic View</a></li>
-					<li><a href="#jqxMenuDetailMicroscopicView">Detail Microscopic View</a></li>
-				</ul>
-			</li>
-			<li>Help
-				<ul>
-					<li><a href="#jqxMenuAbout">About</a></li>
-				</ul>
-			</li>
-		</ul>
-	</div>
-	<!-- Fin Menu -->
 
-	<!-- Canvas -->
-	<div id="renderArea"></div>
-	<!-- Canvas -->
+    <!-- Fin Menu -->
+    <!-- Canvas -->
+    <div id="content">
+        <div id="renderArea"></div>
+        <!-- Canvas -->
+        <div id="colorSampleBand"></div>
+        <!-- Bottom controls -->
+        <div id='jqxBottomControls'>
+            <div  id="controles" style="display: flex; height: auto; align-self: stretch; flex: 1 0 auto;">
+                <div id="control1" style="float: left; align-self: center;">
+                    <input id='jqxBottomControls_ButtonSimulate' type="button"
+                           value="Simulate" />
+                </div>
+                <div id="control2" style="float: left; align-self: center;">
+                    <span style="font-style: italic; margin-left: 40px; margin-right: 15px">Timeline</span>
+                </div>
+                <div id="control3" style="float: left; align-self: center;">
+                    <div id='jqxBottomControls_SliderTimeline'></div>
+                </div>
+                <div id="control4" style="float: left; align-self: center;">
+                    <span style="font-style: italic; margin-left: 50px; margin-right: 5px">Step</span>
+                </div>
+                <div id="control5" style="float: left; align-self: center;">
+                    <div id="jqxBottomControls_NumericInputStep"></div>
+                </div>
 
-	<!-- Bottom controls -->
-	<div id='jqxBottomControls'>
-		<div style="float: left">
-			<input id='jqxBottomControls_ButtonSimulate' type="button"
-				value="Simulate" /> <input
-				id='jqxBottomControls_ButtonStopSimulation' type="button"
-				value="Stop simulation" />
-		</div>
-		<div style="float: left">
-			<span
-				style="font-style: italic; margin-left: 50px; margin-right: 5px">Timeline</span>
-		</div>
-		<div style="float: left">
-			<div id='jqxBottomControls_SliderTimeline'></div>
-		</div>
-		<div style="float: left">
-			<span
-				style="font-style: italic; margin-left: 50px; margin-right: 5px">Step</span>
-		</div>
-		<div style="float: left">
-			<div id='jqxBottomControls_NumericInputStep' style='margin-top: 3px;'></div>
-		</div>
-		<div style="float: left">
-			<div style='margin-top: 2px; margin-left: 5px; overflow: hidden;' id='jqxBottomControls_ProgressBar'>
-		</div>
-	</div>
-</div>
+            </div>
+            <div id="navButtons">
+            </div>
 
-<div id="jqxWindow_LoadSimulation">
-	<div id="windowHeader_loadSimul">
-		<span> <img src="./gears.png" alt="" style="margin-right: 15px" />Load Simulation
-		</span>
-	</div>
-	<div>
-		<div>
-			<input id='jqxConfWindow_ButtonSelectSimulationFiles' type="button" value="Select Simulation Files" align="center" valign="center" />
-			<br><input type="text" id="jqxInputLocalFile"/>
-			<br><input type="text" id="jqxInputGlobalFile"/>
-			<br><input type="text" id="jqxInputConnectivityFile"/>			
-		</div>	
-		<div>
-			<input id='jqxConfWindow_ButtonLoadSimulationFiles' type="button" value="Load/Reload Simulation Files" align="center" valign="center" />			
-		</div>
-	</div>		
-</div>
+            <div id="idSelector" style="float: left;  height: auto; align-self: center; display:none; ">
+                <div id="numericImputID"></div>
+            </div>
 
-<!-- Window config -->
-<div id="jqxWindow_Config">
+        </div>
+    </div>
 
-	<div id="windowHeader">
-		<span> <img src="./gears.png" alt="" style="margin-right: 15px" />Configuration
-		</span>
-	</div>
 
-	<!-- Tabs -->
-	<div>
-		<div>
-			<input id='jqxConfWindow_ButtonUpdateView' type="button" value="Update View" align="center" valign="center" />			
-		</div>	
-		<div id='jqxConfWindow_TabsConfig'>
-			<ul>
-				<li style="margin-left: 30px;">Global configuration</li>
-				<li>Global connections view</li>
-				<li>Macroscopic view</li>
-				<li>Microscopic view</li>
-				<li>Detailed microscopic view</li>
-			</ul>
-			
-			<!-- Global conf -->		
-			<div>
-				<!-- <input id='jqxWindow_Config_button' type="button" value="Set value"/> -->
-	 			<table>
-				<tr>
-					<td>            			
-			 			<label style="margin-left: 5px; font-size: 12px; font-family: Verdana;">Select Excitatory color</label>
-			            <br />
-			            <div style="margin: 3px; float: left;" id="dropDownExcitatoryButton">
-			                <div style="padding: 3px;">
-			                    <div id="excitatoryColorPicker">
-			                    </div>
-			                </div>
-			            </div>
-			        </td>
-					<td>
-			 			<label style="margin-left: 5px; font-size: 12px; font-family: Verdana;">Select Inhibitory color</label>
-			            <br />
-			            <div style="margin: 3px; float: left;" id="dropDownInhibitoryButton">
-			                <div style="padding: 3px;">
-			                    <div id="inhibitoryColorPicker">
-			                    </div>
-			                </div>
-			            </div>
-					</td>
-				</tr>			
-				<tr>
-					<td>
-			 			<label style="margin-left: 5px; font-size: 12px; font-family: Verdana;">Select EE color</label>
-			            <br />
-			            <div style="margin: 3px; float: left;" id="dropDownEEButton">
-			                <div style="padding: 3px;">
-			                    <div id="EEColorPicker">
-			                    </div>
-			                </div>
-			            </div>
-					</td>
-			    	
-			    	<td>
-			 			<label style="margin-left: 5px; font-size: 12px; font-family: Verdana;">Select EI color</label>
-			            <br />
-			            <div style="margin: 3px; float: left;" id="dropDownEIButton">
-			                <div style="padding: 3px;">
-			                    <div id="EIColorPicker">
-			                    </div>
-			                </div>
-			            </div>
-					</td>
-			    	
-			    	<td>
-			 			<label style="margin-left: 5px; font-size: 12px; font-family: Verdana;">Select IE color</label>
-			            <br />
-			            <div style="margin: 3px; float: left;" id="dropDownIEButton">
-			                <div style="padding: 3px;">
-			                    <div id="IEColorPicker">
-			                    </div>
-			                </div>
-			            </div>
-					</td>
-	
-					<td>
-			 			<label style="margin-left: 5px; font-size: 12px; font-family: Verdana;">Select II color</label>
-			            <br />
-			            <div style="margin: 3px; float: left;" id="dropDownIIButton">
-			                <div style="padding: 3px;">
-			                    <div id="IIColorPicker">
-			                    </div>
-			                </div>
-			            </div>
-					</td>		        			
-				</tr>
-				
-				<tr>
-					<td>
-			 			<label style="margin-left: 5px; font-size: 12px; font-family: Verdana;">Ca. max. value color</label>
-			            <br />
-			            <div style="margin: 3px; float: left;" id="dropDownCaMaxValueColorButton">
-			                <div style="padding: 3px;">
-			                    <div id="CaMaxValueColorColorPicker">
-			                    </div>
-			                </div>
-			            </div>
-					</td>				
-					<td>
-			 			<label style="margin-left: 5px; font-size: 12px; font-family: Verdana;">Ca. min. value color</label>
-			            <br />
-			            <div style="margin: 3px; float: left;" id="dropDownCaMinValueColorButton">
-			                <div style="padding: 3px;">
-			                    <div id="CaMinValueColorColorPicker">
-			                    </div>
-			                </div>
-			            </div>
-					</td>				
-				</tr>
-				
-				<tr>
-				    <td>
-					    <div id='CaSetPoint'>
-					        <div style='margin-top: 10px;' id='jqxRadioButtonCaSetPointFromFile'>
-					            <span>Ca. set points from file</span>
-					        </div>
-					        <div style='margin-top: 10px;' id='jqxRadioButtonCaSetPointFromNeuronValues'>
-					            <span>Ca. set points from neuron values</span>
-					        </div>
-					    </div>					    
-				    </td>
-					<td>
-			 			<label style="margin-left: 5px; font-size: 12px; font-family: Verdana;">Ca. color interpol. method</label>
-			            <br />
-			            <div style="margin: 3px; float: left;" id="dropDownCaInterpolMethodButton">
-			            </div>			            			            
-					</td>
-					
-					
-					<td>
-					<div id='CaColorMethod'>
-				        <div style='margin-top: 10px; float: left;' id='jqxRadioButtonHSLColorInterpol'>
-				        HSL
-				        </div>
-			            <div style='margin-top: 10px; float: left;' id='jqxRadioButtonRGBColorInterpol'> 
-		            	RGB
-		        		</div>
-		        	</div>
-					</td>					
-				</tr>
-				<tr>
-					<td>
-			 			<label style="margin-left: 5px; font-size: 12px; font-family: Verdana;">Synaptic elements to view</label>
-			            <br />
-			            <div style="margin: 3px; float: left;" id="dropDownSynapticElementsToViewButton">
-			            </div>			            			            
-					</td>
-				</tr>
-				<tr>
-					<td>
-			 			<label style="margin-left: 5px; font-size: 12px; font-family: Verdana;">Simulation velocity</label>
-			            <br />
-						<div style="float: left">
-							<div id='jqxNumericInput_SimulationVelocity' style='margin-top: 3px;'></div>
-						</div>
-					</td>				
-				</tr>
-	
-				
-				</table>
-			</div>
-			
-			<!-- Global connections view -->
-		    <div>
-		        <h3>
-		            Representation type
-		        </h3>
-		        <div style='margin-top: 10px;' id='jqxRadioButtonGlobalVBarrs'>
-		            <span>Bars representation</span>
-		        </div>
-		        <div style='margin-top: 10px;' id='jqxRadioButtonGlobalVFuncts'>
-		            <span>Function representation</span>
-		        </div>
-		    </div>
-			
-			<!-- Macro view -->
-			<div>
-				<table>
-					<tr>
-						<td>            						
-							<div id='jqxCheckBox_EEConnect' style='margin-left: 10px; float: left;'> Draw EE connect.</div>
-							<div id='jqxCheckBox_EIConnect' style='margin-left: 10px; float: left;'> Draw EI connect.</div>
-							<div id='jqxCheckBox_IEConnect' style='margin-left: 10px; float: left;'> Draw IE connect.</div>
-							<div id='jqxCheckBox_IIConnect' style='margin-left: 10px; float: left;'> Draw II connect.</div>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<label style="margin-left: 5px; font-size: 12px; font-family: Verdana;">Connect. alpha factor</label>
-							<br/>
-							<div style="float: left">
-								<div id='jqxMacroVControls_SliderApha'></div>
-							</div>											
-						</td>					
-					</tr>
-				</table>		
-			</div>
-			
-			<div>
-				bla.
-			</div>
-			<div>
-				bla.
-			</div>
-		</div>
-	
-	</div>
+    <!-- Fin Window config-->
 
-	<!-- Fin tabs -->
-</div>
-<!-- Fin Window config-->
+    <div id="jqxWindow_Info">
 
-<div id="jqxWindow_Info">
-
-	<div id="windowHeader_info">
+        <div id="windowHeader_info">
 		<span> <img src="./gears.png" alt="" style="margin-right: 15px" />Information
 		</span>
-	</div>
-	
-	<div id='jqxAbout_TabsConfig'>
-		<ul>
-			<li style="margin-left: 30px;">Institutions</li>
-			<li>Help</li>
-			<li>Architecture</li>
-		</ul>		
-		<div>
-			<table width="500" border="0" cellpadding="5">
-				<tr>
-					<td align="center" valign="center">
-						<a title="URJC" href="http://www.urjc.es">
-						<img src="./content/images/logoURJC2.png" alt="Universidad Rey Juan Carlos" />
-						</a>
-						<br />
-						Universidad Rey Juan Carlos
-					</td>
-					<td align="center" valign="center">
-						<a title="RWTH" href="https://www.rwth-aachen.de/">
-						<img src="./content/images/logoRWTH.png" alt="RWTH Aachen University" />
-						</a>
-						<br />
-						RWTH Aachen University
-					</td>
-					<td align="center" valign="center">
-						<a title="Julich Forschungszentrun" href="http://www.fz-juelich.de/ias/jsc/DE/Home/home_node.html">
-						<img src="./content/images/logoJulich.png" alt="Julich Forschungszentrun" />
-						</a>
-						<br />
-						Julich Forschungszentrun
-					</td>		
-				</tr>
-				<tr>
-					<td align="center" valign="center">
-						<a title="GMRV" href="http://www.gmrv.es">
-						<img src="./content/images/logoGMRV.png" alt="Grupo de Modelado y Realidad Virtual" />
-						</a>
-						<br />
-						Grupo de Modelado y Realidad Virtual
-					</td>
-					<td align="center" valign="center">
-						<a title="RWTH_VRG" href="http://www.itc.rwth-aachen.de/cms/IT-Center/Forschung-Projekte/~eubl/Virtuelle-Realitaet/?lidx=1">
-						<img src="./content/images/logoVR.png" alt="RWTH Virtual Reality Group" />
-						</a>
-						<br />
-						RWTH Virtual Reality Group
-					</td>
-					<td align="center" valign="center">
-						<a title="Julich Supercomputing Center" href="http://www.fz-juelich.de/ias/jsc/DE/Home/home_node.html">
-						<img src="./content/images/logoJulich.png" alt="Julich Supercomputing Center" />
-						</a>
-						<br />
-						Julich Supercomputing Center
-					</td>		
-				</tr>
-			</table>
-		</div>
+        </div>
 
-		<div>
+        <div id='jqxAbout_TabsConfig'>
+            <ul>
+                <li style="margin-left: 30px;">Institutions</li>
+                <li>Help</li>
+                <li>Architecture</li>
+            </ul>
+            <div>
+                <table width="650" border="0" cellpadding="5">
+                    <tr>
+                        <td align="center" valign="center">
+                            <a title="UPM" href="http://www.upm.es">
+                                <img src="./content/images/UPM2.png" alt="Universidad Polit&eacutecnica de Madrid" />
+                            </a>
+                            <br />
+                            Universidad Polit&eacutecnica de Madrid
+                        </td>
+                        <td align="center" valign="center">
+                            <a title="URJC" href="http://www.urjc.es">
+                                <img src="./content/images/logoURJC2.png" alt="Universidad Rey Juan Carlos" />
+                            </a>
+                            <br />
+                            Universidad Rey Juan Carlos
+                        </td>
+                        <td align="center" valign="center">
+                            <a title="RWTH" href="https://www.rwth-aachen.de/">
+                                <img src="./content/images/logoRWTH.png" alt="RWTH Aachen University" />
+                            </a>
+                            <br />
+                            RWTH Aachen University
+                        </td>
+                        <td align="center" valign="center">
+                            <a title="Julich Forschungszentrun" href="http://www.fz-juelich.de/ias/jsc/DE/Home/home_node.html">
+                                <img src="./content/images/logoJulich.png" alt="Julich Forschungszentrun" />
+                            </a>
+                            <br />
+                            Julich Forschungszentrun
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center" valign="center">
+                            <a title="CCS" href="http://www.ccs.upm.es">
+                                <img src="./content/images/CentCompSim2.png" alt="Center for Computational Simulation" />
+                            </a>
+                            <br />
+                            Center for Computational Simulation
+                        </td>
+                        <td align="center" valign="center">
+                            <a title="GMRV" href="http://www.gmrv.es">
+                                <img src="./content/images/logoGMRV.png" alt="Grupo de Modelado y Realidad Virtual" />
+                            </a>
+                            <br />
+                            Grupo de Modelado y Realidad Virtual
+                        </td>
+                        <td align="center" valign="center">
+                            <a title="RWTH_VRG" href="http://www.itc.rwth-aachen.de/cms/IT-Center/Forschung-Projekte/~eubl/Virtuelle-Realitaet/?lidx=1">
+                                <img src="./content/images/logoVR.png" alt="RWTH Virtual Reality Group" />
+                            </a>
+                            <br />
+                            RWTH Virtual Reality Group
+                        </td>
+                        <td align="center" valign="center">
+                            <a title="Julich Supercomputing Center" href="http://www.fz-juelich.de/ias/jsc/DE/Home/home_node.html">
+                                <img src="./content/images/logoJulich.png" alt="Julich Supercomputing Center" />
+                            </a>
+                            <br />
+                            Julich Supercomputing Center
+                        </td>
+                    </tr>
+                </table>
+            </div>
 
-			<p style="text-align: center;">
-				<strong><span style="text-decoration: underline;">MSPViz</span></strong>
-			</p>
-			<p style="text-align: justify;">This is a visualization tool for
-				the data of the model of structural plasticity. The data musb be in JSON format, 
-				the user can use the <a title="MSPJSONGenerator.py" href="./libs/scripts/MSPJSONGenerator.py">MSPJSONGenerator.py</a> script to transform the data, and be able to load in the visualization tool.</p>
-			<p style="text-align: justify;">
-				<strong>All the views lets the use of</strong>:
-			</p>
-			<p style="text-align: justify;">
-			<ul>
-				<li><span style="line-height: 24px;">Zooming: Using the
+            <div>
+
+                <p style="text-align: center;">
+                    <strong><span style="text-decoration: underline;">MSPViz</span></strong>
+                </p>
+                <p style="text-align: justify;">This is a visualization tool for
+                    the data of the model of structural plasticity. The data musb be in JSON format,
+                    the user can use the <a title="MSPJSONGenerator.py" href="./libs/scripts/MSPJSONGenerator.py">MSPJSONGenerator.py</a> script to transform the data, and be able to load in the visualization tool.</p>
+                <p style="text-align: justify;">
+                    <strong>All the views lets the use of</strong>:
+                </p>
+                <p style="text-align: justify;">
+                <ul>
+                    <li><span style="line-height: 24px;">Zooming: Using the
 						mouse wheel.</span></li>
-				<li><span style="line-height: 24px;">Panning: Click on
+                    <li><span style="line-height: 24px;">Panning: Click on
 						the background and moving the mouse.</span></li>
-				<li><span style="line-height: 24px;">Selection: Pressing
+                    <li><span style="line-height: 24px;">Selection: Pressing
 						shift button and clicking over the neuron representation.
 						Additionally, the macroscopic view lets multi selecion, pressing
 						shift key and moving the mouse over the view. </span></li>
-			</ul>
-	
-			<p style="text-align: justify;">
-				<strong>Main menu</strong>:
-			</p>
-			<ul>
-				<li style="text-align: justify;"><span
-					style="line-height: 24px;"><span
-						style="text-decoration: underline;">File/Open local
+                </ul>
+
+                <p style="text-align: justify;">
+                    <strong>Main menu</strong>:
+                </p>
+                <ul>
+                    <li style="text-align: justify;"><span
+                            style="line-height: 24px;"><span
+                            style="text-decoration: underline;">File/Open local
 							simulation</span>: Load the simulation files from local directory. Needs
 						the 3 standart files, called "LocalNeuronInformation.json",
 						"GlobalSimulationParams.json" and "Connectivity.json". The user
 						must select the three files at the same time.</span></li>
-				<li style="text-align: justify;"><span
-					style="line-height: 28.7999992370605px;"><span
-						style="text-decoration: underline;">File/Reset
+                    <li style="text-align: justify;"><span
+                            style="line-height: 28.7999992370605px;"><span
+                            style="text-decoration: underline;">File/Reset
 							Visualization</span>: Reset the visualization tool, to prepare a new
 						visualization.</span></li>
-				<li style="text-align: justify;"><span
-					style="line-height: 28.7999992370605px;"><span
-						style="text-decoration: underline;">Edit/Take an snapshot</span>:
+                    <li style="text-align: justify;"><span
+                            style="line-height: 28.7999992370605px;"><span
+                            style="text-decoration: underline;">Edit/Take an snapshot</span>:
 						Take an snapshot of the current view and at the current simulation
 						step. (Not work propertly)</span></li>
-				<li style="text-align: justify;"><span
-					style="line-height: 28.7999992370605px;"><span
-						style="text-decoration: underline;">Edit/Preferences</span>: Lets
+                    <li style="text-align: justify;"><span
+                            style="line-height: 28.7999992370605px;"><span
+                            style="text-decoration: underline;">Edit/Preferences</span>: Lets
 						the user to change the preferences of the visualization.</span></li>
-				<li style="text-align: justify;"><span
-					style="line-height: 28.7999992370605px;"><span
-						style="text-decoration: underline;">View/Global Connections
+                    <li style="text-align: justify;"><span
+                            style="line-height: 28.7999992370605px;"><span
+                            style="text-decoration: underline;">View/Global Connections
 							View</span>: This view lets the user to analyze the total connections in
 						the simulation, such as the total number of synaptic elements.</span></li>
-				<li style="text-align: justify;"><span
-					style="line-height: 28.7999992370605px;"><span
-						style="text-decoration: underline;">View/Macroscopic View</span>:
+                    <li style="text-align: justify;"><span
+                            style="line-height: 28.7999992370605px;"><span
+                            style="text-decoration: underline;">View/Macroscopic View</span>:
 				</span><span>This view give the user and overview of the rewiring
 						proces during the simulation. Neurons are represented as trinagles
 						for excitatory neurons, and circles for inhibitory neruons, the
 						color of each shape is acording to its calcium concentration. The
 						arrows are the conections, and the color of the arrows are the
 						type of the connection (EE, EI, IE, II). </span></li>
-				<li style="text-align: justify;"><span
-					style="line-height: 28.7999992370605px;"><span
-						style="text-decoration: underline;">View/Microscopic View</span>:
+                    <li style="text-align: justify;"><span
+                            style="line-height: 28.7999992370605px;"><span
+                            style="text-decoration: underline;">View/Microscopic View</span>:
 						This view shows the relation of synaptic elements of the neurons,
 						previously selected in the </span><span>Macroscopic View.</span></li>
-				<li style="text-align: justify;"><span
-					style="line-height: 28.7999992370605px;"><span
-						style="text-decoration: underline;">View/Detailled
+                    <li style="text-align: justify;"><span
+                            style="line-height: 28.7999992370605px;"><span
+                            style="text-decoration: underline;">View/Detailled
 							Microscopic View</span>: </span><span style="line-height: 28.7999992370605px;">This
 						view shows the exact number of synaptic elements of the selected
 						neuron from the </span><span>Microscopic View.</span></li>
-				<li style="text-align: justify;"><span
-					style="line-height: 28.7999992370605px;">Help/About:
+                    <li style="text-align: justify;"><span
+                            style="line-height: 28.7999992370605px;">Help/About:
 						Information about this tool. </span></li>
-			</ul>
-			<p style="text-align: justify;">
-				<strong>Bottom controls:</strong>
-			</p>
-			<ul>
-				<li style="text-align: justify;"><span
-					style="line-height: 24px;"><span
-						style="text-decoration: underline;">Simulate button</span>: Start
+                </ul>
+                <p style="text-align: justify;">
+                    <strong>Bottom controls:</strong>
+                </p>
+                <ul>
+                    <li style="text-align: justify;"><span
+                            style="line-height: 24px;"><span
+                            style="text-decoration: underline;">Simulate button</span>: Start
 						the visualization of the simulation.</span></li>
-				<li style="text-align: justify;"><span
-					style="line-height: 24px;"><span
-						style="text-decoration: underline;">Stop simulation button</span>:
+                    <li style="text-align: justify;"><span
+                            style="line-height: 24px;"><span
+                            style="text-decoration: underline;">Stop simulation button</span>:
 				</span><span>Stop the visualization of the simulation.</span></li>
-				<li style="text-align: justify;"><span
-					style="line-height: 24px;"><span
-						style="text-decoration: underline;">Timeline</span>: Lets the user
+                    <li style="text-align: justify;"><span
+                            style="line-height: 24px;"><span
+                            style="text-decoration: underline;">Timeline</span>: Lets the user
 						go to an especitfic step of the simulation.</span></li>
-				<li style="text-align: justify;"><span
-					style="line-height: 24px;"><span
-						style="text-decoration: underline;">Step</span>: </span><span>Lets
+                    <li style="text-align: justify;"><span
+                            style="line-height: 24px;"><span
+                            style="text-decoration: underline;">Step</span>: </span><span>Lets
 						the user go to an especitfic step of the simulation.</span></li>
-			</ul>
-		</div>
+                </ul>
+            </div>
 
-		<div>
-			<table width="500" border="0" cellpadding="5">
-				<tr>
-					<td align="center" valign="center">
-						<a title="HTML5" href="http://www.w3c.org">
-						<img src="./content/images/HTML5.png" alt="HTML5" />
-						</a>
-						<br />
-						HTML5
-					</td>
-					<td align="center" valign="center">
-						<a title="CSS3" href="https://www.w3c.org/">
-						<img src="./content/images/Css3.png" alt="CSS3" />
-						</a>
-						<br />
-						CSS3
-					</td>
-					<td align="center" valign="center">
-						<a title="JavaScript 5" href="http://www.w3c.org">
-						<img src="./content/images/JS5.jpg" alt="JavaScript 5" />
-						</a>
-						<br />
-						JavaScript 5
-					</td>		
-				</tr>
-				<tr>
-					<td align="center" valign="center">
-						<a title="D3" href="http://d3js.org">
-						<img src="./content/images/D3.png" alt="Data Driven Documents" />
-						</a>
-						<br />
-						Data Driven Documents
-					</td>
-					<td align="center" valign="center">
-						<a title="jqWidgets" href="http://www.jqwidgets.com">
-						<img src="./content/images/jqWidget.png" alt="jqWidgets" />
-						</a>
-						<br />
-						jqWidgets
-					</td>
-					<td align="center" valign="center">
-						<a title="jQuery" href="https://jquery.com">
-						<img src="./content/images/jQuery.png" alt="jQuery" />
-						</a>
-						<br />
-						jQuery
-					</td>		
-				</tr>
-				<tr>
-					<td align="center" valign="center">
-						<a title="UNDERSCORE.JS" href="http://underscorejs.org/" > UNDERSCORE.JS</a>
-					</td>
-					<td align="center" valign="center">
-						<a title="KolorWheel" href="http://www.javascriptoo.com/kolorwheel-js"> KolorWheel</a>
-					</td>
-				</tr>
-			</table>
-		</div>	
-	</div>	
-</div>
-<!-- Fin Window Info-->
+            <div>
+                <table width="650" border="0" cellpadding="5">
+                    <tr>
+                        <td align="center" valign="center">
+                            <a title="HTML5" href="http://www.w3c.org">
+                                <img src="./content/images/HTML5.png" alt="HTML5" />
+                            </a>
+                            <br />
+                            HTML5
+                        </td>
+                        <td align="center" valign="center">
+                            <a title="CSS3" href="https://www.w3c.org/">
+                                <img src="./content/images/Css3.png" alt="CSS3" />
+                            </a>
+                            <br />
+                            CSS3
+                        </td>
+                        <td align="center" valign="center">
+                            <a title="JavaScript 5" href="http://www.w3c.org">
+                                <img src="./content/images/JS5.jpg" alt="JavaScript 5" />
+                            </a>
+                            <br />
+                            JavaScript 5
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center" valign="center">
+                            <a title="D3" href="http://d3js.org">
+                                <img src="./content/images/D3.png" alt="Data Driven Documents" />
+                            </a>
+                            <br />
+                            Data Driven Documents
+                        </td>
+                        <td align="center" valign="center">
+                            <a title="jqWidgets" href="http://www.jqwidgets.com">
+                                <img src="./content/images/jqWidget.png" alt="jqWidgets" />
+                            </a>
+                            <br />
+                            jqWidgets
+                        </td>
+                        <td align="center" valign="center">
+                            <a title="jQuery" href="https://jquery.com">
+                                <img src="./content/images/jQuery.png" alt="jQuery" />
+                            </a>
+                            <br />
+                            jQuery
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center" valign="center">
+                            <a title="UNDERSCORE.JS" href="http://underscorejs.org/" > UNDERSCORE.JS</a>
+                        </td>
+                        <td align="center" valign="center">
+                            <a title="KolorWheel" href="http://www.javascriptoo.com/kolorwheel-js"> KolorWheel</a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- Fin Window Info-->
 
 
-<div id="jqxWindow_ImgExporter">
-	<div id="windowHeader_ImgExporter">
+    <div id="jqxWindow_ImgExporter">
+        <div id="windowHeader_ImgExporter">
 		<span> <img src="./gears.png" alt="" style="margin-right: 15px" />ImgExporter
 		</span>
-	</div>
-	
- 	<div id="svgdataurl"></div>
-<!-- 	<div id="pngdataurl"></div> -->
-	<canvas id="canvas" width="1280" height="600" style="display:none"></canvas>
- </div>
+        </div>
 
-<!-- para los tooltips -->
-<div id="tooltip" class="hidden">
-	<p>Info:</p>	
-</div>
+        <div id="svgdataurl"></div>
+        <!-- 	<div id="pngdataurl"></div> -->
+        <canvas id="canvas" width="1280" height="600" style="display:none"></canvas>
+    </div>
+
+    <!-- para los tooltips -->
+    <div id="tooltip" class="hidden">
+        <p>Info:</p>
+    </div>
 
 
-<!-- Interface Logic -->
-<script type="text/javascript" src="./libs/MSPlib/InterfaceLogic.js"></script>
+    <!-- Interface Logic -->
+    <script type="text/javascript" src="./libs/MSPlib/InterfaceLogic.js"></script>

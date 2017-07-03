@@ -1,0 +1,532 @@
+/**
+ * @brief
+ * @author  Juan Pedro Brito Mendez <juanpebm@gmail.com>
+ * @date
+ * @remarks Do not distribute without further notice.
+ */
+
+MSP.GraphMicroscopicView = function() {
+    this.margin;
+    this.margin2;
+    this.x;
+    this.y;
+    this.x3;
+    this.y3;
+    this.x4;
+    this.y4;
+    this.x5;
+    this.y5;
+    this.xAxis;
+    this.yAxis;
+
+    this.xAxis3;
+    this.yAxis35;
+
+
+    this.xAxis4;
+    this.yAxis4;
+
+
+    this.xAxis5;
+    this.yAxis5;
+
+
+    this.numYTicks;
+    this.ActData;
+    this.lConnectionTypes;
+
+    this.width;
+    this.height;
+    this.width2;
+    this.height2;
+    this.svg;
+    this.maxCalciumValue;
+    this.maxEConn;
+    this.maxIConn;
+    this.maxAConn;
+    this.MSPViewType="GlobalCV";
+    this.colorScale;
+};
+
+MSP.GraphMicroscopicView.prototype =
+    {
+        constructor : MSP.GraphMicroscopicView
+
+        ,resize : function()
+    {
+        this.generateGraph();
+    },
+        generateGraph : function()
+        {
+
+            var self = this;
+            var ratioHeight = _SigletonConfig.height+_SigletonConfig.scaleBandHeight;
+            var leftMargin = ratioHeight*0.06;
+            var rightMargin = ratioHeight*0.01;
+            this.margin = {top: ratioHeight*0.01, right: 25, left: leftMargin};
+            this.width = (_SigletonConfig.width*52/100)-120;
+            this.height = ratioHeight*0.20;
+
+            this.margin2 = {top: this.height+this.margin.top+ratioHeight*0.04, right: rightMargin, bottom: 0, left: leftMargin};
+            this.width2 = (_SigletonConfig.width*52/100)-120;
+            this.height2 = ratioHeight*0.16;
+
+            this.margin3 = {top: this.height2+this.margin2.top+ratioHeight*0.04, right: rightMargin, bottom: 0, left: leftMargin};
+            this.width3  = (_SigletonConfig.width*50/100)-120;
+            this.height3 = ratioHeight*0.16;
+
+            this.margin4 = {top: this.height3+this.margin3.top+ratioHeight*0.04, right: rightMargin, bottom: 0, left: leftMargin};
+            this.width4 = (_SigletonConfig.width*50/100)-120;
+            this.height4 = ratioHeight*0.16;
+
+
+            d3.select("#caGraph").remove();
+
+            this.svg = d3.select("#renderArea")
+                .append("svg")
+                .style("width","49%")
+                .style("border-right","1px solid #ebebeb")
+                .attr("id","caGraph")
+                .attr("width", self.width)
+                .attr("height", _SigletonConfig.height-_SigletonConfig.scaleBandHeight)
+                .append("g")
+                .call(d3.behavior.zoom().scaleExtent([1, 10])
+                    .on("zoom", self.zoom))
+                .attr("transform", "translate(" + self.margin.left + "," + self.margin.top + ")")
+                .append("g");
+
+            this.updateGraph();
+
+
+        },updateGraph: function(selectedID) {
+        var self = this;
+        var lIndex = _SimulationController.actSimStep % _SimulationData.numSimStepsPerFile;
+
+
+        var neurons = [];
+        _SimulationData.gNeurons.forEach(function (d,i) {
+            if(d.selected)
+                neurons.push(d.NId);
+        });
+
+        var dataCalcium = [];
+        neurons.forEach(function (d){
+            var color = _SigletonConfig.EEColor;
+            if(typeof selectedID !== "undefined" && d !== selectedID )
+                color = "#ababab";
+
+            var data = {text:"Calcium", id: d , textShort:"", color:color, data:[], selected: d === selectedID};
+            for(var i = 0; i<lIndex+1;i++) {
+                data.data.push({value:i,data:_SimulationData.gNeuronsDetails[d].Calcium[i]});
+            }
+            dataCalcium.push(data);
+        });
+
+        var dataE = [];
+        neurons.forEach(function (d){
+            var color = _SigletonConfig.EEColor;
+            if(typeof selectedID !== "undefined" && d !== selectedID )
+                color = "#ababab";
+
+            var data = {text:"Excitatory", id: d , textShort:"", color:color, data:[], selected: d === selectedID};
+            for(var i = 0; i<lIndex+1;i++) {
+                data.data.push({value:i,data:_SimulationData.gNeuronsDetails[d].DeSeEA[i]});
+            }
+            dataE.push(data);
+        });
+
+        var dataI = [];
+        neurons.forEach(function (d){
+            var color = _SigletonConfig.EIColor;
+            if(typeof selectedID !== "undefined" && d !== selectedID )
+                color = "#ababab";
+
+            var data = {text:"Inhibitory", id: d , textShort:"", color:color, data:[], selected: d === selectedID};
+            for(var i = 0; i<lIndex+1;i++) {
+                data.data.push({value:i,data:_SimulationData.gNeuronsDetails[d].DeSeIA[i]});
+            }
+            dataI.push(data);
+        });
+
+        var dataA = [];
+        neurons.forEach(function (d){
+            var color = _SigletonConfig.IEColor;
+            if(typeof selectedID !== "undefined" && d !== selectedID )
+                color = "#ababab";
+
+            var data = {text:"Axonal", id: d , textShort:"", color:color, data:[], selected: d === selectedID};
+            for(var i = 0; i<lIndex+1;i++) {
+                data.data.push({value:i,data:_SimulationData.gNeuronsDetails[d].AxSeA[i]});
+            }
+            dataA.push(data);
+        });
+
+        // for(var i = 0; i<lIndex+1;i++)
+        // {
+        //     data.data.push({
+        //         value : i,
+        //         data : _SimulationData.gNeuronsDetails[_SigletonConfig.neuronSelected].Calcium[i]
+        //     });
+        //
+        //     dataE.data.push({
+        //         value : i,
+        //         data : _SimulationData.gNeuronsDetails[_SigletonConfig.neuronSelected].DeSeEA[i]
+        //     });
+        //
+        //     dataI.data.push({
+        //         value : i,
+        //         data : _SimulationData.gNeuronsDetails[_SigletonConfig.neuronSelected].DeSeIA[i]
+        //     });
+        //
+        //     dataA.data.push({
+        //         value : i,
+        //         data : _SimulationData.gNeuronsDetails[_SigletonConfig.neuronSelected].AxSeA[i]
+        //     });
+        //
+        // }
+
+        this.graph(1,this.svg,this.width,this.margin.left,this.margin.top,this.height,dataCalcium,false,4,selectedID);
+        this.graph(2,this.svg,this.width,this.margin2.left,this.margin2.top,this.height2,dataE,false,4,selectedID);
+        this.graph(3,this.svg,this.width,this.margin3.left,this.margin3.top,this.height3,dataI,false,4,selectedID);
+        this.graph(4,this.svg,this.width, this.margin4.left,this.margin4.top,this.height4,dataA,false,4,selectedID);
+
+
+    }, graph: function(i,svg,widthTotal,marginLeft,marginTop,height,data,hasLegend,steps,selectedID)
+    {
+        svg.selectAll(".graph"+i).remove();
+        var gGraph= svg.append("g").attr("class","graph"+i);
+        var self = this;
+        var width = widthTotal;
+        var scales = [];
+        var scalesX = [];
+        var xx = d3.scale.linear().range([0, width]);
+
+        gGraph
+            .append("text")
+            .attr("transform","rotate(-90)")
+            .attr("y", 0 - (marginLeft-10))
+            .attr("x", 0 - ((height /2)+marginTop))
+            .attr("dy", ".71em")
+            .style("text-anchor", "middle")
+            .text(data[0].text); //TODO: fallo, no declarar el texto por elemento modificar
+
+        gGraph.append("rect")
+            .attr("class", "overlay_graph a"+i)
+            .attr("width", width)
+            .attr("y",marginTop)
+            .attr("height", height);
+
+        if(hasLegend) {
+
+            var gLegend = gGraph.append("g").attr("class", "legend a" + i).attr("transform", "translate(0," + marginTop + ")");
+
+            data.forEach(function (d, z) {
+                gLegend.append("circle")
+                    .attr("class", "circleL")
+                    .attr("cx", width + marginLeft - 20)
+                    .attr("cy", ((height / 2) - ((22 * data.length) / 2)) + 10 + (z * 20))
+                    .style("stroke", d.color)
+                    .style("fill", d.color)
+                    .attr("r", 4);
+
+                gLegend.append("text")
+                    .attr("x", width + marginLeft - 10)
+                    .attr("y", ((height / 2) - ((22 * data.length) / 2)) + 16 + (z * 20))
+                    .attr("class", "textoL")
+                    .text(d.text);
+            });
+        }
+
+
+        gGraph.append("line")
+            .attr("class", "line_over"+i)
+            .attr("stroke-width", 1)
+            .attr("stroke","#000")
+            .attr("x1",0)
+            .attr("x2",0)
+            .attr("y1",marginTop)
+            .attr("y2",height+marginTop)
+            .attr("style","display:none;")
+            .style("opacity","0.5")
+            .attr("shape-rendering","crispEdges");
+
+
+        var area = d3.svg.area()
+            .x(function(d) { return xx(d.value); })
+            .y1(function(d) { return y(d.data); });
+
+        var valueline = d3.svg.line()
+            .x(function(d) { return xx(d.value); })
+            .y(function(d) {  return y(d.data);  });
+        var max = 0;
+
+        data.forEach(function(d){
+            d.data.forEach(function(d){
+                if(d.data > max) max = d.data;
+            });
+        });
+
+        var x2 = d3.scale.linear().range([ 0, width], 1);
+        x2.domain([0,_SimulationController.actSimStep]);
+        var xAxis2 = d3.svg.axis().scale(x2).tickValues(x2.ticks().concat(x2.domain())).orient("bottom").innerTickSize(-height);
+
+        var y = d3.scale.linear().range([ height, 0 ]).domain([0,max]).nice(steps);
+        y.domain([0, d3.max(y.ticks(steps)) + y.ticks(steps)[1]]);
+        var yAxis = d3.svg.axis().scale(y).orient("left").ticks(steps).innerTickSize(-width);
+
+        gGraph.append("g")
+            .attr("class", "x axis p"+i)
+            .attr("transform", "translate(0," + (marginTop+height) + ")")
+            .call(xAxis2)
+        ;
+
+
+        gGraph.append("g")
+            .attr("transform", "translate(0," + (marginTop) + ")")
+            .attr("class", "y axis p"+i)
+            .call(yAxis);
+
+
+        xx.domain([0,_SimulationController.actSimStep]);
+        var x = d3.scale.linear().range([0, _SimulationController.actSimStep]);
+        x.domain([0,   width]);
+        var gBurbujas = gGraph.append("g").attr("class","history c"+i).attr("transform","translate(0,"+marginTop+")");
+        var glineas = gGraph.append("g").attr("class","history b"+i).attr("transform","translate(0,"+marginTop+")");
+        var g = gGraph.append("g").attr("class","history a"+i).attr("transform","translate(0,"+marginTop+")");
+
+        g.append("rect")
+            .attr("class", "rect_over")
+            .attr("fill-opacity","1")
+            .attr("fill","#ffffff")
+            .attr("x",0)
+            .attr("rx",5)
+            .attr("ry",5)
+            .attr("height",20*data.length+8)
+            .attr("width",80)
+            .attr("y",400)
+            .attr("style","display:none;");
+        var selecD = undefined;
+        //TODO: Limipar el codigo agrupar en funciones mejorar parametros
+        data.forEach(function (d,z) {
+            if(!d.selected) {
+                area.y0(y(0));
+                scales.push(y);
+                scalesX.push(xx);
+                if (data.length === 1) {
+                    glineas.append("path")
+                        .datum(d.data)
+                        .attr("class", "graphArea a" + i)
+                        .attr("d", area);
+                }
+
+
+                glineas.append("path")
+                    .attr("class", "graphLine")
+                    .style("stroke", d.color)
+                    .style("stroke-opacity", function () {
+                        if (d.color === "#e2e2e2")
+                            return 0.4;
+                        else
+                            return 1;
+                    })
+                    .attr("d", valueline(d.data));
+
+                gBurbujas.append("circle")
+                    .attr("class", "circleBck")
+                    .style("display", "none")
+                    .style("stroke", "none")
+                    .style("fill", "white")
+                    .attr("r", 6);
+
+                g.append("circle")
+                    .attr("class", "circlePos")
+                    .style("display", "none")
+                    .style("stroke", d.color)
+                    .style("fill", "none")
+                    .attr("r", 6);
+                g.append("circle")
+                    .attr("class", "circleTxt")
+                    .style("display", "none")
+                    .style("stroke", d.color)
+                    .style("fill", d.color)
+                    .attr("r", 3);
+
+
+                g.append("text")
+                    .attr("class", "texto")
+                    .style("display", "none");
+            }
+            else
+                selecD= d;
+        });
+
+
+        if(typeof selecD !== "undefined") {
+            var d = selecD;
+            area.y0(y(0));
+            scales.push(y);
+            scalesX.push(xx);
+            if (data.length === 1) {
+                glineas.append("path")
+                    .datum(d.data)
+                    .attr("class", "graphArea a" + i)
+                    .attr("d", area);
+            }
+
+
+            glineas.append("path")
+                .attr("class", "graphLine")
+                .style("stroke", d.color)
+                .style("stroke-opacity", function () {
+                    if (d.color === "#ababab")
+                        return 0.4;
+                    else
+                        return 1;
+                })
+                .attr("d", valueline(d.data));
+
+            gBurbujas.append("circle")
+                .attr("class", "circleBck")
+                .style("display", "none")
+                .style("stroke", "none")
+                .style("fill", "white")
+                .attr("r", 6);
+
+            g.append("circle")
+                .attr("class", "circlePos")
+                .style("display", "none")
+                .style("stroke", d.color)
+                .style("fill", "none")
+                .attr("r", 6);
+            g.append("circle")
+                .attr("class", "circleTxt")
+                .style("display", "none")
+                .style("stroke", d.color)
+                .style("fill", d.color)
+                .attr("r", 3);
+
+
+            g.append("text")
+                .attr("class", "texto")
+                .style("display", "none");
+        }
+
+
+
+
+        d3.selectAll(".overlay.a"+i).remove();
+        gGraph.append("rect")
+            .attr("class", "overlay a"+i)
+            .attr("width", width)
+            .attr("fill","")
+            .attr("y",marginTop)
+            .attr("height", height)
+            .on("mousemove", function () {
+                var coordinate = d3.mouse(this);
+                var ys = [];
+                g.selectAll('.circlePos')[0].forEach(function(d,i){
+                    ys.push(y(data[i].data[Math.floor(x(coordinate[0]))].data));
+                });
+                d3.selectAll('.line_over'+i)
+                    .style("display", "inline")
+                    .attr("x1",parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep))
+                    .attr("x2",parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep));
+
+                var maxlen = 0;
+                g.selectAll('.texto')
+                    .style("display", "inline")
+                    .attr("x",function(){
+                        var pos = parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep)+30+10;
+                        if(((maxlen*8+20)+pos+5) > width)
+                            return parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep)-(maxlen*8+20);
+                        else
+                            return parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep)+30+20
+                    })
+                    .attr("y",function(d,i){
+                        return d3.min(ys)+20+(i*20)-(25*data.length);
+                    })
+                    .text(function(d,i){
+                        if((data[i].id+" "+ data[i].data[Math.floor(x(coordinate[0]))].data).length > maxlen) maxlen = (data[i].id+" "+ data[i].data[Math.floor(x(coordinate[0]))].data).length;
+                        return data[i].id+" "+ data[i].data[Math.floor(x(coordinate[0]))].data;
+                    });
+
+
+
+
+                g.selectAll('.circleTxt')
+                    .style("display", "inline")
+                    .attr("cx", function(){
+                        var pos = parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep)+30+10;
+                        if(((maxlen*8+20)+pos+5) > width)
+                            return parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep)-(maxlen*8+30);
+                        else
+                            return parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep)+30+10
+                    })
+                    .attr("cy",function(d,i){
+                        return d3.min(ys)+15+(i*20)-(25*data.length);
+                    });
+
+                g.selectAll('.texto')
+                    .style("display", "inline")
+                    .attr("x",function(){
+                        var pos = parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep)+30+10;
+                        if(((maxlen*8+20)+pos+5) > width)
+                            return parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep)-(maxlen*8+20);
+                        else
+                            return parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep)+30+20
+                    })
+                    .attr("y",function(d,i){
+                        return d3.min(ys)+20+(i*20)-(25*data.length);
+                    })
+                    .text(function(d,i){
+                        return data[i].id+" "+ data[i].data[Math.floor(x(coordinate[0]))].data;
+                    });
+
+
+                g.selectAll('.rect_over')
+                    .style("display", "inline")
+                    .attr("width",maxlen*8+20)
+                    .attr("x",function(){
+                        var pos = parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep)+30+10;
+                        if(((maxlen*8+20)+pos+5) > width)
+                            return parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep)-(maxlen*8+40);
+                        else
+                            return parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep)+30;
+                    })
+                    .attr("y",function(){
+                        return d3.min(ys)-(25*data.length);
+                    });
+
+
+
+                g.selectAll('.circlePos')
+                    .style("display", "inline")
+                    .attr("cy",function(d,i){
+                        return y(data[i].data[Math.floor(x(coordinate[0]))].data);
+                    })
+                    .attr("cx",parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep));
+
+                gBurbujas.selectAll('.circleBck')
+                    .style("display", "inline")
+                    .attr("cy",function(d,i){
+                        return y(data[i].data[Math.floor(x(coordinate[0]))].data);
+                    })
+                    .attr("cx",parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep));
+            })
+            .on("mouseout", function () {
+                d3.selectAll('.circleTxt').style("display", "none");
+                d3.selectAll('.line_over'+i).style("display", "none");
+                d3.selectAll('.rect_over').style("display", "none");
+                d3.selectAll('.texto').style("display", "none");
+                d3.selectAll('.circlePos').style("display", "none");
+                d3.selectAll('.circleBck').style("display", "none");
+            });
+
+
+
+
+    }, zoom: function ()
+    {
+        this.svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+    }
+    };

@@ -1,80 +1,4 @@
-﻿/*Rounded Corners*/
-/*top-left rounded Corners*/
-.jqx-rc-tl
-{
-    -moz-border-radius-topleft: 3px;
-    -webkit-border-top-left-radius: 3px;
-    border-top-left-radius: 3px;
-}
-/*top-right rounded Corners*/
-.jqx-rc-tr
-{
-    -moz-border-radius-topright: 3px;
-    -webkit-border-top-right-radius: 3px;
-    border-top-right-radius: 3px;
-}
-/*bottom-left rounded Corners*/
-.jqx-rc-bl
-{
-    -moz-border-radius-bottomleft: 3px;
-    -webkit-border-bottom-left-radius: 3px;
-    border-bottom-left-radius: 3px;
-}
-/*bottom-right rounded Corners*/
-.jqx-rc-br
-{
-    -moz-border-radius-bottomright: 3px;
-    -webkit-border-bottom-right-radius: 3px;
-    border-bottom-right-radius: 3px;
-}
-/*top rounded Corners*/
-.jqx-rc-t
-{
-    -moz-border-radius-topleft: 3px;
-    -webkit-border-top-left-radius: 3px;
-    border-top-left-radius: 3px;
-    -moz-border-radius-topright: 3px;
-    -webkit-border-top-right-radius: 3px;
-    border-top-right-radius: 3px;
-}
-/*bottom rounded Corners*/
-.jqx-rc-b
-{
-    -moz-border-radius-bottomleft: 3px;
-    -webkit-border-bottom-left-radius: 3px;
-    border-bottom-left-radius: 3px;
-    -moz-border-radius-bottomright: 3px;
-    -webkit-border-bottom-right-radius: 3px;
-    border-bottom-right-radius: 3px;
-}
-/*right rounded Corners*/
-.jqx-rc-r
-{
-    -moz-border-radius-topright: 3px;
-    -webkit-border-top-right-radius: 3px;
-    border-top-right-radius: 3px;
-    -moz-border-radius-bottomright: 3px;
-    -webkit-border-bottom-right-radius: 3px;
-    border-bottom-right-radius: 3px;
-}
-/*left rounded Corners*/
-.jqx-rc-l
-{
-    -moz-border-radius-topleft: 3px;
-    -webkit-border-top-left-radius: 3px;
-    border-top-left-radius: 3px;
-    -moz-border-radius-bottomleft: 3px;
-    -webkit-border-bottom-left-radius: 3px;
-    border-bottom-left-radius: 3px;
-}
-/*all rounded Corners*/
-.jqx-rc-all
-{
-    -moz-border-radius: 3px;
-    -webkit-border-radius: 3px;
-    border-radius: 3px;
-}
-/*reset rounded corners*/
+﻿/*reset rounded corners*/
 .jqx-rc-reset
 {
     -moz-border-radius: 0px !important;
@@ -3343,10 +3267,11 @@ of the horizontal scrollbar.*/
 /*applied to containers to set a background and border color. Tabs, NavigationBar, Calendar content.*/
 .jqx-widget-content {-moz-box-sizing: content-box; box-sizing: content-box; -ms-touch-action: none; -moz-background-clip: padding; -webkit-text-size-adjust: none; background-clip: padding-box; -webkit-background-clip: padding-box; -webkit-tap-highlight-color: rgba(0,0,0,0); font-family: Verdana,Arial,sans-serif; font-style: normal; font-size: 13px; border-color: #c7c7c7; background: #fff; }
 /*applied to header areas. Tabs, Menu, Window, Calendar.*/
-.jqx-widget-header {-moz-box-sizing: content-box; box-sizing: content-box; -ms-touch-action: none;-moz-background-clip: padding; -webkit-text-size-adjust: none; background-clip: padding-box; -webkit-background-clip: padding-box; -webkit-tap-highlight-color: rgba(0,0,0,0); border-color: #c5c5c5; background: #e8e8e8; }
+.jqx-widget-header {-moz-box-sizing: content-box; box-sizing: content-box; -ms-touch-action: none;-moz-background-clip: padding; -webkit-text-size-adjust: none; background-clip: padding-box; -webkit-background-clip: padding-box; -webkit-tap-highlight-color: rgba(0,0,0,0); border-color: #c5c5c5; background: #ffffff; }
 
 .jqx-fill-state-normal{-moz-box-sizing: content-box; box-sizing: content-box; -ms-touch-action: none;font-family: Verdana,Arial,sans-serif; font-style: normal; font-size: 13px; border-color:#aaa; background: #efefef; }
 .jqx-fill-state-hover {-moz-box-sizing: content-box; box-sizing: content-box; border-color:#999;  background: #e8e8e8;}
+.jqx-progressbar-value.jqx-fill-state-pressed{-moz-box-sizing: content-box; box-sizing: content-box; border-color: #99221f; background: #d15e5c;}
 .jqx-fill-state-pressed{-moz-box-sizing: content-box; box-sizing: content-box; border-color:#999; background: #d1d1d1;}
 .jqx-fill-state-focus {border-color: #555; }
 .jqx-fill-state-disabled {cursor: default; color: #000; opacity: .55; filter:Alpha(Opacity=45);}

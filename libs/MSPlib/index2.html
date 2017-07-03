@@ -1,0 +1,316 @@
+<table id="back">
+    <tr>
+        <td class="postTitle">Color schemas</td>
+    </tr>
+    <tr>
+        <td>
+            <div style="float: left; line-height:26px; padding-right: 5px"><span>Schema</span></div><div id="comboBox"  style="float: left;"></div>
+            <div style="float: left; line-height:26px; padding-left: 20px;padding-right: 5px"><span>Setps</span></div><div id="numSetps"></div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div id="color"></div>
+        </td>
+    </tr>
+
+    <tr id="colorPicker">
+        <td class="postTitle">RGB Color Picker</td>
+    </tr>
+    <tr>
+        <td>
+            <div id="genericColorPicker">
+            </div>
+        <td>
+    </tr>
+    <tr >
+        <td>
+            <div style="float:right;margin-top: 20px">
+                <a id="botonC" class="btn2" href="javascript:ocultar()">Cancel</a>
+                <a id="botonA" class="btn" href="javascript:aceptar()">Accept</a>
+            </div>
+        <td>
+    </tr>
+</table>
+
+<script>
+    var colorSelecGlobal ="";
+    function aceptar() {
+        var color = $("#genericColorPicker").jqxColorPicker('getColor').hex;
+        colorSelecGlobal = d4.color('#'+color);
+        caller.jqxDropDownButton('close');
+        var elem = $("#"+(caller.attr("id"))+" .jqx-rc-all");
+        elem.css('background',colorSelecGlobal);
+        elem.text(rgbToHex(colorSelecGlobal));
+        var a = 1 - ( 0.299 * colorSelec.r + 0.587 * colorSelec.g + 0.114 * colorSelec.b)/255;
+        var colorText  = "white";
+        if (a < 0.5) colorText = "black";
+        elem.css("color",colorText);
+    }
+
+    function ocultar() {
+        caller.jqxDropDownButton('close');
+
+    }
+
+    var colorSelec = "";
+    var height = 300;
+    $(document).ready(function () {
+        $("#numSetps").jqxNumberInput({theme: "arctic", width: '40px', height: '25px', digits: 2,min:2,max:20,
+            inputMode: 'simple',decimalDigits: 0, spinButtons: true,groupSize:0, value:10 });
+        $("#genericColorPicker").jqxColorPicker({ color: "0000FF", colorMode: 'hue', width: 316, height: 200});
+        var source = [
+            {html: "<div tabIndex=0 style='padding: 1px;'><div>schemeAccent</div>", label: "schemeAccent", group: "Categorical" },
+            {html: "<div tabIndex=0 style='padding: 1px;'><div>schemeDark2</div>", label: "schemeDark2", group: "Categorical" },
+            {html: "<div tabIndex=0 style='padding: 1px;'><div>schemePaired</div>", label: "schemePaired", group: "Categorical" },
+            {html: "<div tabIndex=0 style='padding: 1px;'><div>schemePastel1</div>", label: "schemePastel1", group: "Categorical" },
+            {html: "<div tabIndex=0 style='padding: 1px;'><div>schemePastel2</div>", label: "schemePastel2", group: "Categorical" },
+            {html: "<div tabIndex=0 style='padding: 1px;'><div>schemeSet1</div>", label: "schemeSet1", group: "Categorical" },
+            {html: "<div tabIndex=0 style='padding: 1px;'><div>schemeSet2</div>", label: "schemeSet2", group: "Categorical" },
+            {html: "<div tabIndex=0 style='padding: 1px;'><div>schemeSet3</div>", label: "schemeSet3", group: "Categorical" },
+            {html: "<div tabIndex=0 style='padding: 1px;'><div>Viridis</div>", label: "Viridis", group: "Diverging" },
+            {html: "<div tabIndex=0 style='padding: 1px;'><div>Inferno</div>", label: "Inferno", group: "Diverging" },
+            {html: "<div tabIndex=0 style='padding: 1px;'><div>Magma</div>", label: "Magma", group: "Diverging" },
+            {html: "<div tabIndex=0 style='padding: 1px;'><div>Plasma</div>", label: "Plasma", group: "Diverging" },
+            {html: "<div tabIndex=0 style='padding: 1px;'><div>Warm</div>", label: "Warm", group: "Diverging" },
+            {html: "<div tabIndex=0 style='padding: 1px;'><div>Cool</div>", label: "Cool", group: "Diverging" },
+            {html: "<div tabIndex=0 style='padding: 1px;'><div>Cubehelix</div>", label: "CubehelixDefault", group: "Diverging" },
+            {html: "<div tabIndex=0 style='padding: 1px;'><div>BrBG</div>", label: "BrBG", group: "Diverging" },
+            {html: "<div tabIndex=0 style='padding: 1px;'><div>PRGn</div>", label: "PRGn", group: "Diverging" },
+            {html: "<div tabIndex=0 style='padding: 1px;'><div>PiYG</div>", label: "PiYG", group: "Diverging" },
+            {html: "<div tabIndex=0 style='padding: 1px;'><div>PuOr</div>", label: "PuOr", group: "Diverging" },
+            {html: "<div tabIndex=0 style='padding: 1px;'><div>RdBu</div>", label: "RdBu", group: "Diverging" },
+            {html: "<div tabIndex=0 style='padding: 1px;'><div>RdGy</div>", label: "RdGy", group: "Diverging" },
+            {html: "<div tabIndex=0 style='padding: 1px;'><div>RdYlBu</div>", label: "RdYlBu", group: "Diverging" },
+            {html: "<div tabIndex=0 style='padding: 1px;'><div>RdYlGn</div>", label: "RdYlGn", group: "Diverging" },
+            {html: "<div tabIndex=0 style='padding: 1px;'><div>Spectral</div>", label: "Spectral", group: "Diverging" },
+            {html: "<div tabIndex=0 style='padding: 1px;'><div>Greens</div>", label: "Greens", group: "Sequential" },
+            {html: "<div tabIndex=0 style='padding: 1px;'><div>Greys</div>", label: "Greys", group: "Sequential" },
+            {html: "<div tabIndex=0 style='padding: 1px;'><div>Oranges</div>", label: "Oranges", group: "Sequential" },
+            {html: "<div tabIndex=0 style='padding: 1px;'><div>Purples</div>", label: "Purples", group: "Sequential" },
+            {html: "<div tabIndex=0 style='padding: 1px;'><div>Reds</div>", label: "Reds", group: "Sequential" },
+            {html: "<div tabIndex=0 style='padding: 1px;'><div>BuGn</div>", label: "BuGn", group: "Sequential" },
+            {html: "<div tabIndex=0 style='padding: 1px;'><div>BuPu</div>", label: "BuPu", group: "Sequential" },
+            {html: "<div tabIndex=0 style='padding: 1px;'><div>GnBu</div>", label: "GnBu", group: "Sequential" },
+            {html: "<div tabIndex=0 style='padding: 1px;'><div>OrRd</div>", label: "OrRd", group: "Sequential" },
+            {html: "<div tabIndex=0 style='padding: 1px;'><div>PuBuGn</div>", label: "PuBuGn", group: "Sequential" },
+            {html: "<div tabIndex=0 style='padding: 1px;'><div>PuBu</div>", label: "PuBu", group: "Sequential" },
+            {html: "<div tabIndex=0 style='padding: 1px;'><div>PuRd</div>", label: "PuRd", group: "Sequential" },
+            {html: "<div tabIndex=0 style='padding: 1px;'><div>RdPu</div>", label: "RdPu", group: "Sequential" },
+            {html: "<div tabIndex=0 style='padding: 1px;'><div>YlGnBu</div>", label: "YlGnBu", group: "Sequential" },
+            {html: "<div tabIndex=0 style='padding: 1px;'><div>YlGn</div>", label: "YlGn", group: "Sequential" },
+            {html: "<div tabIndex=0 style='padding: 1px;'><div>YlOrBr</div>", label: "YlOrBr", group: "Sequential" },
+            {html: "<div tabIndex=0 style='padding: 1px;'><div>YlOrRd</div>", label: "YlOrRd", group: "Sequential" },
+        ];
+        $("#comboBox").jqxComboBox({theme: "arctic", source: source, width: 136, height: 25,autoComplete: true,closeDelay: 50,openDelay: 50,placeHolder: "Select scheme"});
+    });
+
+    function componentToHex(c) {
+        var hex = c.toString(16);
+        return hex.length === 1 ? "0" + hex : hex;
+    }
+    function rgbToHex(color) {
+        return "#" + componentToHex(color.r) + componentToHex(color.g) + componentToHex(color.b);
+    }
+    var svgContainer = d4.select("#color").append("svg")
+        .attr("x",10).attr("y",20)
+        .attr("width", 310)
+        .attr("height", 90);
+
+    var z = d4.scaleSequential(d4.interpolateViridis);
+    var pintar = function() {
+
+        var newData = d4.mouse(this);
+        if(newData[0]>=0 && newData[0]<=height) {
+            var color = d4.color(z(newData[0]/height));
+            var a = 1 - ( 0.299 * color.r + 0.587 * color.g + 0.114 * color.b)/255;
+            var colorText  = "white";
+            if (a < 0.5) colorText = "black";
+            // text.text(rgbToHex(color)).attr("fill", colorText);
+            //colorBox.attr("fill",color);
+            moveRect.attr('fill', colorText);
+            moveRect.attr('x', newData[0]);
+            triangulo.attr('x', newData[0]-5);
+            colorSelec = color;
+            $("#genericColorPicker").jqxColorPicker('setColor', rgbToHex(color));
+        }
+    };
+
+    function dragstarted(d) {
+        d4.select(this).raise().classed('active', true);
+    }
+
+
+    function dragended(d) {
+        d4.select(this).classed('active', false);
+    }
+
+    var draag = d4.drag() // construct drag behavior
+        .on('start', dragstarted)
+        .on('drag', pintar)
+        .on('end', dragended);
+
+    var lg = svgContainer.append("defs").append("linearGradient")
+        .attr("id", "mygrad")//id of the gradient
+        .attr("x1", "0%")
+        .attr("x2", "100%")
+        .attr("y1", "0%")
+        .attr("y2", "0%")
+    ;
+
+    for(var i = 0; i<=20; i++) {
+        lg.append("stop")
+            .attr("offset", (i*5)+"%")
+            .style("stop-color", z(i/20))
+            .style("stop-opacity", 1);
+    }
+
+    var numCuad = 10;
+    var ancho = (height - ((numCuad-1)*2))/numCuad;
+    for(var i = 0; i<=numCuad-1; i++) {
+        svgContainer.append("rect")
+            .attr("class","cuadritos")
+            .attr("x", (i*(ancho+2)))
+            .attr("width", ancho)
+            .attr("height", 30)
+            .attr("i",i)
+            .attr("fill",z(i/(numCuad-1)))
+            .attr("cursor","pointer")
+            .on("click",function(d) {
+                var color = d4.color(d4.select(this).attr("fill"));
+                var x = d4.select(this).attr("i");
+                var a = 1 - ( 0.299 * color.r + 0.587 * color.g + 0.114 * color.b)/255;
+                var colorText  = "white";
+                if (a < 0.5) colorText = "black";
+                moveRect.attr('fill', colorText);
+                moveRect.attr('x', x*(height/(numCuad-1)));
+                triangulo.attr('x', x*(height/(numCuad-1))-4);
+                colorSelec = color;
+                $("#genericColorPicker").jqxColorPicker('setColor', rgbToHex(color));
+            });
+    }
+    var rectangle = svgContainer.append("rect")
+        .attr("id","boix")
+        .attr("height", 40)
+        .attr("y", 32)
+        .attr("cursor","pointer")
+        .attr("width", height)
+        .attr("fill","url(#mygrad)");
+
+    var moveRect = svgContainer.append("rect")
+        .attr("x",150)
+        .attr("id","linea")
+        .attr("y", 32)
+        .attr('fill', '#fff')
+        .attr("height", 40)
+        .attr("width", 1)
+        .attr("cursor","move")
+        .call(draag);
+
+    var triangulo = svgContainer.append("rect")
+        .attr("x", 145)
+        .attr("id","indicador")
+        .attr("y",72)
+        .attr("width", 10)
+        .attr("height", 10)
+        .attr("cursor","move")
+        .attr("fill","black").call(draag);
+
+    triangulo.append("g");
+    rectangle.on("click",pintar).on("drag", pintar).on("dragend", pintar);
+
+    function categorical(scheme){
+        d4.select('#boix').remove();
+        d4.select('#indicador').remove();
+        d4.select('#linea').remove();
+
+        var z = d4[scheme];
+        var numCuad = $("#numSetps").jqxNumberInput('val');
+        d4.selectAll('.cuadritos').remove();
+        var ancho = (height - ((numCuad-1)*2))/numCuad;
+        if(z.lenght < numCuad) numCuad = z.lenght;
+        for(var i = 0; i<=(numCuad-1); i++) {
+            svgContainer.append("rect")
+                .attr("class","cuadritos")
+                .attr("x", (i*(ancho+2)))
+                .attr("width", ancho)
+                .attr("height", 30)
+                .attr("i", i)
+                .attr("fill",z[i])
+                .attr("cursor","pointer")
+                .on("click",function(d) {
+                    var color = d4.color(d4.select(this).attr("fill"));
+                    var i = d4.select(this).attr("i");
+                    var a = 1 - ( 0.299 * color.r + 0.587 * color.g + 0.114 * color.b)/255;
+                    var colorText  = "white";
+                    if (a < 0.5) colorText = "black";
+                    moveRect.attr('fill', colorText);
+                    moveRect.attr('x', i*(height/(numCuad-1)));
+                    triangulo.attr('x', i*(height/(numCuad-1))-4);
+                    colorSelec = color;
+                    $("#genericColorPicker").jqxColorPicker('setColor', rgbToHex(color));
+                });
+        }
+
+    }
+    function update(color){
+
+        z = d4.scaleSequential(d4["interpolate"+color]);
+        d4.select("#mygrad")
+            .selectAll("stop")
+            .each(function(d,i) {
+                d4.select(this).style("stop-color", z(i/20));
+
+            });
+        var numCuad = $("#numSetps").jqxNumberInput('val');
+        d4.selectAll(".cuadritos")
+            .each(function(d,i) {
+                d4.select(this).attr("fill",z(i/(numCuad-1)));
+
+
+            });
+        d4.select("#boix").attr("fill","url(#mygrad)");
+    }
+    var colorSelec = "Viridis";
+    $('#comboBox')
+        .on('change', function() {
+            colorSelec = $("#comboBox").jqxComboBox('val');
+            if($("#comboBox").jqxComboBox('getSelectedItem').group==='Categorical')
+                categorical(colorSelec);
+            else
+                update(colorSelec);
+        });
+
+    $('#numSetps')
+        .on('change', function() {
+            var numCuad = $("#numSetps").jqxNumberInput('val');
+            d4.selectAll('.cuadritos').remove();
+            var ancho = (height - ((numCuad-1)*2))/numCuad;
+            for(var i = 0; i<=(numCuad-1); i++) {
+                svgContainer.append("rect")
+                    .attr("class","cuadritos")
+                    .attr("x", (i*(ancho+2)))
+                    .attr("width", ancho)
+                    .attr("height", 30)
+                    .attr("i", i)
+                    .attr("fill",z(i/(numCuad-1)))
+                    .attr("cursor","pointer")
+                    .on("click",function(d) {
+                        var color = d4.color(d4.select(this).attr("fill"));
+                        var i = d4.select(this).attr("i");
+                        var a = 1 - ( 0.299 * color.r + 0.587 * color.g + 0.114 * color.b)/255;
+                        var colorText  = "white";
+                        if (a < 0.5) colorText = "black";
+                        moveRect.attr('fill', colorText);
+                        moveRect.attr('x', i*(height/(numCuad-1)));
+                        triangulo.attr('x', i*(height/(numCuad-1))-4);
+                        colorSelec = color;
+                        $("#genericColorPicker").jqxColorPicker('setColor', rgbToHex(color));
+                    });
+            }
+
+        });
+
+
+</script>
+
