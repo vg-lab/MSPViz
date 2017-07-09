@@ -229,16 +229,16 @@ MSP.ColorPicker.prototype = {
         $("#genericColorPicker").jqxColorPicker('setColor', self.rgbToHex(color));
 
     }
-    ,ocultar: function()
-    {
-        caller.jqxDropDownButton('close');
+    ,
+    hide: function () {
+        $("#popup").hide();
     }
-    , aceptar: function()
+    , accept: function()
     {
         var self = _ColorPicker;
         var color = $("#genericColorPicker").jqxColorPicker('getColor').hex;
         self.colorSelecGlobal = d4.color('#'+color);
-        caller.jqxDropDownButton('close');
+        $("#popup").hide();
         var elem = $("#"+(caller.attr("id"))+" .jqx-rc-all");
         elem.css('background', self.colorSelecGlobal);
         elem.text(this.rgbToHex( self.colorSelecGlobal));

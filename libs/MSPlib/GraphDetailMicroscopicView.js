@@ -73,31 +73,32 @@ MSP.GraphDetailMicroscopicView.prototype =
                 this.colorScale = _SimulationData.CaIScale;
 
             }
-            var ratioHeight = (_SigletonConfig.height-_SigletonConfig.scaleBandHeight);
-            var ratioWidth = (_SigletonConfig.width*50/100)-100;
-            this.margin = {top: ratioHeight*0.01, right: 15, left: ratioWidth*0.08};
-            this.width = (_SigletonConfig.width*50/100)-100;
-            this.height = (_SigletonConfig.height-_SigletonConfig.scaleBandHeight)*0.24;
 
-            this.margin2 = {top: this.height+this.margin.top+ratioHeight*0.02, right: 15, bottom: 0, left: 75};
-            this.width2 = (_SigletonConfig.width*50/100)-100;
-            this.height2 = (_SigletonConfig.height-_SigletonConfig.scaleBandHeight)*0.08;
+            var width = _SigletonConfig.width*0.49;
+            var ratioHeight = (_SigletonConfig.height);
+            this.margin = {top: ratioHeight * 0.03, right: 15, left: Math.max(50,width*0.1)};
+            this.width = width -this.margin.right-this.margin.left;
+            this.height = (_SigletonConfig.height) * 0.21;
 
-            this.margin3 = {top: this.height2+this.margin2.top+ratioHeight*0.08, right: 15, bottom: 0, left: 75};
-            this.width3  = (_SigletonConfig.width*50/100)-100;
-            this.height3 = (_SigletonConfig.height-_SigletonConfig.scaleBandHeight)*0.07;
+            this.margin2 = {top: this.height + this.margin.top + ratioHeight * 0.02, right: 15, bottom: 0, left: Math.max(50,width*0.1)};
+            this.width2 = width-this.margin2.right -this.margin2.left;
+            this.height2 = (_SigletonConfig.height) * 0.08;
 
-            this.margin4 = {top: this.height3+this.margin3.top+ratioHeight*0.03, right: 15, bottom: 0, left: 75};
-            this.width4 = (_SigletonConfig.width*50/100)-100;
-            this.height4 = (_SigletonConfig.height-_SigletonConfig.scaleBandHeight)*0.07;
+            this.margin3 = {top: this.height2 + this.margin2.top + ratioHeight * 0.06, right: 15, bottom: 0, left: Math.max(50,width*0.1)};
+            this.width3 = width-this.margin3.right-this.margin3.left;
+            this.height3 = (_SigletonConfig.height) * 0.07;
 
-            this.margin5 = {top: this.height4+this.margin4.top+ratioHeight*0.03, right: 15, bottom: 0, left: 75};
-            this.width5 = (_SigletonConfig.width*50/100)-100;
-            this.height5 = (_SigletonConfig.height-_SigletonConfig.scaleBandHeight)*0.07;
+            this.margin4 = {top: this.height3 + this.margin3.top + ratioHeight * 0.03, right: 15, bottom: 0, left: Math.max(50,width*0.1)};
+            this.width4 = width-this.margin4.right-this.margin4.left;
+            this.height4 = (_SigletonConfig.height) * 0.07;
 
-            this.margin6 = {top: this.height5+this.margin5.top+ratioHeight*0.04, right: 15, bottom: 0, left: 75};
-            this.width6 = (_SigletonConfig.width*50/100)-100;
-            this.height6 = (_SigletonConfig.height-_SigletonConfig.scaleBandHeight)*0.23;
+            this.margin5 = {top: this.height4 + this.margin4.top + ratioHeight * 0.03, right: 15, bottom: 0, left:Math.max(50,width*0.1)};
+            this.width5 = width-this.margin5.right-this.margin5.left;
+            this.height5 = (_SigletonConfig.height) * 0.07;
+
+            this.margin6 = {top: this.height5 + this.margin5.top + ratioHeight * 0.04, right: 15, bottom: 0, left: Math.max(50,width*0.1)};
+            this.width6 = width-this.margin6.right-this.margin6.left;
+            this.height6 = (_SigletonConfig.height) * 0.23;
 
             this.numYTicks 			= 10;
 
@@ -125,7 +126,7 @@ MSP.GraphDetailMicroscopicView.prototype =
                 .style("border-right","1px solid #ebebeb")
                 .attr("id","caGraph")
                 .attr("width", self.width)
-                .attr("height", _SigletonConfig.height-_SigletonConfig.scaleBandHeight)
+                .attr("height", _SigletonConfig.height)
                 .append("g")
                 .call(d3.behavior.zoom().scaleExtent([1, 10])
                     .on("zoom", self.zoom))
@@ -147,8 +148,8 @@ MSP.GraphDetailMicroscopicView.prototype =
                 .append("text")
                 .attr("class","textoA")
                 .attr("transform","rotate(-90)")
-                .attr("y", 0 - (this.margin.left-10))
-                .attr("x", 0 - (this.height /2))
+                .attr("y", 0 - (this.margin.left / 2) - 15)
+                .attr("x", 0 - (this.height / 2) - this.margin.top)
                 .attr("dy", ".71em")
                 .style("text-anchor", "middle")
                 .text("Calcium concentration");

@@ -81,8 +81,6 @@ MSP.MacroscopicViewGrid.prototype =
         d3.selectAll("canvas")
             .remove();
 
-        this.createSampleBandColor(_SigletonConfig.calciumScheme);
-
         var self=this;
         self.idx = 0;
 
@@ -92,7 +90,7 @@ MSP.MacroscopicViewGrid.prototype =
             .append("canvas")
             .attr("id","canvas")
             .attr("width", _SigletonConfig.width)
-            .attr("height", _SigletonConfig.height-_SigletonConfig.scaleBandHeight)
+            .attr("height", _SigletonConfig.height)
             .attr("tabindex",1)
             .style("cursor","crosshair")
             .call(this.zoombehavior);

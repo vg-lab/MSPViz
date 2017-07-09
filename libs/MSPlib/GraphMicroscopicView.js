@@ -60,26 +60,41 @@ MSP.GraphMicroscopicView.prototype =
         {
 
             var self = this;
-            var ratioHeight = _SigletonConfig.height-_SigletonConfig.scaleBandHeight;
+            var ratioHeight = _SigletonConfig.height;
             var ratioWidth = _SigletonConfig.width;
             var leftMargin = 60;
-            var rightMargin = ratioWidth*0.01;
-            var width = _SigletonConfig.width*0.49 - rightMargin - leftMargin;
-            this.margin = {top: ratioWidth*0.005, right: ratioWidth, left: leftMargin};
+            var rightMargin = ratioWidth * 0.01;
+            var width = _SigletonConfig.width * 0.49 - rightMargin - leftMargin;
+            this.margin = {top: ratioWidth * 0.005, right: ratioWidth, left: leftMargin};
             this.width = width;
-            this.height = ratioHeight*0.30;
+            this.height = ratioHeight * 0.30;
 
-            this.margin2 = {top: this.height+this.margin.top+ratioHeight*0.08, right: ratioWidth, bottom: 0, left: leftMargin};
+            this.margin2 = {
+                top: this.height + this.margin.top + ratioHeight * 0.08,
+                right: ratioWidth,
+                bottom: 0,
+                left: leftMargin
+            };
             this.width2 = width;
-            this.height2 = ratioHeight*0.16;
+            this.height2 = ratioHeight * 0.16;
 
-            this.margin3 = {top: this.height2+this.margin2.top+ratioHeight*0.04, right: ratioWidth, bottom: 0, left: leftMargin};
-            this.width3  = width;
-            this.height3 = ratioHeight*0.16;
+            this.margin3 = {
+                top: this.height2 + this.margin2.top + ratioHeight * 0.04,
+                right: ratioWidth,
+                bottom: 0,
+                left: leftMargin
+            };
+            this.width3 = width;
+            this.height3 = ratioHeight * 0.16;
 
-            this.margin4 = {top: this.height3+this.margin3.top+ratioHeight*0.04, right: ratioWidth, bottom: 0, left: leftMargin};
+            this.margin4 = {
+                top: this.height3 + this.margin3.top + ratioHeight * 0.04,
+                right: ratioWidth,
+                bottom: 0,
+                left: leftMargin
+            };
             this.width4 = width;
-            this.height4 = ratioHeight*0.16;
+            this.height4 = ratioHeight * 0.16;
 
 
             d3.select("#caGraph").remove();
@@ -90,7 +105,7 @@ MSP.GraphMicroscopicView.prototype =
                 .style("border-right","1px solid #ebebeb")
                 .attr("id","caGraph")
                 .attr("width", self.width)
-                .attr("height", _SigletonConfig.height-_SigletonConfig.scaleBandHeight)
+                .attr("height", _SigletonConfig.height)
                 .append("g")
                 .call(d3.behavior.zoom().scaleExtent([1, 10])
                     .on("zoom", self.zoom))
