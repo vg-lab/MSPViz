@@ -142,3 +142,14 @@
 .jqx-tooltip-text {
     font-size: 1.4vmin;
 }
+
+.colorPickerWrapper span {
+    font-size: 1.2vmin !important;
+    font-weight: 700 !important;
+}
+
+.colorPickerWrapper input {
+    height: 2vh !important;
+    font-size: 1.4vmin !important;
+}
+

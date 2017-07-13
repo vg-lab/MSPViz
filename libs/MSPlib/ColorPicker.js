@@ -100,6 +100,14 @@ MSP.ColorPicker.prototype = {
                 .style("stop-opacity", 1);
         }
 
+        $("#btnColorPickerCancel").on('click',function () {
+            self.hide();
+        });
+
+        $("#btnColorPickerAccept").on('click',function () {
+            self.accept();
+        });
+
         this.colorScaleTypes.forEach(function (elem, i) {
             $('#comboScaleType').append($('<option>', {
                 value: i,
@@ -131,7 +139,7 @@ MSP.ColorPicker.prototype = {
 
         $('#comboScaleType').on('change', function () {
             $("#comboScale").empty();
-            self.source[$("#comboScaleType").prop('selectedIndex')].forEach(function (elem, i) {
+            self.colorScales[$("#comboScaleType").prop('selectedIndex')].forEach(function (elem, i) {
                 $('#comboScale').append($('<option>', {
                     value: i,
                     text: elem.label

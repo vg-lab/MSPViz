@@ -20,10 +20,10 @@
             <div class="postTitle">RGB Color Picker</div>
         </div>
 
-        <div id="genericColorPicker"></div>
+        <div id="genericColorPicker" class="colorPickerWrapper"></div>
         <div style="position:absolute; bottom: 2%;right: 2%;">
-            <a id="botonC" class="btn2" href="javascript:_ColorPicker.hide()">Cancel</a>
-            <a id="botonA" class="btn" href="javascript:_ColorPicker.accept()">Accept</a>
+            <input type="button" id="btnColorPickerCancel" value="Cancel" class="button colorpicker-button left"/>
+            <input type="button" id="btnColorPickerAccept" value="Accept" class="button colorpicker-button left"/>
         </div>
 
     </div>
@@ -377,7 +377,7 @@
         <div class="box">
             <div class="centerFlex">
                 <div class="tagInput">
-                    <label class="labelSubtitle">Number of history steps</label>
+                    <label class="labelSubtitle">Number of histogram steps</label>
                     <div class="numeriInputWrapper" id="numericBarElements"></div>
                 </div>
             </div>
@@ -489,8 +489,8 @@
             </div>
 
             <!-- Detail Microscopic View id selector -->
-            <div id="idSelector" style="float: left;  height: auto; align-self: center; display:none; ">
-                <div id="numericImputID"></div>
+            <div id="idSelector" class="left center" style="display:none; ">
+                <div  class="noMargin numeriInputShort numeriInputWrapper" id="numericImputID"></div>
             </div>
         </div>
     </div>

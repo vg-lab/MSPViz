@@ -439,7 +439,7 @@ UI.Visualizator.prototype = {
                     var idx = $("#comboBoxTypeFilter").prop('selectedIndex');
                     var tipo = sourceFilter[idx].type;
                     var color = sourceFilter[idx].color;
-                    var tipoCompleto = sourceFilter[idx].typeFull;
+                    var tipoCompleto = sourceFilter[idx].label;
                     var filtro = {
                         type: tipo, min: $("#caMinRangeFilter").val(), max: $("#caMaxRangeFilter").val(),
                         excitatory: $("#chkNeuronType1").val(), inhibitory: $("#chkNeuronType2").val()
