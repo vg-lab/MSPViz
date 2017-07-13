@@ -6,8 +6,8 @@
     font-weight: 700;
     color: rgb(255, 255, 255);
     font-family: Arial, serif;
-    font-size: 15px;
-    padding: 6px 25px;
+    font-size: 1.4vmin;
+    padding: 0.5vh 1.2vw;
     text-decoration: none;
 }
 
@@ -18,8 +18,8 @@
     font-weight: 700;
     color: rgb(255, 255, 255);
     font-family: Arial, serif;
-    font-size: 15px;
-    padding: 6px 25px;
+    font-size: 1.4vmin;
+    padding: 0.5vh 1.2vw;
     text-decoration: none;
 }
 
@@ -34,10 +34,11 @@
 
 .postTitle {
     text-align: left;
-    font-size: 16px;
+    font-size: 1.6vmin;
     font-family: Arial, serif;
     border-bottom: 1px solid #c1c1c3;
     font-weight: 700;
+    margin-bottom: 2%;
 }
 
 #back span {
@@ -45,7 +46,7 @@
 }
 
 .labelSubtitle {
-    font-size: 0.8vw;
+    font-size: 1.4vmin;
     font-family: Verdana, serif;
 }
 
@@ -79,7 +80,7 @@
 path {
     fill: white;
     stroke: black;
-    stroke-width: 1px;
+    stroke-width: 0.1vh;
 }
 
 #arrowstart path {
@@ -134,7 +135,8 @@ path.selected {
 }
 
 .axis {
-    font: 10px sans-serif;
+    font: 1.2vh sans-serif;
+    stroke-width: 0.1vmin;
 }
 
 .textoL {
@@ -162,6 +164,13 @@ path.selected {
     opacity: 0.2;
 }
 
+#colorSampleBand line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+    opacity: 1;
+}
+
 /* .x.axis path {
   display: none;
 }
@@ -175,15 +184,12 @@ path.selected {
     position: absolute;
     background-color: white;
     height: auto;
-    padding: 10px;
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
-    border-radius: 6px;
-    -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-    -moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-    box-shadow: 0 0 8px 2px rgba(0, 0, 0, 0.4);
+    padding: 1vmin;
+    border-radius: 0.8vmin;
+    box-shadow: 0 0 0.8vmin 0.2vmin rgba(0, 0, 0, 0.4);
     pointer-events: none;
     font-family: sans-serif;
+    font-size: 1.4vmin;
 }
 
 #tooltip.hidden {
@@ -193,8 +199,8 @@ path.selected {
 #tooltip p {
     margin: 0;
     font-family: sans-serif;
-    font-size: 16px;
-    line-height: 20px;
+    font-size: 1.4vmin;
+    line-height: 1.6vmin;
 }
 
 tr.spaceUnder > td {
@@ -212,6 +218,7 @@ tr.spaceUnder > td {
     transition: 0.3s;
     box-shadow: 0 0 1.1vmin #8e8e8e;
     overflow-y: auto;
+    min-width: 180px;
 }
 
 .sidenav a {
@@ -338,7 +345,7 @@ h1 {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.4vh;
+    font-size: 1.4vmin;
     padding-left: 0.4vw;
     padding-right: 0.4vw;
 }
@@ -353,7 +360,7 @@ h1 {
     pointer-events: none;
     border: 0.25vw solid rgba(136, 183, 213, 0);
     border-right-color: #373a41;
-    margin-top: -0.5vh;
+    margin-top: -0.25vw;
 }
 
 .navOptionsButton:hover .tooltiptext, .navViewButton:hover .tooltiptext {
@@ -431,7 +438,7 @@ html {
 .sectionHeader {
     font-weight: 700;
     font-family: sans-serif;
-    font-size: 0.8vw;
+    font-size: 1.4vmin;
     text-transform: uppercase;
 }
 
@@ -448,9 +455,18 @@ html {
 #jqxBottomControls {
     border-top: 1px solid rgba(0, 0, 0, .12);
     background-color: #FAFAFA;
-    padding-left: 4px;
     display: flex;
-    height: 40px;
+    font-size: 1.6vmin;
+    font-style: italic;
+}
+
+#controles{
+    padding: 0.4vh 0.2vw;
+    display: flex;
+    height: auto;
+    align-self: stretch;
+    flex: 1 0 auto;
+    justify-content: center;
 }
 
 #content {
@@ -509,13 +525,14 @@ html {
 .btnSwitch {
     font-family: Arial, serif;
     color: #8b8b8b;
-    font-size: 14px;
-    padding: 0 20px 0 20px;
+    font-size: 1.4vmin;
+    padding: 0 0.8vw 0 0.8vw;
     text-decoration: none;
     border: none;
     height: 100%;
     cursor: pointer;
     background-color: #FFFFFF;
+    font-weight: 600;
 }
 
 .btnSwitch:focus {
@@ -525,15 +542,13 @@ html {
 .btnSwitch:hover {
     text-decoration: none;
     color: #4e4e4e;
-    border-bottom: 4px solid #757575;
-    padding-top: 4px;
+    box-shadow: inset 0 -0.4vh 0 0 #757575;
 }
 
 .btnSwitch.active {
     color: #000000;
     text-decoration: none;
-    border-bottom: 4px solid #3f3f3f;
-    padding-top: 4px;
+    box-shadow: inset 0 -0.4vh 0 0 #000;
 }
 
 #colorSampleBand {
@@ -550,31 +565,27 @@ html {
 
 }
 
-#listaCentroElipse {
-    counter-reset: li;
-    list-style: none;
-    padding: 0;
-}
-
-.listaCentro {
-    border: 1px solid #dad9d9;
-    padding-left: 10px;
-    height: 22px;
-    margin-bottom: 5px;
-    font-family: sans-serif;
-    line-height: 22px;
-}
-
 .btnCentro {
-    float: right;
-    text-decoration: none;
-    background-color: #fff;
+    font-size: 1.4vmin;
+    background: #505869;
+    padding: 0.8vmin 0.4vmin;
     border: none;
-    border-left: 1px solid #d8d8d8;
-    color: #f94848;
-    font-weight: bold;
-    font-family: sans-serif;
-    font-size: 17px;
+    text-decoration: none;
+    white-space: normal;
+    color: white;
+    font-weight: 600;
+    height: auto;
+    border-radius: 0.3vmin;
+    box-sizing: border-box;
+    display: inline-block;
+    margin: 0.2vmin;
+    width: 6vmin;
+    cursor: pointer;
+}
+
+.btnCentro:hover {
+    background: #99221f;
+    color: white;
 }
 
 .navSubtitle {
@@ -583,39 +594,45 @@ html {
 }
 
 #listaFiltros {
-    width: 80%;
+    width: 100%;
+}
+
+.marginBottom {
+    margin-bottom: 1.4vmin;
 }
 
 .filtro {
-    box-shadow: 0 0 5px #888888;
-    margin-bottom: 10px;
-    font-family: san s-serif;
+    box-shadow: 0 0 0.4vw #888888;
+    margin-bottom: 1vh;
+    font-family: sans-serif;
+    border: 1px solid #a7a7a7;
+    font-size: 1.4vmin;
 }
 
 .filterTitle {
     border-bottom: 1px solid #ababab;
-    padding: 10px 4px;
+    padding: 0.8vh 0.2vw;
     background-color: #606060;
     color: white;
 }
 
 .filterContent {
-    margin: 2px 0 2px 10px;
+    margin: 0.1vh 0 0.1vh 0.3vw;
     vertical-align: middle;
     display: inline-block;
 }
 
 .filterTitleText {
-    font-size: 16px;
+    font-size: 1.4vmin;
     font-stretch: condensed;
     font-weight: bold;
 }
 
 .filterTitleSecondary {
     font-weight: 600;
-    margin: 2px;
+    margin: 0.1vw;
     color: #2d2d2d;
-    font-size: 12px;
+    font-size: 1.4vmin;
 }
 
 .btnFiltro {
@@ -625,24 +642,25 @@ html {
     border: none;
     font-weight: bold;
     font-family: cursive;
-    margin-left: 4px;
     color: white;
+    font-size: 1.3vmin;
+    padding: 0 0.2vw 0 0;
 }
 
 .filterE {
     width: 0;
     height: 0;
-    border-bottom: 15px solid black;
-    border-left: 8px solid transparent;
-    border-right: 8px solid transparent;
+    border-bottom: 1.4vmin solid black;
+    border-left: 0.7vmin solid transparent;
+    border-right: 0.7vmin solid transparent;
     float: left;
     vertical-align: middle;
     display: inline-block;
 }
 
 .filterI {
-    width: 15px;
-    height: 15px;
+    width: 1.4vmin;
+    height: 1.4vmin;
     border-radius: 50%;
     background-color: #000000;
     float: left;
@@ -651,7 +669,7 @@ html {
 }
 
 #popup {
-    background-color: rgba(0, 0, 0, 0.33);
+    background-color: rgba(0, 0, 0, 0.66);
     position: fixed;
     width: 100%;
     height: 100%;
@@ -659,17 +677,31 @@ html {
 }
 
 #colorPicker {
-    height: 400px;
-    width: 200px;
+    height: 50%;
+    width: 20%;
     position: absolute;
     z-index: 101;
-    background-color: #e8e8e8;
+    background-color: #ffffff;
     margin: auto;
     top: 0;
     left: 0;
     bottom: 0;
-    right: 0;
+    right: 45%;
     border: 1px solid #7d7d7d;
+    padding: 1% 1%;
+
+}
+
+#colorPicker input {
+    height: 2vh;
+    font-size: 1.4vmin;
+    width: 3vw;
+
+}
+
+#genericColorPicker {
+    font-size: 1.2vmin;
+    font-weight: 700;
 }
 
 .button {
@@ -687,6 +719,8 @@ html {
     display: inline-block;
     margin-bottom: 1.2vmin;
     width: 100%;
+    cursor: pointer;
+    outline: none;
 }
 
 .button:hover {
@@ -698,8 +732,7 @@ html {
     background-color: #a2a2a2;
 }
 
-
-.box{
+.box {
     width: 90%;
     background-color: white;
     margin-top: 1vmin;
@@ -712,13 +745,13 @@ html {
     height: auto;
 }
 
-.text-input{
+.text-input {
     height: auto;
     border: 0.15vmin solid #d0d0d0;
     background: #F8F8F8;
     color: #313131;
     font-weight: bold;
-    padding: 0.6vmin;
+    padding: 0.4vmin;
     font-family: helvetica, sans-serif;
     font-size: 1.4vmin;
     box-sizing: border-box;
@@ -726,3 +759,133 @@ html {
     margin-bottom: 1.2vmin;
     display: inline-block;
 }
+
+.titleSpan {
+    margin-bottom: 1.2vmin;
+    font-size: 1.6vmin;
+    margin-right: 0.3vw;
+    font-style: italic;
+}
+
+.colorOptions {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+}
+
+.colorFlex {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    margin-bottom: 2vh;
+    justify-content: flex-end;
+    width: 90%;
+}
+
+.colorFlex div {
+    width: 3vmin;
+    height: 3vmin;
+    background: #ffffff;
+    cursor: pointer;
+    box-shadow: 0 0 0.1vh 0.1vh #000000;
+}
+
+.colorFlex span {
+    float: left;
+    font-size: 1.4vmin;
+    margin: 0 0.2vw;
+    font-family: sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.colorFlex label {
+    font-size: 1.4vmin;
+    font-family: Verdana, serif;
+    font-style: italic;
+    flex-grow: 1;
+}
+
+hr {
+    width: 100%;
+    border: 0;
+    height: 0.1vh;
+    background: #bbbbbb;
+    margin: 0 0 1.2vmin 0;
+}
+
+.tagInput {
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1.2vmin;
+}
+
+.tagInput label {
+    width: 100%;
+    font-size: 1.4vmin;
+    font-family: Verdana, Arial, sans-serif;
+    padding-right: 0.2vmin;
+}
+
+.tagInput div {
+    margin-bottom: 0;
+}
+
+.flex {
+    display: flex;
+    flex-flow: row;
+    width: 100%;
+}
+
+.noMargin {
+    margin: 0;
+}
+
+.margin05W {
+    margin: 0.5vw;
+}
+
+.left {
+    float: left;
+}
+
+.center {
+    align-self: center;
+}
+
+@media screen and (max-width: 1919px) {
+    #jqxWidgets {
+        height: 100vh;
+        margin: 0 0 0 48px;
+        background-color: #FFFFFF;
+    }
+
+    .navOptionsButton .tooltiptext, .navViewButton .tooltiptext {
+        margin-left: 50px;
+        width: 12vmin;
+        font-size: 1.8vmin;
+        margin-top: -4.5vh;
+        height: 6vh;
+    }
+
+    .tooltiptext:after {
+        border: 0.5vmin solid rgba(136, 183, 213, 0);
+        margin-top: -0.5vmin;
+        border-right-color: #373a41;
+    }
+}
+
+@media screen and (max-height: 1000px) {
+    .axis {
+        font: 1.2vh sans-serif;
+        stroke-width: 1px !important;
+    }
+
+    path{
+        stroke-width: 1px !important;
+    }
+}
+
+

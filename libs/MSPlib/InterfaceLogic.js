@@ -15,8 +15,63 @@ UI.Visualizator = function () {
     this.activeView = null;
     this.simulationFiles = null;
     this.simulationFilesConfig = null;
+    this.colorScaleTypes = ['Categorical', 'Diverging', 'Sequential'];
+    this.colorScales = [
+        [
+            {labelInternal: "schemeAccent", label: "schemeAccent", group: "Categorical"},
+            {labelInternal: "schemeDark2", label: "Dark2", group: "Categorical"},
+            {labelInternal: "schemePaired", label: "Paired", group: "Categorical"},
+            {labelInternal: "schemePastel1", label: "Pastel1", group: "Categorical"},
+            {labelInternal: "schemePastel2", label: "Pastel2", group: "Categorical"},
+            {labelInternal: "schemeSet1", label: "Set1", group: "Categorical"},
+            {labelInternal: "schemeSet2", label: "Set2", group: "Categorical"},
+            {labelInternal: "schemeSet3", label: "Set3", group: "Categorical"}
+        ],
+
+        [
+            {labelInternal: "Viridis", label: "Viridis", group: "Diverging"},
+            {labelInternal: "Inferno", label: "Inferno", group: "Diverging"},
+            {labelInternal: "Magma", label: "Magma", group: "Diverging"},
+            {labelInternal: "Plasma", label: "Plasma", group: "Diverging"},
+            {labelInternal: "Warm", label: "Warm", group: "Diverging"},
+            {labelInternal: "Cool", label: "Cool", group: "Diverging"},
+            {labelInternal: "CubehelixDefault", label: "CubehelixDefault", group: "Diverging"},
+            {labelInternal: "BrBG", label: "BrBG", group: "Diverging"},
+            {labelInternal: "PRGn", label: "PRGn", group: "Diverging"},
+            {labelInternal: "PiYG", label: "PiYG", group: "Diverging"},
+            {labelInternal: "PuOr", label: "PuOr", group: "Diverging"},
+            {labelInternal: "RdBu", label: "RdBu", group: "Diverging"},
+            {labelInternal: "RdGy", label: "RdGy", group: "Diverging"},
+            {labelInternal: "RdYlBu", label: "RdYlBu", group: "Diverging"},
+            {labelInternal: "RdYlGn", label: "RdYlGn", group: "Diverging"},
+            {labelInternal: "Spectral", label: "Spectral", group: "Diverging"}
+        ],
+
+        [
+            {labelInternal: "Greens", label: "Greens", group: "Sequential"},
+            {labelInternal: "Greys", label: "Greys", group: "Sequential"},
+            {labelInternal: "Oranges", label: "Oranges", group: "Sequential"},
+            {labelInternal: "Purples", label: "Purples", group: "Sequential"},
+            {labelInternal: "Reds", label: "Reds", group: "Sequential"},
+            {labelInternal: "BuGn", label: "BuGn", group: "Sequential"},
+            {labelInternal: "BuPu", label: "BuPu", group: "Sequential"},
+            {labelInternal: "GnBu", label: "GnBu", group: "Sequential"},
+            {labelInternal: "OrRd", label: "OrRd", group: "Sequential"},
+            {labelInternal: "PuBuGn", label: "PuBuGn", group: "Sequential"},
+            {labelInternal: "PuBu", label: "PuBu", group: "Sequential"},
+            {labelInternal: "PuRd", label: "PuRd", group: "Sequential"},
+            {labelInternal: "RdPu", label: "RdPu", group: "Sequential"},
+            {labelInternal: "YlGnBu", label: "YlGnBu", group: "Sequential"},
+            {labelInternal: "YlGn", label: "YlGn", group: "Sequential"},
+            {labelInternal: "YlOrBr", label: "YlOrBr", group: "Sequential"},
+            {labelInternal: "YlOrRd", label: "YlOrRd", group: "Sequential"}
+        ]
+    ];
+
     this.generateUI();
+
 };
+
 
 UI.Visualizator.prototype = {
     constructor: UI.Visualizator,
@@ -33,7 +88,7 @@ UI.Visualizator.prototype = {
                     self.simulationFiles = null;
 
                     $("#jqxInputSimulationFilesLocalPath").val(" ");
-                    $("#jqxConfWindow_ButtonLoadSimulationFiles").prop("disabled",true);
+                    $("#jqxConfWindow_ButtonLoadSimulationFiles").prop("disabled", true);
 
                     alert('Please select the 6 simulation files!');
                 }
@@ -48,7 +103,7 @@ UI.Visualizator.prototype = {
                     else                    lFiles = "Select the 6 minimum simulation files";
 
                     $("#jqxInputSimulationFilesLocalPath").val(lFiles);
-                    $("#jqxConfWindow_ButtonLoadSimulationFiles").prop("disabled",false);
+                    $("#jqxConfWindow_ButtonLoadSimulationFiles").prop("disabled", false);
                 }
             }
             , false)
@@ -63,7 +118,7 @@ UI.Visualizator.prototype = {
                     self.simulationFilesConfig = null;
 
                     $("#jqxInputConfigFilesLocalPath").val(" ");
-                    $("#jqxConfWindow_ButtonLoadConfig").prop("disabled",true);
+                    $("#jqxConfWindow_ButtonLoadConfig").prop("disabled", true);
 
                     alert('Please select one configuration file');
                 }
@@ -75,7 +130,7 @@ UI.Visualizator.prototype = {
                     else                    lFiles = "Select only one configuration file";
 
                     $("#jqxInputConfigFilesLocalPath").val(lFiles);
-                    $("#jqxConfWindow_ButtonLoadConfig").prop("disabled",false);
+                    $("#jqxConfWindow_ButtonLoadConfig").prop("disabled", false);
                 }
             }
             , false)
@@ -163,7 +218,6 @@ UI.Visualizator.prototype = {
                     self.closeNav();
                 });
 
-                $("#jqxBottomControls_ButtonSimulate").jqxButton({width: '150', disabled: true});
                 $("#jqxBottomControls_ButtonSimulate").on('click', function (event) {
                     self.simulate(!_SimulationController.pause);
                 });
@@ -216,28 +270,26 @@ UI.Visualizator.prototype = {
                     , spinButtons: true, decimalDigits: 0, min: 0
                 });
 
-                $("#btnAddID").jqxButton({width: '80', height: '25px'});
                 $("#btnAddID").on('click', function (event) {
                     var id = $("#numericImputElipse").jqxNumberInput('val');
                     if (id >= 0 && id < _SimulationData.gNeurons.length)
                         _SimulationData.gNeurons[$("#numericImputElipse").jqxNumberInput('val')].centerElipse = true;
-                    $("#listaCentroElipse").append('<li class="listaCentro">' + id + '<button class="btnCentro" onclick="delCenter(' + id + ');">X</button> </li>');
+                    $("#listaCentroElipse").append('<button class="btnCentro" onclick="delCenter(' + id + ');">' + id + '</button>');
                     _SimulationController.view.update();
                 });
 
-                $("#btnAddSelected").jqxButton({width: '180', height: '25px'});
                 $("#btnAddSelected").on('click', function (event) {
                     _SimulationFilter.gNeuronsFilter.forEach(function (z) {
                         var d = _SimulationData.gNeurons[z];
                         if (d.selected) {
                             d.centerElipse = true;
-                            $("#listaCentroElipse").append('<li class="listaCentro">' + d.NId + '<button class="btnCentro" onclick="delCenter(' + d.NId + ');">X</button> </li>');
+                            $("#listaCentroElipse").append('<button class="btnCentro" onclick="delCenter(' + d.NId + ');">' + d.NId + '</button>');
                         }
                     });
                     _SimulationController.view.update();
                 });
 
-                $("#btnRmSelected").jqxButton({width: '180', height: '25px'});
+
                 $("#btnRmSelected").on('click', function (event) {
                     $("#listaCentroElipse").empty();
                     _SimulationData.gNeurons.forEach(function (d) {
@@ -246,7 +298,7 @@ UI.Visualizator.prototype = {
                     _SimulationController.view.update();
                 });
 
-                $("#rmSelected").jqxButton({width: '180', height: '25px'});
+
                 $("#rmSelected").on('click', function (event) {
                     _SimulationFilter.gNeuronsFilter.forEach(function (z) {
                         var d = _SimulationData.gNeurons[z];
@@ -340,49 +392,20 @@ UI.Visualizator.prototype = {
                 $("#chkNeuronType1").jqxCheckBox({width: 80, height: 25, checked: true});
                 $("#chkNeuronType2").jqxCheckBox({width: 80, height: 25, checked: true});
 
-                var sourceFilter = [
-                    {
-                        html: "<div tabIndex=0 style='padding: 1px;'><div>Calcium Conc.</div>",
-                        label: "Calcium Concentration",
-                        cat: "decimal",
-                        type: "Ca",
-                        typeFull: "Calcium Conc.",
-                        color: "#de9425"
-                    },
-                    {
-                        html: "<div tabIndex=0 style='padding: 1px;'><div>Excitatory Conn.</div>",
-                        label: "Excitatory Connections",
-                        cat: "real",
-                        type: "IConn",
-                        typeFull: "Inhibitory Conn.",
-                        color: _SigletonConfig.IColor
-                    },
-                    {
-                        html: "<div tabIndex=0 style='padding: 1px;'><div>Inhibitory Conn.</div>",
-                        label: "Inhibitory Connections",
-                        cat: "real",
-                        type: "EConn",
-                        typeFull: "Excitatory Conn.",
-                        color: _SigletonConfig.EColor
-                    },
-                    {
-                        html: "<div tabIndex=0 style='padding: 1px;'><div>Axonal Conn.</div>",
-                        label: "Axonal Connections",
-                        cat: "real",
-                        type: "AConn",
-                        typeFull: "Axonal Conn.",
-                        color: _SigletonConfig.AColor
-                    }];
+                var sourceFilter = [{label: "Calcium Concentration", cat: "decimal", type: "Ca", color: "#de9425"},
+                    {label: "Excitatory Connections", cat: "real", type: "IConn", color: _SigletonConfig.IColor},
+                    {label: "Inhibitory Connections", cat: "real", type: "EConn", color: _SigletonConfig.EColor},
+                    {label: "Axonal Connections", cat: "real", type: "AConn", color: _SigletonConfig.AColor}];
 
-                $("#comboBoxTypeFilter").jqxDropDownList({
-                    theme: "arctic",
-                    selectedIndex: 0,
-                    source: sourceFilter,
-                    width: 170,
-                    height: 25
+                sourceFilter.forEach(function (elem, i) {
+                    $("#comboBoxTypeFilter").append($('<option>', {
+                        value: i,
+                        text: elem.label
+                    }));
                 });
+
                 $("#comboBoxTypeFilter").on('change', function () {
-                    var idx = $("#comboBoxTypeFilter").jqxDropDownList('getSelectedIndex');
+                    var idx = $("#comboBoxTypeFilter").prop('selectedIndex');
                     if (sourceFilter[idx].cat === "decimal") {
                         $("#caMinRangeFilter").jqxNumberInput('decimalDigits', 10);
                         $("#caMaxRangeFilter").jqxNumberInput('decimalDigits', 10);
@@ -393,7 +416,6 @@ UI.Visualizator.prototype = {
                     $("#caMinRangeFilter").jqxNumberInput('val', 0);
                     $("#caMaxRangeFilter").jqxNumberInput('val', 0);
                 });
-
 
                 $("#caMinRangeFilter").jqxNumberInput({
                     width: '130px',
@@ -413,10 +435,8 @@ UI.Visualizator.prototype = {
                     min: 0
                 });
 
-                $("#btnApplyFilter").jqxButton({width: '110', height: '25'});
-
                 $("#btnApplyFilter").on('click', function () {
-                    var idx = $("#comboBoxTypeFilter").jqxDropDownList('getSelectedIndex');
+                    var idx = $("#comboBoxTypeFilter").prop('selectedIndex');
                     var tipo = sourceFilter[idx].type;
                     var color = sourceFilter[idx].color;
                     var tipoCompleto = sourceFilter[idx].typeFull;
@@ -438,9 +458,7 @@ UI.Visualizator.prototype = {
 
                 /* Filter */
 
-
                 /* Sort */
-
                 $("#jqxCheckBoxMixNeurons").jqxCheckBox({width: 140, height: 25, checked: true}).css("margin-top", "10px");
                 $("#jqxCheckBoxMixNeurons").on('change', function (event) {
                     _SimulationFilter.orderMix = event.args.checked;
@@ -488,235 +506,95 @@ UI.Visualizator.prototype = {
                     self.updateSimulationFromTimeline();
 
                 });
-
                 /* Sort */
 
+                self.createColorCombos("#comboScaleTypeNeuron", "#comboScaleNeuron");
 
-                var source = [
-                    {
-                        html: "<div tabIndex=0 style='padding: 1px;'><div>schemeAccent</div>",
-                        label: "schemeAccent",
-                        group: "Categorical"
-                    },
-                    {
-                        html: "<div tabIndex=0 style='padding: 1px;'><div>schemeDark2</div>",
-                        label: "schemeDark2",
-                        group: "Categorical"
-                    },
-                    {
-                        html: "<div tabIndex=0 style='padding: 1px;'><div>schemePaired</div>",
-                        label: "schemePaired",
-                        group: "Categorical"
-                    },
-                    {
-                        html: "<div tabIndex=0 style='padding: 1px;'><div>schemePastel1</div>",
-                        label: "schemePastel1",
-                        group: "Categorical"
-                    },
-                    {
-                        html: "<div tabIndex=0 style='padding: 1px;'><div>schemePastel2</div>",
-                        label: "schemePastel2",
-                        group: "Categorical"
-                    },
-                    {
-                        html: "<div tabIndex=0 style='padding: 1px;'><div>schemeSet1</div>",
-                        label: "schemeSet1",
-                        group: "Categorical"
-                    },
-                    {
-                        html: "<div tabIndex=0 style='padding: 1px;'><div>schemeSet2</div>",
-                        label: "schemeSet2",
-                        group: "Categorical"
-                    },
-                    {
-                        html: "<div tabIndex=0 style='padding: 1px;'><div>schemeSet3</div>",
-                        label: "schemeSet3",
-                        group: "Categorical"
-                    },
-                    {
-                        html: "<div tabIndex=0 style='padding: 1px;'><div>Viridis</div>",
-                        label: "Viridis",
-                        group: "Diverging"
-                    },
-                    {
-                        html: "<div tabIndex=0 style='padding: 1px;'><div>Inferno</div>",
-                        label: "Inferno",
-                        group: "Diverging"
-                    },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>Magma</div>", label: "Magma", group: "Diverging"},
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>Plasma</div>", label: "Plasma", group: "Diverging"},
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>Warm</div>", label: "Warm", group: "Diverging"},
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>Cool</div>", label: "Cool", group: "Diverging"},
-                    {
-                        html: "<div tabIndex=0 style='padding: 1px;'><div>Cubehelix</div>",
-                        label: "CubehelixDefault",
-                        group: "Diverging"
-                    },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>BrBG</div>", label: "BrBG", group: "Diverging"},
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>PRGn</div>", label: "PRGn", group: "Diverging"},
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>PiYG</div>", label: "PiYG", group: "Diverging"},
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>PuOr</div>", label: "PuOr", group: "Diverging"},
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>RdBu</div>", label: "RdBu", group: "Diverging"},
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>RdGy</div>", label: "RdGy", group: "Diverging"},
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>RdYlBu</div>", label: "RdYlBu", group: "Diverging"},
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>RdYlGn</div>", label: "RdYlGn", group: "Diverging"},
-                    {
-                        html: "<div tabIndex=0 style='padding: 1px;'><div>Spectral</div>",
-                        label: "Spectral",
-                        group: "Diverging"
-                    },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>Greens</div>", label: "Greens", group: "Sequential"},
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>Greys</div>", label: "Greys", group: "Sequential"},
-                    {
-                        html: "<div tabIndex=0 style='padding: 1px;'><div>Oranges</div>",
-                        label: "Oranges",
-                        group: "Sequential"
-                    },
-                    {
-                        html: "<div tabIndex=0 style='padding: 1px;'><div>Purples</div>",
-                        label: "Purples",
-                        group: "Sequential"
-                    },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>Reds</div>", label: "Reds", group: "Sequential"},
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>BuGn</div>", label: "BuGn", group: "Sequential"},
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>BuPu</div>", label: "BuPu", group: "Sequential"},
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>GnBu</div>", label: "GnBu", group: "Sequential"},
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>OrRd</div>", label: "OrRd", group: "Sequential"},
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>PuBuGn</div>", label: "PuBuGn", group: "Sequential"},
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>PuBu</div>", label: "PuBu", group: "Sequential"},
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>PuRd</div>", label: "PuRd", group: "Sequential"},
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>RdPu</div>", label: "RdPu", group: "Sequential"},
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>YlGnBu</div>", label: "YlGnBu", group: "Sequential"},
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>YlGn</div>", label: "YlGn", group: "Sequential"},
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>YlOrBr</div>", label: "YlOrBr", group: "Sequential"},
-                    {
-                        html: "<div tabIndex=0 style='padding: 1px;'><div>YlOrRd</div>",
-                        label: "YlOrRd",
-                        group: "Sequential"
-                    }];
+                $("#comboScaleNeuron").on('change', function () {
+                    var colorDOMObject = [$("#dropDownExcitatoryButton"), $("#dropDownInhibitoryButton"), $("#dropDownAxonalButton")];
+                    var colorConfig = [_SigletonConfig.EColor, _SigletonConfig.IColor, _SigletonConfig.AColor];
+                    var idxSaleType = $("#comboScaleTypeNeuron").prop('selectedIndex');
+                    var idxColorSale = $("#comboScaleNeuron").prop('selectedIndex');
+                    var colorScale = self.colorScales[idxSaleType][idxColorSale].labelInternal;
+                    var colorScaleType = $("#comboScaleTypeNeuron option:selected").text();
+                    var isCategorical = colorScaleType === "Categorical";
 
-                var sourceScale = [
-                    {
-                        html: "<div tabIndex=0 style='padding: 1px;'><div>Viridis</div>",
-                        label: "Viridis",
-                        group: "Diverging"
-                    },
-                    {
-                        html: "<div tabIndex=0 style='padding: 1px;'><div>Inferno</div>",
-                        label: "Inferno",
-                        group: "Diverging"
-                    },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>Magma</div>", label: "Magma", group: "Diverging"},
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>Plasma</div>", label: "Plasma", group: "Diverging"},
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>Warm</div>", label: "Warm", group: "Diverging"},
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>Cool</div>", label: "Cool", group: "Diverging"},
-                    {
-                        html: "<div tabIndex=0 style='padding: 1px;'><div>Cubehelix</div>",
-                        label: "CubehelixDefault",
-                        group: "Diverging"
-                    },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>BrBG</div>", label: "BrBG", group: "Diverging"},
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>PRGn</div>", label: "PRGn", group: "Diverging"},
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>PiYG</div>", label: "PiYG", group: "Diverging"},
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>PuOr</div>", label: "PuOr", group: "Diverging"},
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>RdBu</div>", label: "RdBu", group: "Diverging"},
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>RdGy</div>", label: "RdGy", group: "Diverging"},
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>RdYlBu</div>", label: "RdYlBu", group: "Diverging"},
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>RdYlGn</div>", label: "RdYlGn", group: "Diverging"},
-                    {
-                        html: "<div tabIndex=0 style='padding: 1px;'><div>Spectral</div>",
-                        label: "Spectral",
-                        group: "Diverging"
-                    },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>Greens</div>", label: "Greens", group: "Sequential"},
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>Greys</div>", label: "Greys", group: "Sequential"},
-                    {
-                        html: "<div tabIndex=0 style='padding: 1px;'><div>Oranges</div>",
-                        label: "Oranges",
-                        group: "Sequential"
-                    },
-                    {
-                        html: "<div tabIndex=0 style='padding: 1px;'><div>Purples</div>",
-                        label: "Purples",
-                        group: "Sequential"
-                    },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>Reds</div>", label: "Reds", group: "Sequential"},
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>BuGn</div>", label: "BuGn", group: "Sequential"},
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>BuPu</div>", label: "BuPu", group: "Sequential"},
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>GnBu</div>", label: "GnBu", group: "Sequential"},
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>OrRd</div>", label: "OrRd", group: "Sequential"},
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>PuBuGn</div>", label: "PuBuGn", group: "Sequential"},
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>PuBu</div>", label: "PuBu", group: "Sequential"},
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>PuRd</div>", label: "PuRd", group: "Sequential"},
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>RdPu</div>", label: "RdPu", group: "Sequential"},
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>YlGnBu</div>", label: "YlGnBu", group: "Sequential"},
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>YlGn</div>", label: "YlGn", group: "Sequential"},
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>YlOrBr</div>", label: "YlOrBr", group: "Sequential"},
-                    {
-                        html: "<div tabIndex=0 style='padding: 1px;'><div>YlOrRd</div>",
-                        label: "YlOrRd",
-                        group: "Sequential"
-                    }];
-
-                $("#neuronScalePicker").jqxComboBox({
-                    theme: "arctic",
-                    selectedIndex: 5,
-                    source: source,
-                    width: 145,
-                    height: 16
-                });
-                $("#neuronScalePicker").on('change', function () {
-                    var domColores = [$("#dropDownExcitatoryButton"), $("#dropDownInhibitoryButton"), $("#dropDownAxonalButton")];
-                    var propColores = [_SigletonConfig.EColor, _SigletonConfig.IColor, _SigletonConfig.AColor];
-                    var colorSelec = $("#neuronScalePicker").jqxComboBox('val');
-                    propColores = _ColorPicker.generateColors($("#neuronScalePicker"), domColores, propColores);
-                    _SigletonConfig.EColor = propColores[0];
-                    _SigletonConfig.IColor = propColores[1];
-                    _SigletonConfig.AColor = propColores[2];
-                    _SigletonConfig.neuronsScheme = colorSelec;
+                    colorConfig = _ColorPicker.generateColors(colorScale, colorDOMObject, colorConfig, isCategorical);
+                    _SigletonConfig.EColor = colorConfig[0];
+                    _SigletonConfig.IColor = colorConfig[1];
+                    _SigletonConfig.AColor = colorConfig[2];
+                    _SigletonConfig.neuronsScheme = colorScale;
                     updateCookieColor();
                     if (_SimulationController !== null)
                         _SimulationController.view.updateVisualization()
                 });
 
-                $("#connectionsScalePicker").jqxComboBox({
-                    theme: "arctic",
-                    selectedIndex: 5,
-                    source: source,
-                    width: 145,
-                    height: 16
+
+                $('#comboScaleTypeNeuron').on('change', function () {
+                    $("#comboScaleNeuron").empty();
+                    self.colorScales[$("#comboScaleTypeNeuron").prop('selectedIndex')].forEach(function (elem, i) {
+                        $('#comboScaleNeuron').append($('<option>', {
+                            value: i,
+                            text: elem.label
+                        }));
+                    });
+                    $('#comboScaleNeuron').trigger("change");
                 });
-                $("#connectionsScalePicker").on('change', function () {
-                    var domColores = [$("#dropDownEEButton"), $("#dropDownEIButton"), $("#dropDownIEButton"), $("#dropDownIIButton")];
-                    var propColores = [_SigletonConfig.EEColor, _SigletonConfig.EIColor, _SigletonConfig.IEColor, _SigletonConfig.IIColor];
-                    var colorSelec = $("#connectionsScalePicker").jqxComboBox('val');
-                    propColores = _ColorPicker.generateColors($("#connectionsScalePicker"), domColores, propColores);
-                    _SigletonConfig.EEColor = propColores[0];
-                    _SigletonConfig.EIColor = propColores[1];
-                    _SigletonConfig.IEColor = propColores[2];
-                    _SigletonConfig.IIColor = propColores[3];
-                    _SigletonConfig.connectionsScheme = colorSelec;
+
+
+                self.createColorCombos("#comboScaleTypeConnection", "#comboScaleConnection");
+
+                $("#comboScaleConnection").on('change', function () {
+                    var colorDOMObject = [$("#dropDownEEButton"), $("#dropDownEIButton"), $("#dropDownIEButton"), $("#dropDownIIButton")];
+                    var colorConfig = [_SigletonConfig.EEColor, _SigletonConfig.EIColor, _SigletonConfig.IEColor, _SigletonConfig.IIColor];
+                    var idxSaleType = $("#comboScaleTypeConnection").prop('selectedIndex');
+                    var idxColorSale = $("#comboScaleConnection").prop('selectedIndex');
+                    var colorScale = self.colorScales[idxSaleType][idxColorSale].labelInternal;
+                    var colorScaleType = $("#comboScaleTypeConnection option:selected").text();
+                    var isCategorical = colorScaleType === "Categorical";
+
+                    colorConfig = _ColorPicker.generateColors(colorScale, colorDOMObject, colorConfig, isCategorical);
+                    _SigletonConfig.EEColor = colorConfig[0];
+                    _SigletonConfig.EIColor = colorConfig[1];
+                    _SigletonConfig.IEColor = colorConfig[2];
+                    _SigletonConfig.IIColor = colorConfig[3];
+                    _SigletonConfig.connectionsScheme = colorScale;
+
                     updateCookieColor();
                     if (_SimulationController !== null)
-                        _SimulationController.view.updateVisualization()
+                        _SimulationController.view.updateVisualization();
+                });
+
+
+                $('#comboScaleTypeConnection').on('change', function () {
+                    $("#comboScaleConnection").empty();
+                    self.colorScales[$("#comboScaleTypeConnection").prop('selectedIndex')].forEach(function (elem, i) {
+                        $('#comboScaleConnection').append($('<option>', {
+                            value: i,
+                            text: elem.label
+                        }));
+                    });
+                    $('#comboScaleConnection').trigger("change");
                 });
 
                 self.generateScaleCalcium();
-                $("#calciumScalePicker").jqxComboBox({
-                    theme: "arctic",
-                    selectedIndex: 1,
-                    source: sourceScale,
-                    width: 145,
-                    height: 16
-                });
-                $("#calciumScalePicker").on('change', function () {
-                    var domColores = [$("#dropDownCaMaxValueColorButton"), $("#dropDownCaMinValueColorButton")];
-                    var propColores = [_SigletonConfig.EColor, _SigletonConfig.IColor];
-                    var colorSelec = $("#calciumScalePicker").jqxComboBox('val');
-                    propColores = _ColorPicker.generateColors($("#calciumScalePicker"), domColores, propColores);
-                    _SigletonConfig.maxCaColor = propColores[0];
-                    _SigletonConfig.minCaColor = propColores[1];
-                    _SigletonConfig.calciumScheme = colorSelec;
+
+
+                self.createColorCombos("#comboScaleTypeCalcium", "#comboScaleCalcium");
+
+                $("#comboScaleCalcium").on('change', function () {
+                    var colorDOMObject = [$("#dropDownCaMaxValueColorButton"), $("#dropDownCaMinValueColorButton")];
+                    var colorConfig = [_SigletonConfig.EColor, _SigletonConfig.IColor];
+                    var idxSaleType = $("#comboScaleTypeCalcium").prop('selectedIndex');
+                    var idxColorSale = $("#comboScaleCalcium").prop('selectedIndex');
+                    var colorScale = self.colorScales[idxSaleType][idxColorSale].labelInternal;
+                    var colorScaleType = $("#comboScaleTypeCalcium option:selected").text();
+                    var isCategorical = colorScaleType === "Categorical";
+
+                    colorConfig = _ColorPicker.generateColors(colorScale, colorDOMObject, colorConfig, isCategorical);
+                    _SigletonConfig.maxCaColor = colorConfig[0];
+                    _SigletonConfig.minCaColor = colorConfig[1];
+                    _SigletonConfig.calciumScheme = colorScale;
                     updateCookieColor();
                     self.generateScaleCalcium();
                     if (_SimulationController !== null) {
@@ -727,179 +605,65 @@ UI.Visualizator.prototype = {
                     }
                 });
 
-                $("#dropDownInhibitoryButton").jqxDropDownButton({width: 150, height: 22});
-                $("#dropDownInhibitoryButton").jqxDropDownButton('setContent', self.getTextElementByColor(new $.jqx.color({hex: _SigletonConfig.IColor.substring(1)})));
-                $("#dropDownInhibitoryButton").css("color", _ColorPicker.getTextForColor(d4.color(_SigletonConfig.IColor)));
 
-                $("#dropDownInhibitoryButton").on('click', function () {
-                    caller = $("#dropDownInhibitoryButton");
-                    $("#popup").show();
-                });
-
-                $('#dropDownInhibitoryButton').on('close', function (event) {
-                    _SigletonConfig.IColor = _ColorPicker.rgbToHex(_ColorPicker.colorSelecGlobal);
-                    updateCookieColor();
-                    $("#popup").hide();
-                });
-
-                $("#dropDownExcitatoryButton").on('click', function () {
-                    caller = $("#dropDownExcitatoryButton");
-                    $("#popup").show();
-                });
-
-                $('#dropDownExcitatoryButton').on('close', function (event) {
-                    _SigletonConfig.EColor = _ColorPicker.rgbToHex(_ColorPicker.colorSelecGlobal);
-                    updateCookieColor();
-                    $("#popup").hide();
-                });
-
-                $("#dropDownAxonalButton").on('click', function () {
-                    caller = $("#dropDownAxonalButton");
-                    $("#popup").show();
-                });
-
-                $('#dropDownAxonalButton').on('close', function (event) {
-                    _SigletonConfig.AColor = _ColorPicker.rgbToHex(_ColorPicker.colorSelecGlobal);
-                    updateCookieColor();
-                    $("#popup").hide();
-                });
-
-                $("#dropDownEEButton").on('click', function () {
-                    caller = $("#dropDownEEButton");
-                    $("#popup").show();
-                });
-                $('#dropDownEEButton').on('close', function (event) {
-                    _SigletonConfig.EEColor = _ColorPicker.rgbToHex(_ColorPicker.colorSelecGlobal);
-                    updateCookieColor();
-                    $("#popup").hide();
-                });
-
-                $("#dropDownEIButton").on('click', function () {
-                    caller = $("#dropDownEIButton");
-                    $("#popup").show();
-                });
-                $('#dropDownEIButton').on('close', function (event) {
-                    _SigletonConfig.EIColor = _ColorPicker.rgbToHex(_ColorPicker.colorSelecGlobal);
-                    updateCookieColor();
-                    $("#popup").hide();
-                });
-
-                $("#dropDownIEButton").on('click', function () {
-                    caller = $("#dropDownIEButton");
-                    $("#popup").show();
-                });
-                $('#dropDownIEButton').on('close', function (event) {
-                    _SigletonConfig.IEColor = _ColorPicker.rgbToHex(_ColorPicker.colorSelecGlobal);
-                    updateCookieColor();
-                    $("#popup").hide();
-                });
-
-                $("#dropDownIIButton").on('click', function () {
-                    caller = $("#dropDownIIButton");
-                    $("#popup").show();
-                });
-                $('#dropDownIIButton').on('close', function (event) {
-                    _SigletonConfig.IIColor = _ColorPicker.rgbToHex(_ColorPicker.colorSelecGlobal);
-                    updateCookieColor();
-                    $("#popup").hide();
-                });
-
-                $("#dropDownCaMinValueColorButton").on('click', function () {
-                    caller = $("#dropDownCaMinValueColorButton");
-                    $("#popup").show();
-                });
-                $('#dropDownCaMinValueColorButton').on('close', function (event) {
-                    _SigletonConfig.minCaColor = _ColorPicker.rgbToHex(_ColorPicker.colorSelecGlobal);
-                    updateCookieColor();
-                    $("#popup").hide();
-                });
-
-                $("#dropDownCaMaxValueColorButton").on('click', function () {
-                    caller = $("#dropDownCaMaxValueColorButton");
-                    $("#popup").show();
-                });
-                $('#dropDownCaMaxValueColorButton').on('close', function (event) {
-                    _SigletonConfig.maxCaColor = _ColorPicker.rgbToHex(_ColorPicker.colorSelecGlobal);
-                    updateCookieColor();
-                    $("#popup").hide();
+                $('#comboScaleTypeCalcium').on('change', function () {
+                    $("#comboScaleCalcium").empty();
+                    self.colorScales[$("#comboScaleTypeCalcium").prop('selectedIndex')].forEach(function (elem, i) {
+                        $('#comboScaleCalcium').append($('<option>', {
+                            value: i,
+                            text: elem.label
+                        }));
+                    });
+                    $('#comboScaleCalcium').trigger("change");
                 });
 
 
-                $("#dropDownExcitatoryButton").jqxDropDownButton({width: 150, height: 22});
-                $("#dropDownExcitatoryButton").jqxDropDownButton('setContent', self.getTextElementByColor(new $.jqx.color({hex: _SigletonConfig.EColor.substring(1)})));
-                $("#dropDownExcitatoryButton").css("color", _ColorPicker.getTextForColor(d4.color(_SigletonConfig.EColor)));
+                $("#dropDownInhibitoryButton").on('click', self.selectColor);
+                $("#dropDownExcitatoryButton").on('click', self.selectColor);
+                $("#dropDownAxonalButton").on('click', self.selectColor);
+                $("#dropDownEEButton").on('click', self.selectColor);
+                $("#dropDownEIButton").on('click', self.selectColor);
+                $("#dropDownIEButton").on('click', self.selectColor);
+                $("#dropDownIIButton").on('click', self.selectColor);
+                $("#dropDownCaMinValueColorButton").on('click', self.selectColor);
+                $("#dropDownCaMaxValueColorButton").on('click', self.selectColor);
 
 
-                $("#dropDownAxonalButton").jqxDropDownButton({width: 150, height: 22});
-                $("#dropDownAxonalButton").jqxDropDownButton('setContent', self.getTextElementByColor(new $.jqx.color({hex: _SigletonConfig.AColor.substring(1)})));
-                $("#dropDownAxonalButton").css("color", _ColorPicker.getTextForColor(d4.color(_SigletonConfig.AColor)));
+                $("#dropDownInhibitoryButton").children("div").css("background", _SigletonConfig.IColor);
+                $("#dropDownInhibitoryButton").children("span").text(_SigletonConfig.IColor);
 
+                $("#dropDownExcitatoryButton").children("div").css("background", _SigletonConfig.EColor);
+                $("#dropDownExcitatoryButton").children("span").text(_SigletonConfig.EColor);
 
-                $("#dropDownEEButton").jqxDropDownButton({width: 150, height: 22});
-                $("#dropDownEEButton").jqxDropDownButton('setContent', self.getTextElementByColor(new $.jqx.color({hex: _SigletonConfig.EEColor.substring(1)})));
-                $("#dropDownEEButton").css("color", _ColorPicker.getTextForColor(d4.color(_SigletonConfig.EEColor)));
+                $("#dropDownAxonalButton").children("div").css("background", _SigletonConfig.AColor);
+                $("#dropDownAxonalButton").children("span").text(_SigletonConfig.AColor);
+
+                $("#dropDownEEButton").children("div").css("background", _SigletonConfig.EEColor);
+                $("#dropDownEEButton").children("span").text(_SigletonConfig.EEColor);
                 //EI color picker
-                // $("#EIColorPicker").on('colorchange', function (event)
-                // 								{
-                // 					                    $("#dropDownEIButton").jqxDropDownButton('setContent', self.getTextElementByColor(event.args.color));
-                // 					                    _SigletonConfig.EIColor = "#"+event.args.color.hex;
-                // 					                });
-                // $("#EIColorPicker").jqxColorPicker({ color: "FFA500", colorMode: 'hue', width: 220, height: 220});
-                $("#dropDownEIButton").jqxDropDownButton({width: 150, height: 22});
-                $("#dropDownEIButton").jqxDropDownButton('setContent', self.getTextElementByColor(new $.jqx.color({hex: _SigletonConfig.EIColor.substring(1)})));
-                $("#dropDownEIButton").css("color", _ColorPicker.getTextForColor(d4.color(_SigletonConfig.EIColor)));
+                $("#dropDownEIButton").children("div").css("background", _SigletonConfig.EIColor);
+                $("#dropDownEIButton").children("span").text(_SigletonConfig.EIColor);
                 //IE color picker
-                // $("#IEColorPicker").on('colorchange', function (event)
-                // 									{
-                // 				                    $("#dropDownIEButton").jqxDropDownButton('setContent', self.getTextElementByColor(event.args.color));
-                // 				                    _SigletonConfig.IEColor = "#"+event.args.color.hex;
-                // 				                });
-                // $("#IEColorPicker").jqxColorPicker({ color: "8C00FF", colorMode: 'hue', width: 220, height: 220});
-                $("#dropDownIEButton").jqxDropDownButton({width: 150, height: 22});
-                $("#dropDownIEButton").jqxDropDownButton('setContent', self.getTextElementByColor(new $.jqx.color({hex: _SigletonConfig.IEColor.substring(1)})));
-                $("#dropDownIEButton").css("color", _ColorPicker.getTextForColor(d4.color(_SigletonConfig.IEColor)));
+                $("#dropDownIEButton").children("div").css("background", _SigletonConfig.IEColor);
+                $("#dropDownIEButton").children("span").text(_SigletonConfig.IEColor);
                 //II color picker
-                // $("#IIColorPicker").on('colorchange', function (event)
-                // 									{
-                // 				                    $("#dropDownIIButton").jqxDropDownButton('setContent', self.getTextElementByColor(event.args.color));
-                // 				                    _SigletonConfig.IIColor = "#"+event.args.color.hex;
-                // 				                });
-                // $("#IIColorPicker").jqxColorPicker({ color: "0000FF", colorMode: 'hue', width: 220, height: 220});
-                $("#dropDownIIButton").jqxDropDownButton({width: 150, height: 22});
-                $("#dropDownIIButton").jqxDropDownButton('setContent', self.getTextElementByColor(new $.jqx.color({hex: _SigletonConfig.IIColor.substring(1)})));
-                $("#dropDownIIButton").css("color", _ColorPicker.getTextForColor(d4.color(_SigletonConfig.IIColor)));
+                $("#dropDownIIButton").children("div").css("background", _SigletonConfig.IIColor);
+                $("#dropDownIIButton").children("span").text(_SigletonConfig.IIColor);
                 //Ca min value color picker
-                // $("#CaMinValueColorColorPicker").on('colorchange', function (event)
-                // 									{
-                // 				                    $("#dropDownCaMinValueColorButton").jqxDropDownButton('setContent', self.getTextElementByColor(event.args.color));
-                // 				                    _SigletonConfig.minCaColor = "#"+event.args.color.hex;
-                // 				                });
-                // $("#CaMinValueColorColorPicker").jqxColorPicker({ color: "0000FF", colorMode: 'hue', width: 220, height: 220});
-                $("#dropDownCaMinValueColorButton").jqxDropDownButton({width: 150, height: 22});
-                $("#dropDownCaMinValueColorButton").jqxDropDownButton('setContent', self.getTextElementByColor(new $.jqx.color({hex: _SigletonConfig.minCaColor.substring(1)})));
-                $("#dropDownCaMinValueColorButton").css("color", _ColorPicker.getTextForColor(d4.color(_SigletonConfig.minCaColor)));
+                $("#dropDownCaMinValueColorButton").children("div").css("background", _SigletonConfig.minCaColor);
+                $("#dropDownCaMinValueColorButton").children("span").text(_SigletonConfig.minCaColor);
                 //Ca max value color picker
-                // $("#CaMaxValueColorColorPicker").on('colorchange', function (event)
-                // 									{
-                // 				                    $("#dropDownCaMaxValueColorButton").jqxDropDownButton('setContent', self.getTextElementByColor(event.args.color));
-                // 				                    _SigletonConfig.maxCaColor = "#"+event.args.color.hex;
-                // 				                });
-                // $("#CaMaxValueColorColorPicker").jqxColorPicker({ color: "FF0000", colorMode: 'hue', width: 220, height: 220});
-                $("#dropDownCaMaxValueColorButton").jqxDropDownButton({width: 150, height: 22});
-                $("#dropDownCaMaxValueColorButton").jqxDropDownButton('setContent', self.getTextElementByColor(new $.jqx.color({hex: _SigletonConfig.maxCaColor.substring(1)})));
-                $("#dropDownCaMaxValueColorButton").css("color", _ColorPicker.getTextForColor(d4.color(_SigletonConfig.maxCaColor)));
+                $("#dropDownCaMaxValueColorButton").children("div").css("background", _SigletonConfig.maxCaColor);
+                $("#dropDownCaMaxValueColorButton").children("span").text(_SigletonConfig.maxCaColor);
 
-                $('#jqxMacroVControls_SliderApha').jqxSlider({
-                    tooltip: true,
-                    mode: 'fixed',
-                    width: '150px',
-                    showTicks: true,
-                    max: 1,
-                    showButtons: true,
-                    step: 0.01
+
+                $("#jqxMacroVControls_SliderApha").jqxNumberInput({
+                    width: '100px', height: '25px', inputMode: 'simple'
+                    , spinButtons: true, decimalDigits: 2, min: 0, max: 1
                 });
-                $('#jqxMacroVControls_SliderApha').on('slideEnd', function (event) {
-                    _SigletonConfig.macroVAlpha = event.args.value;
+                $('#jqxMacroVControls_SliderApha').val(_SigletonConfig.macroVAlpha);
+                $('#jqxMacroVControls_SliderApha').on('change', function (event) {
+                    _SigletonConfig.macroVAlpha = $('#jqxMacroVControls_SliderApha').val();
                 });
 
 
@@ -910,13 +674,7 @@ UI.Visualizator.prototype = {
                     checked: true
                 });
                 $("#jqxRadioButtonCaSetPointFromNeuronValues").jqxRadioButton({groupName: '1', width: 190, height: 25});
-                $("#jqxRadioButtonHSLColorInterpol").jqxRadioButton({
-                    groupName: '2',
-                    width: 190,
-                    height: 25,
-                    checked: true
-                });
-                $("#jqxRadioButtonRGBColorInterpol").jqxRadioButton({groupName: '2', width: 190, height: 25});
+
 
                 $("#jqxRadioButtonCaSetPointFromFile").on('change', function (event) {
                     var checked = event.args.checked;
@@ -932,52 +690,23 @@ UI.Visualizator.prototype = {
                     }
                 });
 
-                $("#jqxRadioButtonHSLColorInterpol").on('change', function (event) {
-                    var checked = event.args.checked;
-                    if (checked) {
-                        _SigletonConfig.ColorInerpolMethod = "HSL";
-                    }
-                });
-
-                $("#jqxRadioButtonRGBColorInterpol").on('change', function (event) {
-                    var checked = event.args.checked;
-                    if (checked) {
-                        _SigletonConfig.ColorInerpolMethod = "RGB";
-                    }
-                });
 
                 $("#jqxRadioButtonCaSetPointFromFile").jqxRadioButton('check');
-                $("#jqxRadioButtonHSLColorInterpol").jqxRadioButton('check');
 
-                var lCaInterpolMethods = [
-                    "Linear",
-                    "Log",
-                    "Identity",
-                    "Power",
-                    "Quantize",
-                    "Quantile"
-                ];
-
-                $("#dropDownCaInterpolMethodButton").jqxComboBox({
-                    source: lCaInterpolMethods,
-                    selectedIndex: 0,
-                    width: '100px',
-                    height: '25',
-                    disabled: "true"
-                });
 
                 var lSEViewrSelector = [
                     "All",
                     "Vacants only",
-                    "Connected only",
+                    "Connected only"
                 ];
 
-                $("#dropDownSynapticElementsToViewButton").jqxComboBox({
-                    source: lSEViewrSelector,
-                    selectedIndex: 0,
-                    width: '150px',
-                    height: '25'
+                lSEViewrSelector.forEach(function (elem, i) {
+                    $('#dropDownSynapticElementsToViewButton').append($('<option>', {
+                        value: i,
+                        text: elem
+                    }));
                 });
+
                 $("#dropDownSynapticElementsToViewButton").on("change", function (event) {
                     _SigletonConfig.SEViewSelector = event.args.index;
                 });
@@ -990,10 +719,6 @@ UI.Visualizator.prototype = {
                 $('#jqxNumericInput_SimulationVelocity').on('change', function (event) {
                     _SimulationController.setVisualizationInterval($('#jqxNumericInput_SimulationVelocity').val());
                 });
-
-                //-->>Global View controls
-                $("#jqxRadioButtonGlobalVBarrs").jqxRadioButton({width: 250, height: 25, checked: true});
-                $("#jqxRadioButtonGlobalVFuncts").jqxRadioButton({width: 250, height: 25});
 
                 //-->>MacroView controls
                 $("#jqxCheckBox_EEConnect").jqxCheckBox({width: 140, height: 25, checked: true}).css("margin-top", "10px");
@@ -1072,6 +797,11 @@ UI.Visualizator.prototype = {
         //Borrar solo para testeo.
         loadCookieColor();
     },
+    selectColor: function () {
+        caller = $(this);
+        $("#popup").css({"visibility": "visible"});
+    }
+    ,
     generateScaleCalcium: function () {
 
         d4.select("#calciumColorScale").selectAll("svg").remove();
@@ -1105,7 +835,8 @@ UI.Visualizator.prototype = {
             .attr("fill", "url(#gradient)");
     },
     openNav: function () {
-        document.getElementById("sideNav").style.left = "2.5%";
+        var spacing = Math.max($(window).width() * 0.025, 48);
+        $("#sideNav").css("left", spacing);
     },
     closeNav: function () {
         document.getElementById("sideNav").style.left = "-14%";
@@ -1190,14 +921,12 @@ UI.Visualizator.prototype = {
         return element;
     },
     generateCanvas: function (pMssg) {
-        if (_SigletonConfig.svg != null) {
-            d3.select("svg")
-                .remove();
-        }
+        d3.selectAll("svg").filter(function () {
+            return !this.classList.contains('color')
+        }).remove();
 
         _SigletonConfig.svg = d3.select("#renderArea")
-            .append("svg:svg")
-            .text("Text de texto")
+            .append("svg")
             .attr("width", _SigletonConfig.width)
             .attr("height", _SigletonConfig.height)
         ;
@@ -1316,7 +1045,7 @@ UI.Visualizator.prototype = {
             _SimulationController.concreteSimulationStep(_SimulationController.actSimStep);
 
             this.resize();
-
+            $("#jqxBottomControls").css("visibility", "visible");
             return true;
 
         }
@@ -1327,6 +1056,7 @@ UI.Visualizator.prototype = {
     },
     resize: function () {
         var self = this;
+        $('#jqxBottomControls_SliderTimeline').jqxSlider('width', 0);
         _SigletonConfig.height = $(window).height() - $("#jqxBottomControls").height() - $("#colorSampleBand").height();
         _SigletonConfig.width = $(window).width() - $("#icon-bar").width();
         if (_SimulationController !== null) {
@@ -1335,10 +1065,30 @@ UI.Visualizator.prototype = {
             if (_SimulationController.activeViewID !== 0 && _SimulationController.activeViewID !== 5)
                 self.createSampleBandColor();
         }
+        else {
+            this.generateCanvas("MSPViz");
+        }
         var width = ($('#control1').width() + $('#control2').width() + $('#control4').width() + $('#control5').width()) * 1.1;
-        $('#jqxBottomControls_SliderTimeline').jqxSlider('width', 0);
         $('#jqxBottomControls_SliderTimeline').jqxSlider('width', $('#controles').width() - width);
-    },
+        _ColorPicker.resize();
+    }, createColorCombos: function (idComboType, idComboScheme) {
+
+        this.colorScaleTypes.forEach(function (elem, i) {
+            $(idComboType).append($('<option>', {
+                value: i,
+                text: elem
+            }));
+        });
+
+        this.colorScales[0].forEach(function (elem, i) {
+            $(idComboScheme).append($('<option>', {
+                value: i,
+                text: elem.label
+            }));
+        });
+
+    }
+    ,
     showPreferences: function () {
 
     },
@@ -1470,7 +1220,7 @@ UI.Visualizator.prototype = {
         _SimulationController = null;
         this.activeView = null;
 
-        $("#jqxBottomControls_ButtonSimulate").jqxButton({disabled: true});
+        $("#jqxBottomControls_ButtonSimulate").prop('disabled', true);
 
         $('#jqxBottomControls_SliderTimeline').jqxSlider({disabled: true});
         $("#jqxBottomControls_NumericInputStep").jqxNumberInput({disabled: true});
@@ -1488,7 +1238,7 @@ UI.Visualizator.prototype = {
     },
     disableUI: function (pVal) {
 
-        $("#jqxBottomControls_ButtonSimulate").jqxButton({disabled: pVal});
+        $("#jqxBottomControls_ButtonSimulate").prop('disabled', pVal);
         $('#jqxBottomControls_SliderTimeline').jqxSlider({disabled: pVal});
         $("#jqxBottomControls_NumericInputStep").jqxNumberInput({disabled: pVal});
 
@@ -1514,50 +1264,75 @@ UI.Visualizator.prototype = {
         saveAsImage();
     },
     createSampleBandColor: function () {
+
+        var windowHeight = $(window).height();
+        var windowWidth = $(window).width();
+        var heightSVG = $(window).height() * 0.06;
+        var marginAxis = windowHeight * 0.002;
+        var scaleYPos = windowHeight * 0.02;
+        var scaleHeight = heightSVG / 3;
+        var marginSide = windowWidth * 0.01;
+        var tickSize = heightSVG / 9;
+
         d4.select("#colorSampleBand").selectAll("svg").remove();
+
         var svgContainer = d4.select("#colorSampleBand").append("svg")
-            .attr("x", 0).attr("y", 20)
             .attr("width", _SigletonConfig.width)
-            .attr("height", 60)
+            .attr("height", heightSVG)
             .attr("class", "color");
 
         var z = d4.scaleSequential(d4["interpolate" + _SigletonConfig.calciumScheme]);
 
-        var lg = svgContainer.append("defs").append("linearGradient")
-            .attr("id", "mygrad2")
+        var gradient = svgContainer.append("defs").append("linearGradient")
+            .attr("id", "scaleGradient")
             .attr("x1", "0%")
             .attr("x2", "100%")
             .attr("y1", "0%")
-            .attr("y2", "0%")
-        ;
+            .attr("y2", "0%");
+
         for (var i = 0; i <= 20; i++) {
-            lg.append("stop")
+            gradient.append("stop")
                 .attr("offset", (i * 5) + "%")
                 .style("stop-color", z(i / 20))
                 .style("stop-opacity", 1);
         }
 
-        var rectangle = svgContainer.append("rect")
-            .attr("id", "boix2")
-            .attr("height", 20)
-            .attr("y", 22)
-            .attr("x", 10)
-            .attr("width", _SigletonConfig.width - 20)
-            .attr("fill", "url(#mygrad2)");
+        svgContainer.append("rect")
+            .attr("id", "colorScale")
+            .attr("height", scaleHeight)
+            .attr("y", scaleYPos)
+            .attr("x", marginSide)
+            .attr("width", _SigletonConfig.width - marginSide * 2)
+            .attr("fill", "url(#scaleGradient)");
 
-        var x = d3.scale.linear().range([0, _SigletonConfig.width - 20]).domain([_SimulationData.minICalciumValue, _SimulationData.maxICalciumValue]);
-        var xE = d3.scale.linear().range([0, _SigletonConfig.width - 20]).domain([_SimulationData.minECalciumValue, _SimulationData.maxECalciumValue]);
-        var xAxis = d3.svg.axis().scale(x).orient("bottom").tickValues(x.ticks().concat(x.domain())).tickSize(-10);
-        var xAxisE = d3.svg.axis().scale(xE).orient("top").tickValues(xE.ticks().concat(xE.domain())).tickSize(-10);
+        var xI = d3.scale.linear()
+            .range([0, _SigletonConfig.width - marginSide * 2])
+            .domain([_SimulationData.minICalciumValue, _SimulationData.maxICalciumValue]);
+
+        var xE = d3.scale.linear()
+            .range([0, _SigletonConfig.width - marginSide * 2])
+            .domain([_SimulationData.minECalciumValue, _SimulationData.maxECalciumValue]);
+
+        var xAxisI = d3.svg.axis()
+            .scale(xI)
+            .orient("bottom")
+            .tickValues(xI.ticks().concat(xI.domain()))
+            .tickSize(-tickSize);
+
+        var xAxisE = d3.svg.axis()
+            .scale(xE)
+            .orient("top")
+            .tickValues(xE.ticks().concat(xE.domain()))
+            .tickSize(-tickSize);
 
         svgContainer.append("g")
             .attr("class", "x axis E")
-            .attr("transform", "translate(10,45)")
-            .call(xAxis);
+            .attr("transform", "translate(" + marginSide + "," + (scaleYPos + scaleHeight + marginAxis) + ")")
+            .call(xAxisI);
 
         svgContainer.append("g")
             .attr("class", "x axis I")
-            .attr("transform", "translate(10,18)")
+            .attr("transform", "translate(" + marginSide + "," + (scaleYPos - marginAxis) + ")")
             .call(xAxisE);
 
         $(".x.axis.I text").first().css("text-anchor", "start");

@@ -7,46 +7,25 @@
  -->
 
 <!-- Interface components -->
-<div id="popup" style="display: none;">
+<div id="popup" style="visibility: hidden;">
     <div id="colorPicker">
-        <table id="back">
-            <tr>
-                <td class="postTitle">Color schemas</td>
-            </tr>
-            <tr>
-                <td>
-                    <div style="float: left; line-height:26px; padding-right: 5px"><span>Schema</span>
-                    </div>
-                    <div id="comboBox" style="float: left;"></div>
-                    <div style="float: left; line-height:26px; padding-left: 20px;padding-right: 5px">
-                        <span>Steps</span></div>
-                    <div id="numSetps"></div>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <div id="color"></div>
-                </td>
-            </tr>
+        <div class="postTitle">Color schemas</div>
+        <div class="colorOptions">
+            <span class="titleSpan">Schema</span>
+            <select id="comboScaleType" class="text-input" style="margin-right: 0.2vw;"></select>
+            <select id="comboScale" class="text-input"></select>
+        </div>
+        <div id="colorRender"></div>
+        <div id="colorPicker2">
+            <div class="postTitle">RGB Color Picker</div>
+        </div>
 
-            <tr id="colorPicker2">
-                <td class="postTitle">RGB Color Picker</td>
-            </tr>
-            <tr>
-                <td>
-                    <div id="genericColorPicker">
-                    </div>
-                <td>
-            </tr>
-            <tr>
-                <td>
-                    <div style="float:right;margin-top: 20px">
-                        <a id="botonC" class="btn2" href="javascript:_ColorPicker.hide()">Cancel</a>
-                        <a id="botonA" class="btn" href="javascript:_ColorPicker.accept()">Accept</a>
-                    </div>
-                <td>
-            </tr>
-        </table>
+        <div id="genericColorPicker"></div>
+        <div style="position:absolute; bottom: 2%;right: 2%;">
+            <a id="botonC" class="btn2" href="javascript:_ColorPicker.hide()">Cancel</a>
+            <a id="botonA" class="btn" href="javascript:_ColorPicker.accept()">Accept</a>
+        </div>
+
     </div>
 </div>
 
@@ -233,29 +212,25 @@
                 <label class="sectionHeader">Elements</label>
             </div>
             <div class="centerFlex">
-                <label class="labelSubtitle">Color scheme</label>
-                <div style="margin: 3px; " class="centerFlex" id="dropDownNeuronScale">
-                    <div style="padding: 3px;" id="neuronScalePicker">
-                    </div>
+                <div class="colorOptions">
+                    <select id="comboScaleTypeNeuron" class="text-input" style="margin-right: 0.2vw;"></select>
+                    <select id="comboScaleNeuron" class="text-input"></select>
                 </div>
-                <label class="labelSubtitle">Excitatory color</label>
-                <div style="margin: 3px;" class="centerFlex" id="dropDownExcitatoryButton">
-                    <div style="padding: 3px;" id="excitatoryColorPicker">
-                    </div>
+                <hr>
+                <div class="colorFlex" id="dropDownExcitatoryButton">
+                    <label>Excitatory</label>
+                    <span></span>
+                    <div></div>
                 </div>
-                <label class="labelSubtitle">Inhibitory color</label>
-                <div style="margin: 3px; " id="dropDownInhibitoryButton">
-                    <div style="padding: 3px;">
-                        <div id="inhibitoryColorPicker">
-                        </div>
-                    </div>
+                <div class="colorFlex" id="dropDownInhibitoryButton">
+                    <label>Inhibitory</label>
+                    <span></span>
+                    <div></div>
                 </div>
-                <label class="labelSubtitle">Axonal color</label>
-                <div style="margin: 3px; " id="dropDownAxonalButton">
-                    <div style="padding: 3px;">
-                        <div id="axonalColorPicker">
-                        </div>
-                    </div>
+                <div class="colorFlex" id="dropDownAxonalButton">
+                    <label>Axonal</label>
+                    <span></span>
+                    <div></div>
                 </div>
             </div>
         </div>
@@ -264,38 +239,30 @@
                 <label class="sectionHeader">Connections</label>
             </div>
             <div class="centerFlex">
-                <label class="labelSubtitle">Color scheme</label>
-                <div style="margin: 3px; " id="dropDownConnectionsScale">
-                    <div style="padding: 3px;" id="connectionsScalePicker">
-                    </div>
+                <div class="colorOptions">
+                    <select id="comboScaleTypeConnection" class="text-input" style="margin-right: 0.2vw;"></select>
+                    <select id="comboScaleConnection" class="text-input"></select>
                 </div>
-                <label class="labelSubtitle">EE color</label>
-                <div style="margin: 3px; " id="dropDownEEButton">
-                    <div style="padding: 3px;">
-                        <div id="EEColorPicker">
-                        </div>
-                    </div>
+                <hr>
+                <div class="colorFlex" id="dropDownEEButton">
+                    <label>EE color</label>
+                    <span></span>
+                    <div></div>
                 </div>
-                <label class="labelSubtitle">EI color</label>
-                <div style="margin: 3px; " id="dropDownEIButton">
-                    <div style="padding: 3px;">
-                        <div id="EIColorPicker">
-                        </div>
-                    </div>
+                <div class="colorFlex" id="dropDownEIButton">
+                    <label>EI color</label>
+                    <span></span>
+                    <div></div>
                 </div>
-                <label class="labelSubtitle">IE color</label>
-                <div style="margin: 3px; " id="dropDownIEButton">
-                    <div style="padding: 3px;">
-                        <div id="IEColorPicker">
-                        </div>
-                    </div>
+                <div class="colorFlex" id="dropDownIEButton">
+                    <label>IE color</label>
+                    <span></span>
+                    <div></div>
                 </div>
-                <label class="labelSubtitle">II color</label>
-                <div style="margin: 3px;" id="dropDownIIButton">
-                    <div style="padding: 3px;">
-                        <div id="IIColorPicker">
-                        </div>
-                    </div>
+                <div class="colorFlex" id="dropDownIIButton">
+                    <label>II color</label>
+                    <span></span>
+                    <div></div>
                 </div>
             </div>
         </div>
@@ -304,26 +271,20 @@
                 <label class="sectionHeader">Calcium</label>
             </div>
             <div class="centerFlex">
-                <label class="labelSubtitle">Color scheme</label>
-                <div style="margin: 3px;" id="dropDownCalciumScale">
-                    <div style="padding: 3px;" id="calciumScalePicker">
-                    </div>
+                <div class="colorOptions">
+                    <select id="comboScaleTypeCalcium" class="text-input" style="margin-right: 0.2vw;"></select>
+                    <select id="comboScaleCalcium" class="text-input"></select>
                 </div>
-                <div style="margin: 3px;" id="calciumColorScale">
+                <hr>
+                <div class="colorFlex" id="dropDownCaMaxValueColorButton">
+                    <label>Maximum calcium</label>
+                    <span></span>
+                    <div></div>
                 </div>
-                <label class="labelSubtitle">Ca. max. value color</label>
-                <div style="margin: 3px; " id="dropDownCaMaxValueColorButton">
-                    <div style="padding: 3px;">
-                        <div id="CaMaxValueColorColorPicker">
-                        </div>
-                    </div>
-                </div>
-                <label class="labelSubtitle">Ca. min. value color</label>
-                <div style="margin: 3px;" id="dropDownCaMinValueColorButton">
-                    <div style="padding: 3px;">
-                        <div id="CaMinValueColorColorPicker">
-                        </div>
-                    </div>
+                <div class="colorFlex" id="dropDownCaMinValueColorButton">
+                    <label>Minimum calcium</label>
+                    <span></span>
+                    <div></div>
                 </div>
             </div>
         </div>
@@ -332,163 +293,95 @@
     <!-- Global Configuration tab -->
     <div id="globalConfTab" class="tabs" style="display:none">
         <!-- <input id='jqxWindow_Config_button' type="button" class="button" value="Set value"/> -->
-        <table>
-            <tr>
-                <td>
-                    <div id='CaSetPoint'>
-                        <div style='margin-top: 10px;' id='jqxRadioButtonCaSetPointFromFile'>
-                            <span>Ca. set points from file</span>
-                        </div>
-                        <div style='margin-top: 10px;' id='jqxRadioButtonCaSetPointFromNeuronValues'>
-                            <span>Ca. set points from neuron values</span>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label class="labelSubtitle">Ca. color interpol. method</label>
-                    <br/>
-                    <div style="margin: 3px; float: left;" id="dropDownCaInterpolMethodButton">
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <div id='CaColorMethod'>
-                        <div style='margin-top: 10px; float: left;' id='jqxRadioButtonHSLColorInterpol'>
-                            HSL
-                        </div>
-                        <div style='margin-top: 10px; float: left;' id='jqxRadioButtonRGBColorInterpol'>
-                            RGB
-                        </div>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label class="labelSubtitle">Synaptic elements to view</label>
-                    <br/>
-                    <div style="margin: 3px; float: left;" id="dropDownSynapticElementsToViewButton">
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label class="labelSubtitle">Simulation velocity</label>
-                    <br/>
-                    <div style="float: left">
-                        <div id='jqxNumericInput_SimulationVelocity' style='margin-top: 3px;'></div>
-                    </div>
-                </td>
-            </tr>
+        <div class="box">
+            <div class="centerFlex">
 
-            <tr>
-                <td>
-                    <label class="labelSubtitle">Type of connections</label>
-                    <br/>
-                    <div>
-                        <div style="margin: 3px; float: left;" id="chkOutgoingConn">Outgoing
-                        </div>
-                        <div style="margin: 3px; float: left;" id="chkIncomingConn">Incoming
-                        </div>
+                <div class="radioWrapper" id='jqxRadioButtonCaSetPointFromFile'>
+                    <span>Ca. set points from file</span>
+                </div>
+                <div class="radioWrapper" id='jqxRadioButtonCaSetPointFromNeuronValues'>
+                    <span>Ca. set points from neuron values</span>
+                </div>
+
+                <div class="tagInput">
+                    <label class="labelSubtitle">Synaptic elements to view</label>
+                    <select class="text-input" id="dropDownSynapticElementsToViewButton"></select>
+                </div>
+                <div class="tagInput">
+                    <label class="labelSubtitle">Simulation velocity</label>
+                    <div class="numeriInputWrapper" id='jqxNumericInput_SimulationVelocity'></div>
+                </div>
+
+                <label class="labelSubtitle marginBottom">Type of connections</label>
+                <div class="flex">
+                    <div class="checkBoxWrapper" id="chkOutgoingConn">Outgoing
                     </div>
-                </td>
-            </tr>
-        </table>
+                    <div class="checkBoxWrapper" id="chkIncomingConn">Incoming
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <!-- Global View Configuration tab -->
     <div id="gloablViewTab" class="tabs" style="display:none">
-        <h3>
-            Representation type
-        </h3>
-        <div style='margin-top: 10px;' id='jqxRadioButtonGlobalVBarrs'>
-            <span>Bars representation</span>
-        </div>
-        <div style='margin-top: 10px;' id='jqxRadioButtonGlobalVFuncts'>
-            <span>Function representation</span>
-        </div>
+
     </div>
     <!-- Macro View Configuration tab -->
     <div id="macroViewTab" class="tabs" style="display:none">
-        <table>
-            <tr>
-                <td>
-                    <div id='jqxCheckBox_EEConnect' style='margin-left: 10px; '> Draw EE connect.</div>
-                    <div id='jqxCheckBox_EIConnect' style='margin-left: 10px; '> Draw EI connect.</div>
-                    <div id='jqxCheckBox_IEConnect' style='margin-left: 10px; '> Draw IE connect.</div>
-                    <div id='jqxCheckBox_IIConnect' style='margin-left: 10px; '> Draw II connect.</div>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label style="margin-left: 10px; font-size: 12px; font-family: Verdana;">Connect. alpha
-                        factor</label>
-                    <br/>
-                    <div style="margin-left: 20px; float: left">
-                        <div id='jqxMacroVControls_SliderApha'></div>
-                    </div>
-                </td>
-            </tr>
-        </table>
-
-        <div id="macroViewElipseTab"  style="display: none">
-
-            <table>
-                <tr>
-                    <td>
-                        <div id="idSelectorElipse" style="float: left; align-self: center;  ">
-                            <div id="numericImputElipse"></div>
-                        </div>
-                        <input id='btnAddID' type="button" value="Add ID" align="center" valign="center"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <input id='btnAddSelected' type="button" value="Add Selected" align="center" valign="center"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <input id='rmSelected' type="button" value="Remove Selected" align="center" valign="center"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <input id='btnRmSelected' type="button" value="Remove all" align="center" valign="center"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div>
-                            <ul id="listaCentroElipse"></ul>
-                        </div>
-                    </td>
-                </tr>
-            </table>
+        <div class="box">
+            <div class="navBarSectionTitle">
+                <label class="sectionHeader">Connections</label>
+            </div>
+            <div class="centerFlex">
+                <div class="checkBoxWrapper" id='jqxCheckBox_EEConnect' style='margin-left: 10px; '> Draw EE connect.
+                </div>
+                <div class="checkBoxWrapper" id='jqxCheckBox_EIConnect' style='margin-left: 10px; '> Draw EI connect.
+                </div>
+                <div class="checkBoxWrapper" id='jqxCheckBox_IEConnect' style='margin-left: 10px; '> Draw IE connect.
+                </div>
+                <div class="checkBoxWrapper" id='jqxCheckBox_IIConnect' style='margin-left: 10px; '> Draw II connect.
+                </div>
+                <div class="tagInput">
+                    <label>Alpha factor</label>
+                    <div class="numeriInputWrapper" id='jqxMacroVControls_SliderApha'></div>
+                </div>
+            </div>
         </div>
+
+        <div id="macroViewElipseTab" class="box">
+            <div class="navBarSectionTitle">
+                <label class="sectionHeader">Inner elipse</label>
+            </div>
+            <div class="centerFlex">
+                <div class="tagInput">
+                    <label>ID</label>
+                    <div class="numeriInputWrapper" id='numericImputElipse'></div>
+                </div>
+                <input id='btnAddID' type="button" value="Add ID" class="button"/>
+
+                <input id='btnAddSelected' type="button" value="Add Selected" class="button"/>
+                <input id='rmSelected' type="button" value="Remove Selected" class="button"/>
+                <input id='btnRmSelected' type="button" value="Remove all" class="button"/>
+                <hr>
+                <div>
+                    <div id="listaCentroElipse" class="marginBottom"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Micro View Configuration tab -->
+    <div id="microViewTab" class="tabs" style="display:none">
     </div>
     <!-- Detail Micro View Configuration tab -->
     <div id="detailedMicroViewTab" class="tabs" style="display:none">
-        <table>
-            <tr>
-                <td>
-                    <div class="navBarSectionTitle">
-                        <label class="sectionHeader">Number of history steps</label>
-                    </div>
-
-                </td>
-            </tr>
-
-            <tr>
-                <td>
-                    <div>
-                        <div id="numericBarElements"></div>
-                    </div>
-                </td>
-            </tr>
-        </table>
-
+        <div class="box">
+            <div class="centerFlex">
+                <div class="tagInput">
+                    <label class="labelSubtitle">Number of history steps</label>
+                    <div class="numeriInputWrapper" id="numericBarElements"></div>
+                </div>
+            </div>
+        </div>
     </div>
     <!-- Filter tab -->
     <div id="filterTab" class="tabs" style="display:none">
@@ -498,32 +391,26 @@
                 <label class="sectionHeader">Create filter</label>
             </div>
             <div class="centerFlex">
-                <div>
-                    <div style="margin: 3px;" id="chkNeuronType1">Excitatory
+                <div class="flex">
+                    <div class="checkBoxWrapper" id="chkNeuronType1">Excitatory
+                    </div>
+                    <div class="checkBoxWrapper" id="chkNeuronType2">Inhibitory
                     </div>
                 </div>
 
-                <div>
-                    <div style="margin: 3px; " id="chkNeuronType2">Inhibitory
-                    </div>
-                </div>
-
-                <div style="margin: 3px; " id="comboBoxTypeFilter">Calcium
-                </div>
+                <select class="text-input" id="comboBoxTypeFilter">
+                </select>
 
                 <div style="margin: 3px; " id="caRangeFilter">
                 </div>
 
 
-                <div style="margin: 3px; " id="caMinRangeFilter">
+                <div class="numeriInputWrapper" id="caMinRangeFilter">
                 </div>
 
-                <div style="margin: 3px; " id="caMaxRangeFilter">
+                <div class="numeriInputWrapper" id="caMaxRangeFilter">
                 </div>
-                <br>
-                <div style="margin: 3px; ">
-                    <input type="button" value="Apply Filter" id='btnApplyFilter'/>
-                </div>
+                <input type="button" value="Apply Filter" class="button" id='btnApplyFilter'/>
             </div>
         </div>
         <div class="box">
@@ -541,22 +428,22 @@
     <div id="sortTab" class="tabs" style="display:none">
         <div class="box">
             <div class="navBarSectionTitle">
-                <label class="sectionHeader">Neurons Sorting</label>
+                <label class="sectionHeader">Neuron Sorting</label>
             </div>
             <div class="centerFlex" style=" align-items: left;">
-                <div id='jqxCheckBoxMixNeurons'>Mix neuron's types</div>
+                <div class="checkBoxWrapper" id='jqxCheckBoxMixNeurons'>Mix neuron's types</div>
 
-                <div id='jqxCheckBoxInverseSort'>Inverse order</div>
+                <div class="checkBoxWrapper" id='jqxCheckBoxInverseSort'>Inverse order</div>
 
-                <div id='jqxRadioNoSort'>No sort</div>
+                <div class="radioWrapper" id='jqxRadioNoSort'>No sort</div>
 
-                <div id='jqxRadioSortByCa'>Sort by Calcium Ca.</div>
+                <div class="radioWrapper" id='jqxRadioSortByCa'>Sort by Calcium Ca.</div>
 
-                <div id='jqxRadioSortEConn'>Sort by Inhibitory Conn.</div>
+                <div class="radioWrapper" id='jqxRadioSortEConn'>Sort by Inhibitory Conn.</div>
 
-                <div id='jqxRadioSortIConn'>Sort by Excitatory Conn.</div>
+                <div class="radioWrapper" id='jqxRadioSortIConn'>Sort by Excitatory Conn.</div>
 
-                <div id='jqxRadioSortAConn'>Sort by Axonal Conn.</div>
+                <div class="radioWrapper" id='jqxRadioSortAConn'>Sort by Axonal Conn.</div>
             </div>
         </div>
     </div>
@@ -576,23 +463,25 @@
         <div id="colorSampleBand"></div>
 
         <!-- Bottom bar -->
-        <div id='jqxBottomControls'>
+        <div id='jqxBottomControls' style="visibility: hidden">
             <!-- Visualization control -->
-            <div id="controles" style="display: flex; height: auto; align-self: stretch; flex: 1 0 auto;">
-                <div id="control1" style="float: left; align-self: center;">
-                    <input id='jqxBottomControls_ButtonSimulate' type="button" value="Simulate"/>
+            <div id="controles">
+                <div id="control1" class="left center">
+                    <input id='jqxBottomControls_ButtonSimulate' disabled class="button noMargin" type="button"
+                           value="Simulate" style="width: 13vmin;"/>
                 </div>
-                <div id="control2" style="float: left; align-self: center;">
-                    <span style="font-style: italic; margin-left: 40px; margin-right: 15px">Timeline</span>
+                <div id="control2" class="left center">
+                    <span class="margin05W">Timeline</span>
                 </div>
-                <div id="control3" style="float: left; align-self: center;">
-                    <div id='jqxBottomControls_SliderTimeline'></div>
+                <div id="control3" class="left center">
+                    <div id='jqxBottomControls_SliderTimeline' class="slideWrapper"></div>
                 </div>
-                <div id="control4" style="float: left; align-self: center;">
-                    <span style="font-style: italic; margin-left: 50px; margin-right: 5px">Step</span>
+                <div id="control4" class="left center">
+                    <span class="margin05W">Step</span>
                 </div>
-                <div id="control5" style="float: left; align-self: center;">
-                    <div id="jqxBottomControls_NumericInputStep"></div>
+                <div id="control5" class="left center">
+                    <div class="noMargin numeriInputShort numeriInputWrapper"
+                         id="jqxBottomControls_NumericInputStep"></div>
                 </div>
             </div>
             <!-- View navigation -->

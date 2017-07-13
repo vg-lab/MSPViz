@@ -1,74 +1,89 @@
-MSP.ColorPicker = function ()
-{
-    this.source = [
-        {html: "<div tabIndex=0 style='padding: 1px;'><div>schemeAccent</div>", label: "schemeAccent", group: "Categorical" },
-        {html: "<div tabIndex=0 style='padding: 1px;'><div>schemeDark2</div>", label: "schemeDark2", group: "Categorical" },
-        {html: "<div tabIndex=0 style='padding: 1px;'><div>schemePaired</div>", label: "schemePaired", group: "Categorical" },
-        {html: "<div tabIndex=0 style='padding: 1px;'><div>schemePastel1</div>", label: "schemePastel1", group: "Categorical" },
-        {html: "<div tabIndex=0 style='padding: 1px;'><div>schemePastel2</div>", label: "schemePastel2", group: "Categorical" },
-        {html: "<div tabIndex=0 style='padding: 1px;'><div>schemeSet1</div>", label: "schemeSet1", group: "Categorical" },
-        {html: "<div tabIndex=0 style='padding: 1px;'><div>schemeSet2</div>", label: "schemeSet2", group: "Categorical" },
-        {html: "<div tabIndex=0 style='padding: 1px;'><div>schemeSet3</div>", label: "schemeSet3", group: "Categorical" },
-        {html: "<div tabIndex=0 style='padding: 1px;'><div>Viridis</div>", label: "Viridis", group: "Diverging" },
-        {html: "<div tabIndex=0 style='padding: 1px;'><div>Inferno</div>", label: "Inferno", group: "Diverging" },
-        {html: "<div tabIndex=0 style='padding: 1px;'><div>Magma</div>", label: "Magma", group: "Diverging" },
-        {html: "<div tabIndex=0 style='padding: 1px;'><div>Plasma</div>", label: "Plasma", group: "Diverging" },
-        {html: "<div tabIndex=0 style='padding: 1px;'><div>Warm</div>", label: "Warm", group: "Diverging" },
-        {html: "<div tabIndex=0 style='padding: 1px;'><div>Cool</div>", label: "Cool", group: "Diverging" },
-        {html: "<div tabIndex=0 style='padding: 1px;'><div>Cubehelix</div>", label: "CubehelixDefault", group: "Diverging" },
-        {html: "<div tabIndex=0 style='padding: 1px;'><div>BrBG</div>", label: "BrBG", group: "Diverging" },
-        {html: "<div tabIndex=0 style='padding: 1px;'><div>PRGn</div>", label: "PRGn", group: "Diverging" },
-        {html: "<div tabIndex=0 style='padding: 1px;'><div>PiYG</div>", label: "PiYG", group: "Diverging" },
-        {html: "<div tabIndex=0 style='padding: 1px;'><div>PuOr</div>", label: "PuOr", group: "Diverging" },
-        {html: "<div tabIndex=0 style='padding: 1px;'><div>RdBu</div>", label: "RdBu", group: "Diverging" },
-        {html: "<div tabIndex=0 style='padding: 1px;'><div>RdGy</div>", label: "RdGy", group: "Diverging" },
-        {html: "<div tabIndex=0 style='padding: 1px;'><div>RdYlBu</div>", label: "RdYlBu", group: "Diverging" },
-        {html: "<div tabIndex=0 style='padding: 1px;'><div>RdYlGn</div>", label: "RdYlGn", group: "Diverging" },
-        {html: "<div tabIndex=0 style='padding: 1px;'><div>Spectral</div>", label: "Spectral", group: "Diverging" },
-        {html: "<div tabIndex=0 style='padding: 1px;'><div>Greens</div>", label: "Greens", group: "Sequential" },
-        {html: "<div tabIndex=0 style='padding: 1px;'><div>Greys</div>", label: "Greys", group: "Sequential" },
-        {html: "<div tabIndex=0 style='padding: 1px;'><div>Oranges</div>", label: "Oranges", group: "Sequential" },
-        {html: "<div tabIndex=0 style='padding: 1px;'><div>Purples</div>", label: "Purples", group: "Sequential" },
-        {html: "<div tabIndex=0 style='padding: 1px;'><div>Reds</div>", label: "Reds", group: "Sequential" },
-        {html: "<div tabIndex=0 style='padding: 1px;'><div>BuGn</div>", label: "BuGn", group: "Sequential" },
-        {html: "<div tabIndex=0 style='padding: 1px;'><div>BuPu</div>", label: "BuPu", group: "Sequential" },
-        {html: "<div tabIndex=0 style='padding: 1px;'><div>GnBu</div>", label: "GnBu", group: "Sequential" },
-        {html: "<div tabIndex=0 style='padding: 1px;'><div>OrRd</div>", label: "OrRd", group: "Sequential" },
-        {html: "<div tabIndex=0 style='padding: 1px;'><div>PuBuGn</div>", label: "PuBuGn", group: "Sequential" },
-        {html: "<div tabIndex=0 style='padding: 1px;'><div>PuBu</div>", label: "PuBu", group: "Sequential" },
-        {html: "<div tabIndex=0 style='padding: 1px;'><div>PuRd</div>", label: "PuRd", group: "Sequential" },
-        {html: "<div tabIndex=0 style='padding: 1px;'><div>RdPu</div>", label: "RdPu", group: "Sequential" },
-        {html: "<div tabIndex=0 style='padding: 1px;'><div>YlGnBu</div>", label: "YlGnBu", group: "Sequential" },
-        {html: "<div tabIndex=0 style='padding: 1px;'><div>YlGn</div>", label: "YlGn", group: "Sequential" },
-        {html: "<div tabIndex=0 style='padding: 1px;'><div>YlOrBr</div>", label: "YlOrBr", group: "Sequential" },
-        {html: "<div tabIndex=0 style='padding: 1px;'><div>YlOrRd</div>", label: "YlOrRd", group: "Sequential" }];
-
-    this.widthPane = 300;
+MSP.ColorPicker = function () {
+    this.colorScaleTypes = ['Categorical', 'Diverging', 'Sequential'];
+    this.colorScales = [
+        [
+            {labelInternal: "schemeAccent", label: "schemeAccent", group: "Categorical"},
+            {labelInternal: "schemeDark2", label: "Dark2", group: "Categorical"},
+            {labelInternal: "schemePaired", label: "Paired", group: "Categorical"},
+            {labelInternal: "schemePastel1", label: "Pastel1", group: "Categorical"},
+            {labelInternal: "schemePastel2", label: "Pastel2", group: "Categorical"},
+            {labelInternal: "schemeSet1", label: "Set1", group: "Categorical"},
+            {labelInternal: "schemeSet2", label: "Set2", group: "Categorical"},
+            {labelInternal: "schemeSet3", label: "Set3", group: "Categorical"}
+        ],
+        [
+            {labelInternal: "Viridis", label: "Viridis", group: "Diverging"},
+            {labelInternal: "Inferno", label: "Inferno", group: "Diverging"},
+            {labelInternal: "Magma", label: "Magma", group: "Diverging"},
+            {labelInternal: "Plasma", label: "Plasma", group: "Diverging"},
+            {labelInternal: "Warm", label: "Warm", group: "Diverging"},
+            {labelInternal: "Cool", label: "Cool", group: "Diverging"},
+            {labelInternal: "CubehelixDefault", label: "CubehelixDefault", group: "Diverging"},
+            {labelInternal: "BrBG", label: "BrBG", group: "Diverging"},
+            {labelInternal: "PRGn", label: "PRGn", group: "Diverging"},
+            {labelInternal: "PiYG", label: "PiYG", group: "Diverging"},
+            {labelInternal: "PuOr", label: "PuOr", group: "Diverging"},
+            {labelInternal: "RdBu", label: "RdBu", group: "Diverging"},
+            {labelInternal: "RdGy", label: "RdGy", group: "Diverging"},
+            {labelInternal: "RdYlBu", label: "RdYlBu", group: "Diverging"},
+            {labelInternal: "RdYlGn", label: "RdYlGn", group: "Diverging"},
+            {labelInternal: "Spectral", label: "Spectral", group: "Diverging"}
+        ],
+        [
+            {labelInternal: "Greens", label: "Greens", group: "Sequential"},
+            {labelInternal: "Greys", label: "Greys", group: "Sequential"},
+            {labelInternal: "Oranges", label: "Oranges", group: "Sequential"},
+            {labelInternal: "Purples", label: "Purples", group: "Sequential"},
+            {labelInternal: "Reds", label: "Reds", group: "Sequential"},
+            {labelInternal: "BuGn", label: "BuGn", group: "Sequential"},
+            {labelInternal: "BuPu", label: "BuPu", group: "Sequential"},
+            {labelInternal: "GnBu", label: "GnBu", group: "Sequential"},
+            {labelInternal: "OrRd", label: "OrRd", group: "Sequential"},
+            {labelInternal: "PuBuGn", label: "PuBuGn", group: "Sequential"},
+            {labelInternal: "PuBu", label: "PuBu", group: "Sequential"},
+            {labelInternal: "PuRd", label: "PuRd", group: "Sequential"},
+            {labelInternal: "RdPu", label: "RdPu", group: "Sequential"},
+            {labelInternal: "YlGnBu", label: "YlGnBu", group: "Sequential"},
+            {labelInternal: "YlGn", label: "YlGn", group: "Sequential"},
+            {labelInternal: "YlOrBr", label: "YlOrBr", group: "Sequential"},
+            {labelInternal: "YlOrRd", label: "YlOrRd", group: "Sequential"}
+        ]
+    ];
+    this.colorPickerWidth = null;
     this.colorSelec = "";
     this.colorRange = null;
-    this.colorSelecGlobal ="";
-    this.linea = null;
-    this.triangulo = null;
+    this.colorSelecGlobal = "";
+    this.lineIndicator = null;
+    this.squareAnchor = null;
     this.svgContainer = null;
+    this.numSteps = 10;
 };
 
 MSP.ColorPicker.prototype = {
 
-    constructor: MSP.ColorPicker
+    constructor: MSP.ColorPicker,
 
-    ,generateColorPicker : function ()
-    {
-        $("#numSetps").jqxNumberInput({theme: "arctic", width: '40px', height: '25px', digits: 2,min:2,max:20, inputMode: 'simple',decimalDigits: 0, spinButtons: true,groupSize:0, value:10 });
-        $("#genericColorPicker").jqxColorPicker({ color: "0000FF", colorMode: 'hue', width: 316, height: 200});
-        $("#comboBox").jqxComboBox({theme: "arctic", source: this.source, width: 136, height: 25,autoComplete: true,closeDelay: 50,openDelay: 50,placeHolder: "Select scheme"});
+    generateColorPicker: function () {
+        var self = this;
+        var height = $("#colorPicker").height();
+        var width = $("#colorPicker").width();
+
+        $("#colorRender").empty();
+
+        this.colorPickerWidth = width;
+
+        $("#genericColorPicker").jqxColorPicker({color: "0000FF", colorMode: 'hue', width: width, height: "50%"});
+
+        $("#genericColorPicker").find("input").each(function () {
+            $(this).attr('style', "");
+        });
 
         this.colorRange = d4.scaleSequential(d4.interpolateViridis);
 
-        var svgContainer = d4.select("#color").append("svg")
-            .attr("x",10).attr("y",20)
-            .attr("width", 310)
-            .attr("height", 90)
-            .attr("class","color");
+        var svgContainer = d4.select("#colorRender").append("svg")
+            .attr("width", "100%")
+            .attr("height", height * 0.2)
+            .attr("class", "color");
         this.svgContainer = svgContainer;
 
         var lg = svgContainer.append("defs").append("linearGradient")
@@ -78,240 +93,314 @@ MSP.ColorPicker.prototype = {
             .attr("y1", "0%")
             .attr("y2", "0%");
 
-        for(var i = 0; i<=20; i++) {
+        for (var i = 0; i <= 20; i++) {
             lg.append("stop")
-                .attr("offset", (i*5)+"%")
-                .style("stop-color", this.colorRange(i/20))
+                .attr("offset", (i * 5) + "%")
+                .style("stop-color", this.colorRange(i / 20))
                 .style("stop-opacity", 1);
         }
 
-        this.generateBlocks();
+        this.colorScaleTypes.forEach(function (elem, i) {
+            $('#comboScaleType').append($('<option>', {
+                value: i,
+                text: elem
+            }));
+        });
+
+        this.colorScales[0].forEach(function (elem, i) {
+            $('#comboScale').append($('<option>', {
+                value: i,
+                text: elem.label
+            }));
+        });
+
+        this.generateColorSquares();
 
         this.generateScale();
 
-        $('#comboBox').on('change', function() {
-           var colorSelec = $("#comboBox").jqxComboBox('val');
-            if($("#comboBox").jqxComboBox('getSelectedItem').group==='Categorical')
-                _ColorPicker.categorical(colorSelec);
+        $('#comboScale').on('change', function () {
+            var idxSaleType = $("#comboScaleType").prop('selectedIndex');
+            var idxColorSale = $("#comboScale").prop('selectedIndex');
+            var colorScale = self.colorScales[idxSaleType][idxColorSale].labelInternal;
+            if ($("#comboScaleType").prop('selectedIndex') === 0)
+                _ColorPicker.categorical(colorScale);
             else
-                _ColorPicker.update(colorSelec);
+                _ColorPicker.update(colorScale);
             _ColorPicker.updatePick();
         });
 
-        $('#numSetps').on('change', function() {_ColorPicker.generateBlocks();});
+        $('#comboScaleType').on('change', function () {
+            $("#comboScale").empty();
+            self.source[$("#comboScaleType").prop('selectedIndex')].forEach(function (elem, i) {
+                $('#comboScale').append($('<option>', {
+                    value: i,
+                    text: elem.label
+                }));
+            });
+            $('#comboScale').trigger("change");
+        });
 
+        $('#colorBandScale').hide();
+    },
+    resize: function () {
+        var height = $("#colorPicker").height();
+        var width = $("#colorPicker").width();
+        var colorScaleType = $("#comboScaleType option:selected").text();
+        var isCategorical = colorScaleType === "Categorical";
 
+        this.colorPickerWidth = width;
+        _ColorPicker.svgContainer.attr("height", height * 0.2);
 
-    },generateScale: function()
-    {
+        $("#genericColorPicker").jqxColorPicker({width: width, height: "50%"});
+
+        this.generateColorSquares();
+
+        if (!isCategorical) this.generateScale();
+    },
+    generateScale: function () {
+
+        var height = $("#colorPicker").height() * 0.2;
+        var width = $("#colorPicker").width();
+        var figSize = width * 0.03;
         var self = _ColorPicker;
-        self.svgContainer.attr("height",90);
         var draag = d4.drag().on('drag', self.moveBarColor);
-        if(d4.select("#colorGradient").empty()) {
-            var rectangle = self.svgContainer.append("rect")
-                .attr("id", "colorGradient")
-                .attr("height", 40)
-                .attr("y", 32)
-                .attr("cursor", "pointer")
-                .attr("width", this.widthPane)
-                .attr("fill", "url(#gradient)");
-            rectangle.on("click",self.moveBarColor).on("drag", self.moveBarColor).on("dragend", self.moveBarColor);
-        }
 
-        if(d4.select("#linea").empty()) {
-            self.linea = self.svgContainer.append("rect")
-                .attr("x", 150)
-                .attr("id", "linea")
-                .attr("y", 32)
-                .attr('fill', '#fff')
-                .attr("height", 40)
-                .attr("width", 1)
-                .attr("cursor", "move")
-                .call(draag);
-        }
-        if(d4.select("#indicador").empty()) {
-            self.triangulo = self.svgContainer.append("rect")
-                .attr("x", 145)
-                .attr("id", "indicador")
-                .attr("y", 72)
-                .attr("width", 10)
-                .attr("height", 10)
-                .attr("cursor", "move")
-                .attr("fill", "black").call(draag);
+        d4.select('#colorBandScale').remove();
+        var scaleComponents = self.svgContainer.append("g").attr("id", "colorBandScale");
 
-            self.triangulo.append("g");
-        }
+        var colorScale = scaleComponents.append("rect")
+            .attr("id", "colorGradientScale")
+            .attr("height", height * 0.5)
+            .attr("y", height * 0.5)
+            .attr("cursor", "pointer")
+            .attr("width", this.colorPickerWidth)
+            .attr("fill", "url(#gradient)");
 
-    }
+        colorScale.on("click", self.moveBarColor).on("drag", self.moveBarColor).on("dragend", self.moveBarColor);
 
+        self.lineIndicator = scaleComponents.append("rect")
+            .attr("x", this.colorPickerWidth - figSize / 2)
+            .attr("id", "lineIndicator")
+            .attr("y", (height * 0.5) - figSize)
+            .attr('fill', '#fff')
+            .attr("height", (height * 0.5) + figSize)
+            .attr("width", 1)
+            .attr("cursor", "move")
+            .call(draag);
 
-    ,generateBlocks : function()
-    {
+        self.squareAnchor = scaleComponents.append("rect")
+            .attr("x", this.colorPickerWidth - figSize)
+            .attr("id", "indicador")
+            .attr("y", (height * 0.5) - figSize)
+            .attr("width", figSize)
+            .attr("height", figSize)
+            .attr("cursor", "move")
+            .attr("fill", "black")
+            .call(draag);
+
+        self.squareAnchor.append("g");
+    },
+    generateColorSquares: function () {
+        var height = $("#colorPicker").height() * 0.2;
+        var width = $("#colorPicker").width();
+        var squareHeight = height * 0.3;
         var self = _ColorPicker;
-        var isCategorical= false;
-        if($("#comboBox").jqxComboBox('getSelectedItem')!==null)   isCategorical = $("#comboBox").jqxComboBox('getSelectedItem').group==='Categorical';
+        var idxSaleType = $("#comboScaleType").prop('selectedIndex');
+        var idxColorSale = $("#comboScale").prop('selectedIndex');
+        var colorScale = self.colorScales[idxSaleType][idxColorSale].labelInternal;
+        var colorScaleType = $("#comboScaleType option:selected").text();
+        var isCategorical = colorScaleType === "Categorical";
 
-        var scheme = $("#comboBox").jqxComboBox('val');
-        if(scheme==="") scheme="Viridis";
-        if(isCategorical)
-            self.colorRange = d4[scheme];
-        else
-            self.colorRange = d4["interpolate"+scheme];
+        if (colorScale === "" || colorScale === null) colorScale = "Viridis";
 
-        var numCuad = $("#numSetps").jqxNumberInput('val');
-        if(self.colorRange.length < numCuad && isCategorical) numCuad = self.colorRange.length;
-        d4.selectAll('.cuadritos').remove();
-        var ancho = (self.widthPane - ((numCuad-1)*2))/numCuad;
-        for(var i = 0; i<=(numCuad-1); i++) {
+        if (isCategorical) {
+            self.colorRange = d4[colorScale];
+            squareHeight = height;
+        }
+        else {
+            self.colorRange = d4["interpolate" + colorScale];
+            squareHeight = height * 0.3;
+        }
+
+        if (self.colorRange.length < self.numSteps && isCategorical) self.numSteps = self.colorRange.length;
+        var numSquares = self.numSteps;
+
+        d4.select('#rectanglesPick').remove();
+        var colorSquares = self.svgContainer.append("g").attr("id", "rectanglesPick");
+
+        var colorSquareWidth = ((self.colorPickerWidth - 4 - width * 0.16) - ((numSquares - 1) * 2)) / numSquares;
+
+        colorSquares.append("rect")
+            .attr("class", "colorSquare")
+            .attr("x", 0)
+            .attr("width", width * 0.08)
+            .attr("height", squareHeight)
+            .attr("i", 0)
+            .attr("fill", "#262943")
+            .attr("cursor", "pointer")
+            .on("click", function () {
+                if (self.numSteps > 0)
+                    self.numSteps -= 1;
+                self.generateColorSquares();
+            });
+        colorSquares.append("text")
+            .text("-")
+            .attr("x", (width * 0.04))
+            .attr("y", squareHeight * 0.5)
+            .attr("fill", "#fff")
+            .style("font-size", "1vw")
+            .style("font-weight", "700")
+            .attr("text-anchor", "middle")
+            .attr("pointer-events", "none")
+            .attr("user-select", "none")
+            .attr("alignment-baseline", "central");
+
+        colorSquares.append("rect")
+            .attr("class", "colorSquare")
+            .attr("x", (width * 0.08) + 2 + (numSquares * (colorSquareWidth + 2)))
+            .attr("width", width * 0.08)
+            .attr("height", squareHeight)
+            .attr("i", (numSquares - 1))
+            .attr("fill", "#262943")
+            .attr("cursor", "pointer")
+            .on("click", function () {
+                if ((self.numSteps < 20 && !isCategorical) || (self.numSteps < self.colorRange.length && isCategorical))
+                    self.numSteps += 1;
+                self.generateColorSquares();
+            });
+
+        colorSquares.append("text")
+            .text("+")
+            .attr("x", (width * 0.08) + 2 + (numSquares * (colorSquareWidth + 2)) + (width * 0.04))
+            .attr("y", squareHeight * 0.5)
+            .attr("fill", "#fff")
+            .style("font-size", "1vw")
+            .style("font-weight", "700")
+            .attr("text-anchor", "middle")
+            .attr("pointer-events", "none")
+            .attr("user-select", "none")
+            .attr("alignment-baseline", "central");
+
+        for (var i = 0; i <= (numSquares - 1); i++) {
             var color;
-            if(isCategorical)
+            if (isCategorical)
                 color = self.colorRange[i];
             else
-                color = self.colorRange(i/(numCuad-1));
-            self.svgContainer.append("rect")
-                .attr("class","cuadritos")
-                .attr("x", (i*(ancho+2)))
-                .attr("width", ancho)
-                .attr("height", 30)
+                color = self.colorRange(i / (numSquares - 1));
+
+            colorSquares.append("rect")
+                .attr("class", "colorSquare")
+                .attr("x", (width * 0.08) + 2 + (i * (colorSquareWidth + 2)))
+                .attr("width", colorSquareWidth)
+                .attr("height", squareHeight)
                 .attr("i", i)
-                .attr("fill",color)
-                .attr("cursor","pointer")
+                .attr("fill", color)
+                .attr("cursor", "pointer")
                 .on("click", self.colorchange);
         }
 
-    },  categorical : function(scheme){
-        d4.select('#colorGradient').remove();
-        d4.select('#indicador').remove();
-        d4.select('#linea').remove();
-        var self = _ColorPicker;
-        self.svgContainer.attr("height",45);
-        self.generateBlocks();
 
-    }
-    ,update: function(color){
-
+    },
+    categorical: function () {
+        $('#colorBandScale').hide();
         var self = _ColorPicker;
-        self.generateScale();
-        self.colorRange = d4.scaleSequential(d4["interpolate"+color]);
+        self.generateColorSquares();
+    },
+    update: function (color) {
+        $('#colorBandScale').show();
+        var self = _ColorPicker;
+
+        self.colorRange = d4.scaleSequential(d4["interpolate" + color]);
         d4.select("#gradient")
             .selectAll("stop")
-            .each(function(d,i) {
-                d4.select(this).style("stop-color", self.colorRange(i/20));
+            .each(function (d, i) {
+                d4.select(this).style("stop-color", self.colorRange(i / 20));
 
             });
-        var numCuad = $("#numSetps").jqxNumberInput('val');
-        self.generateBlocks();
-        d4.select("#colorGradient").attr("fill","url(#gradient)");
-    }
-    ,updatePick: function(){
+        self.generateColorSquares();
+        d4.select("#colorGradientScale").attr("fill", "url(#gradient)");
+    },
+    updatePick: function () {
 
-        if(!d4.select("#linea").empty()) {
-            var color = d4.color(_ColorPicker.colorRange(d4.select("#linea").attr('x')/_ColorPicker.widthPane));
+        if (!d4.select("#lineIndicator").empty()) {
+            var color = d4.color(_ColorPicker.colorRange(d4.select("#lineIndicator").attr('x') / _ColorPicker.colorPickerWidth));
             $("#genericColorPicker").jqxColorPicker('setColor', _ColorPicker.rgbToHex(color));
-            var a = 1 - ( 0.299 * color.r + 0.587 * color.g + 0.114 * color.b)/255;
-            var colorText  = "white";
+            var a = 1 - ( 0.299 * color.r + 0.587 * color.g + 0.114 * color.b) / 255;
+            var colorText = "white";
             if (a < 0.5) colorText = "black";
-            _ColorPicker.linea.attr('fill', colorText);
+            _ColorPicker.lineIndicator.attr('fill', colorText);
         }
     },
-    colorchange: function(){
-        var numCuad = $("#numSetps").jqxNumberInput('val');
+    colorchange: function () {
         var self = _ColorPicker;
+        var numCuad = self.numSteps;
         var color = d4.color(d4.select(this).attr("fill"));
         var x = d4.select(this).attr("i");
-        var a = 1 - ( 0.299 * color.r + 0.587 * color.g + 0.114 * color.b)/255;
-        var colorText  = "white";
+        var a = 1 - ( 0.299 * color.r + 0.587 * color.g + 0.114 * color.b) / 255;
+        var colorText = "white";
         if (a < 0.5) colorText = "black";
-        self.linea.attr('fill', colorText);
-        self.linea.attr('x', x*(self.widthPane/(numCuad-1)));
-        self.triangulo.attr('x', x*(self.widthPane/(numCuad-1))-4);
+        self.lineIndicator.attr('fill', colorText);
+        self.lineIndicator.attr('x', x * (self.colorPickerWidth / (numCuad - 1)));
+        self.squareAnchor.attr('x', x * (self.colorPickerWidth / (numCuad - 1)) - 4);
         colorSelec = color;
         $("#genericColorPicker").jqxColorPicker('setColor', self.rgbToHex(color));
 
-    }
-    ,
+    },
     hide: function () {
-        $("#popup").hide();
-    }
-    , accept: function()
-    {
+        $("#popup").css({"visibility": "hidden"});
+    },
+    accept: function () {
         var self = _ColorPicker;
         var color = $("#genericColorPicker").jqxColorPicker('getColor').hex;
-        self.colorSelecGlobal = d4.color('#'+color);
-        $("#popup").hide();
-        var elem = $("#"+(caller.attr("id"))+" .jqx-rc-all");
-        elem.css('background', self.colorSelecGlobal);
-        elem.text(this.rgbToHex( self.colorSelecGlobal));
-        var a = 1 - ( 0.299 * self.colorSelecGlobal.r + 0.587 *  self.colorSelecGlobal.g + 0.114 *  self.colorSelecGlobal.b)/255;
-        var colorText  = "white";
-        if (a < 0.5) colorText = "black";
-        elem.css("color",colorText);
-    }
-    , moveBarColor: function()
-    {
+        self.colorSelecGlobal = d4.color('#' + color);
+        $("#popup").css({"visibility": "hidden"});
+        $("#" + (caller.attr("id")) + " div").css('background', self.colorSelecGlobal);
+        $("#" + (caller.attr("id")) + " span").text(this.rgbToHex(self.colorSelecGlobal));
+    },
+    moveBarColor: function () {
         var self = _ColorPicker;
         var coordinate = d4.mouse(this);
         var x = coordinate[0];
-        if(x>=0 && x<=self.widthPane) {
-            var color = d4.color(self.colorRange(x/self.widthPane));
-            if ((1 - ( 0.299 * color.r + 0.587 * color.g + 0.114 * color.b)/255) < 0.5)
-                self.linea.attr('fill', "black");
+        if (x >= 0 && x <= self.colorPickerWidth) {
+            var color = d4.color(self.colorRange(x / self.colorPickerWidth));
+            if ((1 - ( 0.299 * color.r + 0.587 * color.g + 0.114 * color.b) / 255) < 0.5)
+                self.lineIndicator.attr('fill', "black");
             else
-                self.linea.attr('fill', "white");
+                self.lineIndicator.attr('fill', "white");
 
-            self.linea.attr('x', x);
-            self.triangulo.attr('x', x-5);
+            self.lineIndicator.attr('x', x);
+            self.squareAnchor.attr('x', x - 5);
 
             $("#genericColorPicker").jqxColorPicker('setColor', self.rgbToHex(color));
         }
-    }
-    , componentToHex: function(c)
-    {
+    },
+    componentToHex: function (c) {
         var hex = c.toString(16);
         return hex.length === 1 ? "0" + hex : hex;
 
-    }
-    , rgbToHex: function(color)
-    {
+    },
+    rgbToHex: function (color) {
         return "#" + this.componentToHex(color.r) + this.componentToHex(color.g) + this.componentToHex(color.b);
-    }
-    , getTextForColor: function(color)
-    {
-        if ((1 - ( 0.299 * color.r + 0.587 * color.g + 0.114 * color.b)/255) < 0.5)
-            return "#000";
-        else
-            return "#FFF";
-    }
-    , generateColors : function(combo,domElem,colores)
-    {
-        var scheme = combo.jqxComboBox('val');
-        var isCategorical= false;
-        if(combo.jqxComboBox('getSelectedItem')!==null)   isCategorical = combo.jqxComboBox('getSelectedItem').group==='Categorical';
-
+    },
+    generateColors: function (scale, colorDOMObject, colorConfig, isCategorical) {
         var z = null;
-        if(isCategorical)
-            z = d4[scheme];
+        if (isCategorical)
+            z = d4[scale];
         else
-            z = d4["interpolate"+scheme];
+            z = d4["interpolate" + scale];
 
-
-        for(var i=0; i<domElem.length;i++) {
+        for (var i = 0; i < colorDOMObject.length; i++) {
             var color;
-            if(isCategorical)
+            if (isCategorical)
                 color = d4.color(z[i]);
             else
-                color = d4.color(z(i/(domElem.length-1)));
+                color = d4.color(z(i / (colorDOMObject.length - 1)));
 
-            var elem = $("#"+(domElem[i].attr("id"))+" .jqx-rc-all")
-            elem.css('background',color);
-            elem.text(_ColorPicker.rgbToHex(color));
-            var a = 1 - ( 0.299 * color.r + 0.587 * color.g + 0.114 * color.b)/255;
-            var colorText  = "white";
-            if (a < 0.5) colorText = "black";
-            elem.css("color",colorText);
-            colores[i]=_ColorPicker.rgbToHex(color);
+            $(colorDOMObject[i]).children("div").css('background', color);
+            $(colorDOMObject[i]).children("span").text(this.rgbToHex(color));
+            colorConfig[i] = _ColorPicker.rgbToHex(color);
         }
 
-        return colores;
+        return colorConfig;
     }
 };
