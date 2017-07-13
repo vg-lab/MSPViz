@@ -290,11 +290,11 @@ h1 {
 
 .navViewButton:hover {
     background-color: #373a41;
-    border-left: 4px solid #f1f1f1;
+    border-left: 0.2vw solid #f1f1f1;
 }
 
 .navViewButton.active {
-    border-left: 4px solid #de9425;
+    border-left: 0.2vw solid #FF9800;
 }
 
 .navOptionsButton .tooltiptext, .navViewButton .tooltiptext {
@@ -405,18 +405,17 @@ html {
 .sectionHeader {
     font-weight: 700;
     font-family: sans-serif;
-    font-size: 1.4vmin;
-    text-transform: uppercase;
+    font-size: 1.6vmin;
 }
 
 .navBarSectionTitle {
     height: 2vw;
     text-align: center;
     line-height: 2vw;
-    border: 1px solid #868686;
+    border-bottom: 1px solid #d8d8d8;
     width: 100%;
-    color: #ffffff;
-    background-color: #607D8B;
+    color: #000000;
+    background-color: #FFFFFF;
 }
 
 #jqxBottomControls {
@@ -679,7 +678,7 @@ html {
 }
 
 .button:hover {
-    background: #2d5575;
+    background: #3498DB;
     text-decoration: none;
 }
 
@@ -696,21 +695,22 @@ html {
 
 .box {
     width: 90%;
-    background-color: white;
+    background-color: #f6f6f6;
     margin-top: 1vmin;
     box-shadow: 0 0 0.8vmin rgba(191, 191, 191, 0.58);
     margin-bottom: 1vmin;
     display: flex;
     align-items: center;
     flex-flow: column;
-    border: 1px solid #cecece;
+    border: 1px solid #e4e4e4;
     height: auto;
+    border-top: 0.4vh solid #FF9800;
 }
 
 .text-input {
     height: auto;
     border: 0.15vmin solid #d0d0d0;
-    background: #F8F8F8;
+    background: #ffffff;
     color: #313131;
     font-weight: bold;
     padding: 0.4vmin;
@@ -836,6 +836,14 @@ hr {
         border: 0.5vmin solid rgba(136, 183, 213, 0);
         margin-top: -0.5vmin;
         border-right-color: #373a41;
+    }
+
+    .navViewButton:hover {
+        border-left: 4px solid #ffffff;
+    }
+
+    .navViewButton.active {
+        border-left: 4px solid #FF9800;
     }
 }
 
