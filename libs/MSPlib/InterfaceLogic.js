@@ -7,23 +7,75 @@
 
 
 //Global vars
-_SimulationController 	= 	null;
-_SimulationData = 	null;
-_SimulationFilter= 	null;
-_ColorPicker = 	null;
-UI.Visualizator = function()
-{
-    this.activeView 		= null;
-    this.simulationFiles 	= null;
+_SimulationController = null;
+_SimulationData = null;
+_SimulationFilter = null;
+_ColorPicker = null;
+UI.Visualizator = function () {
+    this.activeView = null;
+    this.simulationFiles = null;
     this.simulationFilesConfig = null;
+    this.colorScaleTypes = ['Categorical', 'Diverging', 'Sequential'];
+    this.colorScales = [
+        [
+            {labelInternal: "schemeAccent", label: "schemeAccent", group: "Categorical"},
+            {labelInternal: "schemeDark2", label: "Dark2", group: "Categorical"},
+            {labelInternal: "schemePaired", label: "Paired", group: "Categorical"},
+            {labelInternal: "schemePastel1", label: "Pastel1", group: "Categorical"},
+            {labelInternal: "schemePastel2", label: "Pastel2", group: "Categorical"},
+            {labelInternal: "schemeSet1", label: "Set1", group: "Categorical"},
+            {labelInternal: "schemeSet2", label: "Set2", group: "Categorical"},
+            {labelInternal: "schemeSet3", label: "Set3", group: "Categorical"}
+        ],
+
+        [
+            {labelInternal: "Viridis", label: "Viridis", group: "Diverging"},
+            {labelInternal: "Inferno", label: "Inferno", group: "Diverging"},
+            {labelInternal: "Magma", label: "Magma", group: "Diverging"},
+            {labelInternal: "Plasma", label: "Plasma", group: "Diverging"},
+            {labelInternal: "Warm", label: "Warm", group: "Diverging"},
+            {labelInternal: "Cool", label: "Cool", group: "Diverging"},
+            {labelInternal: "CubehelixDefault", label: "CubehelixDefault", group: "Diverging"},
+            {labelInternal: "BrBG", label: "BrBG", group: "Diverging"},
+            {labelInternal: "PRGn", label: "PRGn", group: "Diverging"},
+            {labelInternal: "PiYG", label: "PiYG", group: "Diverging"},
+            {labelInternal: "PuOr", label: "PuOr", group: "Diverging"},
+            {labelInternal: "RdBu", label: "RdBu", group: "Diverging"},
+            {labelInternal: "RdGy", label: "RdGy", group: "Diverging"},
+            {labelInternal: "RdYlBu", label: "RdYlBu", group: "Diverging"},
+            {labelInternal: "RdYlGn", label: "RdYlGn", group: "Diverging"},
+            {labelInternal: "Spectral", label: "Spectral", group: "Diverging"}
+        ],
+
+        [
+            {labelInternal: "Greens", label: "Greens", group: "Sequential"},
+            {labelInternal: "Greys", label: "Greys", group: "Sequential"},
+            {labelInternal: "Oranges", label: "Oranges", group: "Sequential"},
+            {labelInternal: "Purples", label: "Purples", group: "Sequential"},
+            {labelInternal: "Reds", label: "Reds", group: "Sequential"},
+            {labelInternal: "BuGn", label: "BuGn", group: "Sequential"},
+            {labelInternal: "BuPu", label: "BuPu", group: "Sequential"},
+            {labelInternal: "GnBu", label: "GnBu", group: "Sequential"},
+            {labelInternal: "OrRd", label: "OrRd", group: "Sequential"},
+            {labelInternal: "PuBuGn", label: "PuBuGn", group: "Sequential"},
+            {labelInternal: "PuBu", label: "PuBu", group: "Sequential"},
+            {labelInternal: "PuRd", label: "PuRd", group: "Sequential"},
+            {labelInternal: "RdPu", label: "RdPu", group: "Sequential"},
+            {labelInternal: "YlGnBu", label: "YlGnBu", group: "Sequential"},
+            {labelInternal: "YlGn", label: "YlGn", group: "Sequential"},
+            {labelInternal: "YlOrBr", label: "YlOrBr", group: "Sequential"},
+            {labelInternal: "YlOrRd", label: "YlOrRd", group: "Sequential"}
+        ]
+    ];
+
     this.generateUI();
+
 };
 
-UI.Visualizator.prototype = {
-    constructor: UI.Visualizator
 
-    ,generateUI: function()
-    {
+UI.Visualizator.prototype = {
+    constructor: UI.Visualizator,
+    generateUI: function () {
         var self = this;
 
         //Dont reload the files form the same place in Chrome
@@ -32,31 +84,29 @@ UI.Visualizator.prototype = {
             {
                 var files = document.getElementById('fileDialog').files;
 
-                if ( (!files.length) || (files.length!=6) )
-                {
+                if ((!files.length) || (files.length !== 6)) {
                     self.simulationFiles = null;
 
-                    $("#jqxInputSimulationFilesLocalPath").jqxInput({placeHolder: ""});
-                    $("#jqxConfWindow_ButtonLoadSimulationFiles").jqxButton({ disabled: true});
+                    $("#jqxInputSimulationFilesLocalPath").val(" ");
+                    $("#jqxConfWindow_ButtonLoadSimulationFiles").prop("disabled", true);
 
                     alert('Please select the 6 simulation files!');
                 }
-                else
-                {
-                    _SigletonConfig.localFilesPath = $('#jqxInputSimulationFilesLocalPath').jqxInput('val');
+                else {
+                    _SigletonConfig.localFilesPath = $('#jqxInputSimulationFilesLocalPath').val();
                     self.simulationFiles = {};
 
-                    for (var i=0;i<6;++i)
-                        self.simulationFiles[String(files[i].name)]=files[i];
+                    for (var i = 0; i < 6; ++i)
+                        self.simulationFiles[String(files[i].name)] = files[i];
 
-                    if (files.length==6) 	lFiles="Num files correct";
-                    else 					lFiles="Select the 6 minimum simulation files";
+                    if (files.length === 6) lFiles = "Num files correct";
+                    else                    lFiles = "Select the 6 minimum simulation files";
 
-                    $("#jqxInputSimulationFilesLocalPath").jqxInput({placeHolder: lFiles});
-                    $("#jqxConfWindow_ButtonLoadSimulationFiles").jqxButton({ disabled: false});
+                    $("#jqxInputSimulationFilesLocalPath").val(lFiles);
+                    $("#jqxConfWindow_ButtonLoadSimulationFiles").prop("disabled", false);
                 }
             }
-            ,false)
+            , false)
         ;
 
         document.getElementById('fileDialogConfig').addEventListener('change',
@@ -64,48 +114,41 @@ UI.Visualizator.prototype = {
             {
                 var files = document.getElementById('fileDialogConfig').files;
 
-                if ( (!files.length) || (files.length!=1) )
-                {
+                if ((!files.length) || (files.length !== 1)) {
                     self.simulationFilesConfig = null;
 
-                    $("#jqxInputConfigFilesLocalPath").jqxInput({placeHolder: ""});
-                    $("#jqxConfWindow_ButtonLoadConfig").jqxButton({ disabled: true});
+                    $("#jqxInputConfigFilesLocalPath").val(" ");
+                    $("#jqxConfWindow_ButtonLoadConfig").prop("disabled", true);
 
                     alert('Please select one configuration file');
                 }
-                else
-                {
-                    _SigletonConfig.localFilesPath = $('#jqxInputConfigFilesLocalPath').jqxInput('val');
+                else {
+                    _SigletonConfig.localFilesPath = $('#jqxInputConfigFilesLocalPath').val();
                     self.simulationFilesConfig = files;
 
-                    if (files.length==1) 	lFiles="Num files correct";
-                    else 					lFiles="Select only one configuration file";
+                    if (files.length === 1) lFiles = "Num files correct";
+                    else                    lFiles = "Select only one configuration file";
 
-                    $("#jqxInputConfigFilesLocalPath").jqxInput({placeHolder: lFiles});
-                    $("#jqxConfWindow_ButtonLoadConfig").jqxButton({ disabled: false});
+                    $("#jqxInputConfigFilesLocalPath").val(lFiles);
+                    $("#jqxConfWindow_ButtonLoadConfig").prop("disabled", false);
                 }
             }
-            ,false)
+            , false)
         ;
 
-        $(document).ready(	function ()
-            {
+        $(document).ready(function () {
                 var color = getCookie("color");
 
 
-                $("#jqxConfWindow_ButtonSelectConfig").jqxButton({ width: '190'});
                 $("#jqxConfWindow_ButtonSelectConfig").on('click', function (event) {
                     self.loadLocalConfiguration()
                 });
 
 
-
-                $("#jqxConfWindow_ButtonLoadConfig").jqxButton({ width: '190', disabled: true});
                 $("#jqxConfWindow_ButtonLoadConfig").on('click', function (event) {
                     self.loadLocalConfigurationFiles();
                 });
 
-                $("#jqxConfWindow_ButtonSaveConfig").jqxButton({ width: '190'});
                 $("#jqxConfWindow_ButtonSaveConfig").on('click', function (event) {
                     saveConfig();
                 });
@@ -117,65 +160,78 @@ UI.Visualizator.prototype = {
 
 
                 //Navbar view buttons
-                $("#navViewGlobal").on('click', function() {
-                    if(self.generateView(0)) self.navBarSelectView(0);
+                $("#navViewGlobal").on('click', function () {
+                    if (self.generateView(0)) self.navBarSelectView(0);
                 });
 
-                $("#navViewMacro").on('click', function() {
-                    if(self.generateView(7)) self.navBarSelectView(1);
+                $("#navViewMacro").on('click', function () {
+                    if (self.generateView(7)) self.navBarSelectView(1);
                 });
 
-                $("#navViewMap").on('click', function() {
-                    if(self.generateView(8)) self.navBarSelectView(2);
+                $("#navViewMap").on('click', function () {
+                    if (self.generateView(8)) self.navBarSelectView(2);
                 });
 
-                $("#navViewMicro").on('click', function() {
-                    if(self.generateView(2)) self.navBarSelectView(3);
+                $("#navViewMicro").on('click', function () {
+                    if (self.generateView(2)) self.navBarSelectView(3);
                 });
 
-                $("#navViewMicroDetail").on('click', function() {
-                    if(self.generateView(3)) self.navBarSelectView(4);
+                $("#navViewMicroDetail").on('click', function () {
+                    if (self.generateView(3)) self.navBarSelectView(4);
                 });
 
-                $("#navInfoHelp").on('click', function() {
+                $("#navInfoHelp").on('click', function () {
                     self.showInfo();
                 });
 
-                $("#navOptionsFile").on('click', function() {
-                    self.openNav();self.openTab('fileTab',0)
+                $("#navOptionsFile").on('click', function () {
+                    self.openNav();
+                    self.openTab('fileTab', 0)
                 });
 
-                $("#navOptionsColor").on('click', function() {
-                    self.openNav();self.openTab('colorTab',1)
+                $("#navOptionsColor").on('click', function () {
+                    self.openNav();
+                    self.openTab('colorTab', 1)
                 });
 
-                $("#navOptionsGlobal").on('click', function() {
-                    self.openNav();self.openTab('globalConfTab',2)
+                $("#navOptionsGlobal").on('click', function () {
+                    self.openNav();
+                    self.openTab('globalConfTab', 2)
                 });
 
-                $("#navOptionsConfig").on('click', function() {
-                    self.openNav();self.openTab('config',3)
+                $("#navOptionsConfig").on('click', function () {
+                    self.openNav();
+                    self.openTab('config', 3)
                 });
 
-                $("#navOptionsFilter").on('click', function() {
-                    self.openNav();self.openTab('filterTab',4)
+                $("#navOptionsFilter").on('click', function () {
+                    self.openNav();
+                    self.openTab('filterTab', 4)
                 });
 
-                $("#navOptionsSort").on('click', function() {
-                    self.openNav();self.openTab('sortTab',5)
+                $("#navOptionsSort").on('click', function () {
+                    self.openNav();
+                    self.openTab('sortTab', 5)
                 });
 
-                $("#navClose").on('click', function() {
+                $("#navClose").on('click', function () {
                     self.closeNav();
                 });
 
-                $("#jqxBottomControls_ButtonSimulate").jqxButton({ width: '150', disabled:true });
                 $("#jqxBottomControls_ButtonSimulate").on('click', function (event) {
                     self.simulate(!_SimulationController.pause);
                 });
 
 
-                $('#jqxBottomControls_SliderTimeline').jqxSlider({ tooltip: true, mode: 'fixed', width:'700px', showTicks: false, max: 1000, showButtons: false, disabled:true });
+                $('#jqxBottomControls_SliderTimeline').jqxSlider({
+                    tooltip: true,
+                    mode: 'fixed',
+                    width: '700px',
+                    showTicks: false,
+                    max: 1000,
+                    showButtons: false,
+                    disabled: true
+                });
 
                 $('#jqxBottomControls_SliderTimeline').on('slideStart', function (event) {
                     _SimulationController.stopVisualization();
@@ -184,63 +240,69 @@ UI.Visualizator.prototype = {
                     self.updateSimulationFromTimeline();
                 });
 
-                $("#jqxBottomControls_NumericInputStep").jqxNumberInput({ width: '100px', height: '25px', inputMode: 'simple'
-                    , spinButtons: true, decimalDigits: 0, min:0, disabled:true});
+                $("#jqxBottomControls_NumericInputStep").jqxNumberInput({
+                    width: '100px', height: '25px', inputMode: 'simple'
+                    , spinButtons: true, decimalDigits: 0, min: 0, disabled: true
+                });
                 $('#jqxBottomControls_NumericInputStep').on('change', function (event) {
                     self.updateSimulationFromStep();
                 });
 
-                $("#numericImputID").jqxNumberInput({ width: '100px', height: '25px', inputMode: 'simple'
-                    , spinButtons: true, decimalDigits: 0, min:0});
+                $("#numericImputID").jqxNumberInput({
+                    width: '100px', height: '25px', inputMode: 'simple'
+                    , spinButtons: true, decimalDigits: 0, min: 0
+                });
                 $('#numericImputID').on('change', function (event) {
                     _SimulationController.view.updateID($("#numericImputID").jqxNumberInput('val'));
                 });
 
-                $("#numericBarElements").jqxNumberInput({ width: '160px', height: '25px', inputMode: 'simple'
-                    , spinButtons: true, decimalDigits: 0, min:1, max: 20, value:15});
+                $("#numericBarElements").jqxNumberInput({
+                    width: '160px', height: '25px', inputMode: 'simple'
+                    , spinButtons: true, decimalDigits: 0, min: 1, max: 20, value: 15
+                });
                 $('#numericBarElements').on('change', function (event) {
-                    _SimulationController.view.graph.numBars =$("#numericBarElements").jqxNumberInput('val');
+                    _SimulationController.view.graph.numBars = $("#numericBarElements").jqxNumberInput('val');
                     _SimulationController.view.graph.updateGraph();
                 });
 
-                $("#numericImputElipse").jqxNumberInput({ width: '100px', height: '25px', inputMode: 'simple'
-                    , spinButtons: true, decimalDigits: 0, min:0});
+                $("#numericImputElipse").jqxNumberInput({
+                    width: '100px', height: '25px', inputMode: 'simple'
+                    , spinButtons: true, decimalDigits: 0, min: 0
+                });
 
-                $("#btnAddID").jqxButton({ width: '80', height: '25px'});
                 $("#btnAddID").on('click', function (event) {
                     var id = $("#numericImputElipse").jqxNumberInput('val');
-                    if(id >= 0 && id < _SimulationData.gNeurons.length)
+                    if (id >= 0 && id < _SimulationData.gNeurons.length)
                         _SimulationData.gNeurons[$("#numericImputElipse").jqxNumberInput('val')].centerElipse = true;
-                    $("#listaCentroElipse").append('<li class="listaCentro">' + id + '<button class="btnCentro" onclick="delCenter('+id+');">X</button> </li>');
+                    $("#listaCentroElipse").append('<button class="btnCentro" onclick="delCenter(' + id + ');">' + id + '</button>');
                     _SimulationController.view.update();
                 });
 
-                $("#btnAddSelected").jqxButton({ width: '180',height: '25px'});
                 $("#btnAddSelected").on('click', function (event) {
-                    _SimulationFilter.gNeuronsFilter.forEach(function(z){
+                    _SimulationFilter.gNeuronsFilter.forEach(function (z) {
                         var d = _SimulationData.gNeurons[z];
-                        if(d.selected) {
+                        if (d.selected) {
                             d.centerElipse = true;
-                            $("#listaCentroElipse").append('<li class="listaCentro">' + d.NId + '<button class="btnCentro" onclick="delCenter(' + d.NId + ');">X</button> </li>');
+                            $("#listaCentroElipse").append('<button class="btnCentro" onclick="delCenter(' + d.NId + ');">' + d.NId + '</button>');
                         }
                     });
                     _SimulationController.view.update();
                 });
 
-                $("#btnRmSelected").jqxButton({ width: '180',height: '25px'});
+
                 $("#btnRmSelected").on('click', function (event) {
                     $("#listaCentroElipse").empty();
-                    _SimulationData.gNeurons.forEach(function(d){
+                    _SimulationData.gNeurons.forEach(function (d) {
                         d.centerElipse = false;
                     });
                     _SimulationController.view.update();
                 });
 
-                $("#rmSelected").jqxButton({ width: '180',height: '25px'});
+
                 $("#rmSelected").on('click', function (event) {
-                    _SimulationFilter.gNeuronsFilter.forEach(function(z){
+                    _SimulationFilter.gNeuronsFilter.forEach(function (z) {
                         var d = _SimulationData.gNeurons[z];
-                        if(d.selected && d.centerElipse) {
+                        if (d.selected && d.centerElipse) {
                             d.centerElipse = false;
                             delCenter(z);
                         }
@@ -249,17 +311,14 @@ UI.Visualizator.prototype = {
                 });
 
 
-
-                $("#jqxBottomControls_ProgressBar").jqxProgressBar({ width: 375, height: 50, value: 0, showText:true});
+                $("#jqxBottomControls_ProgressBar").jqxProgressBar({width: 375, height: 50, value: 0, showText: true});
                 $("#jqxBottomControls_ProgressBar").hide();
 
 
-                $("#jqxConfWindow_ButtonSelectSimulationFiles").jqxButton({ width: '190'});
                 $("#jqxConfWindow_ButtonSelectSimulationFiles").on('click', function (event) {
                     self.loadLocalSimulation();
                 });
 
-                $("#jqxConfWindow_ButtonLoadSimulationFiles").jqxButton({ width: '190', disabled: true});
                 $("#jqxConfWindow_ButtonLoadSimulationFiles").on('click', function (event) {
                     self.loadLocalFiles();
                 });
@@ -268,18 +327,13 @@ UI.Visualizator.prototype = {
 //			             $("#jqxInputGlobalFile").jqxInput({placeHolder: "Global scene information file", height: 25, width: 250, minLength: 1, disabled: true});
 //			             $("#jqxInputConnectivityFile").jqxInput({placeHolder: "Conectivity file", height: 25, width: 250, minLength: 1, disabled: true});
 //			             $("#jqxInputSimulationConfigFile").jqxInput({placeHolder: "Local simulation config file", height: 25, width: 250, minLength: 1, disabled: true});
-                $("#jqxInputSimulationFilesLocalPath").jqxInput({placeHolder: "Puth the path to files here", height: 25, width: 190, minLength: 1, disabled: true});
-                $("#jqxInputConfigFilesLocalPath").jqxInput({placeHolder: "Puth the path to config here", height: 25, width: 190, minLength: 1, disabled: true});
 
-                //Borrar position.
-                $("#jqxWindow_RemoteSimulationId").jqxInput({placeHolder: "Put the simulation id here", height: 25, width: 190, minLength: 1, value:"0", disabled: false});
 
-                $("#jqxWindow__ButtonLoadRemoteSimulationFromServer").jqxButton({ width: '190', disabled: false});
                 $("#jqxWindow__ButtonLoadRemoteSimulationFromServer").on('click', function (event) {
 
-                    var lSimName 	= $("#jqxWindow_RemoteSimulationId").jqxInput('val');
+                    var lSimName = $("#jqxWindow_RemoteSimulationId").val();
                     var lSimNameLength = lSimName.length;
-                    if (lSimNameLength>0) {
+                    if (lSimNameLength > 0) {
                         self.loadRemoteSimulationFromServer(lSimName);
                         self.navBarSelectView(0);
                     }
@@ -287,571 +341,402 @@ UI.Visualizator.prototype = {
                         window.alert("Please, select a valid simulation id.");
                 });
 
-
-                /////////////////////////////////////////////////////////////////////////////////
-
-                var serversName = [ 'Select server please','MaDE', 'JADE', 'SuDE'];
-
-                //Combo server selection
-                $("#jqxWindow_LoadRemoteSimulation_ComboRemoteServers").jqxComboBox({ width: '190', source:serversName});
-
-                //Edit para el directorio (momentaneo)
-                $("#jqxWindow_LoadRemoteSimulation_id").jqxInput({placeHolder: "Simulation Id", height: 25, width: 190, minLength: 1});
-                $("#jqxWindow_LoadRemoteSimulation_inputUser").jqxInput({placeHolder: "User:", height: 25, width: 190, minLength: 1});
-                $("#jqxWindow_LoadRemoteSimulation_inputPass").jqxPasswordInput({placeHolder: "Pass:", height: 25, width: 190, minLength: 1});
-
-
-
                 //Boton de conectar (De momento además se traerá los datos)
-                $("#jqxWindow_ButtonLoadRemoteSimulationFromDCache").jqxButton({ width: '190'});
                 $("#jqxWindow_ButtonLoadRemoteSimulationFromDCache").on('click', function (event) {
 
-                    var serversPath = [ "Nop"
-                        ,"www.mitestensimca1000.es:2880/data/world-writable/Simulations"
+                    var serversPath = ["Nop"
+                        , "www.mitestensimca1000.es:2880/data/world-writable/Simulations"
                         , "Nop"
                         , "Nop"];
 
-                    var lItem 			= $("#jqxWindow_LoadRemoteSimulation_ComboRemoteServers").jqxComboBox('getSelectedIndex');
-                    var lUserLenght 	= $("#jqxWindow_LoadRemoteSimulation_inputUser").jqxInput('val').length;
-                    var lPassLenght 	= $("#jqxWindow_LoadRemoteSimulation_inputPass").jqxPasswordInput('val').length;
-
+                    var lItem = $("#jqxWindow_LoadRemoteSimulation_ComboRemoteServers").selectedIndex;
+                    var lUserLenght = $("#jqxWindow_LoadRemoteSimulation_inputUser").val().length;
+                    var lPassLenght = $("#jqxWindow_LoadRemoteSimulation_inputPass").val().length;
                     //console.log("--->>>>"+lItem +" "+lUserLenght+" "+lPassLenght);
                     if (
-                        (lItem>0)
-                        && (lUserLenght>0)
-                        && (lPassLenght>0)								)
-                    {
+                        (lItem > 0)
+                        && (lUserLenght > 0)
+                        && (lPassLenght > 0)) {
                         console.log("Cargando simulacion remota");
-                        self.loadRemoteSimulationFromDCache(serversPath[$("#jqxWindow_LoadRemoteSimulation_ComboRemoteServers").jqxComboBox('getSelectedIndex')]
-                            ,$("#jqxWindow_LoadRemoteSimulation_id").jqxInput('val')
-                            ,$("#jqxWindow_LoadRemoteSimulation_inputUser").jqxInput('val')
-                            ,$("#jqxWindow_LoadRemoteSimulation_inputPass").jqxPasswordInput('val')
+                        self.loadRemoteSimulationFromDCache(serversPath[$("#jqxWindow_LoadRemoteSimulation_ComboRemoteServers").selectedIndex]
+                            , $("#jqxWindow_LoadRemoteSimulation_id").val()
+                            , $("#jqxWindow_LoadRemoteSimulation_inputUser").val()
+                            , $("#jqxWindow_LoadRemoteSimulation_inputPass").val()
                         );
                     }
 
 
-
                 });
 
                 /////////////////////////////////////////////////////////////////////////////////
                 /* Auto Resize */
-                _SigletonConfig.height = $(window).height()-55;
-                _SigletonConfig.width = $(window).width()-55;
                 self.resize();
-                $(window).resize(function() {
-                    _SigletonConfig.height = $(window).height()-55;
-                    _SigletonConfig.width = $(window).width()-55;
-                    if(_SimulationController!==null) {
-                        _SimulationController.view.resize();
-                        _SimulationController.view.updateVisualization();
-                    }
-                    //TODO: mala forma de hacerlo
-
+                $(window).resize(function () {
                     self.resize();
-
                 });
                 /* Auto Resize */
 
-                $("#chkOutgoingConn").jqxCheckBox({ width: 80, height: 25, checked:true });
+                $("#chkOutgoingConn").jqxCheckBox({width: 80, height: 25, checked: true});
                 $("#chkOutgoingConn").bind('change', function (event) {
                     _SigletonConfig.outgoingConn = event.args.checked;
                     _SimulationController.view.updateVisualization();
                 });
 
-                $("#chkIncomingConn").jqxCheckBox({ width: 80, height: 25, checked:true });
+                $("#chkIncomingConn").jqxCheckBox({width: 80, height: 25, checked: true});
                 $("#chkIncomingConn").bind('change', function (event) {
                     _SigletonConfig.incomingConn = event.args.checked;
                     _SimulationController.view.updateVisualization();
                 });
 
                 /* Filter */
-                $("#chkNeuronType1").jqxCheckBox({ width: 80, height: 25, checked:true });
-                $("#chkNeuronType2").jqxCheckBox({ width: 80, height: 25, checked:true });
+                $("#chkNeuronType1").jqxCheckBox({width: 80, height: 25, checked: true});
+                $("#chkNeuronType2").jqxCheckBox({width: 80, height: 25, checked: true});
 
-                var sourceFilter = [
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>Calcium Conc.</div>", label: "Calcium Concentration", cat: "decimal", type:"Ca", typeFull:"Calcium Conc.",color:"#de9425" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>Excitatory Conn.</div>", label: "Excitatory Connections", cat: "real" , type:"IConn", typeFull:"Inhibitory Conn.",color:_SigletonConfig.IColor  },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>Inhibitory Conn.</div>", label: "Inhibitory Connections", cat: "real" , type:"EConn", typeFull:"Excitatory Conn.",color:_SigletonConfig.EColor  },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>Axonal Conn.</div>", label: "Axonal Connections", cat: "real", type:"AConn"  , typeFull:"Axonal Conn.",color:_SigletonConfig.AColor  }];
+                var sourceFilter = [{label: "Calcium Concentration", cat: "decimal", type: "Ca", color: "#de9425"},
+                    {label: "Excitatory Connections", cat: "real", type: "IConn", color: _SigletonConfig.IColor},
+                    {label: "Inhibitory Connections", cat: "real", type: "EConn", color: _SigletonConfig.EColor},
+                    {label: "Axonal Connections", cat: "real", type: "AConn", color: _SigletonConfig.AColor}];
 
-                $("#comboBoxTypeFilter").jqxDropDownList({theme: "arctic", selectedIndex: 0, source: sourceFilter, width: 170, height: 25 });
-                $("#comboBoxTypeFilter").on('change', function () {
-                    var idx =  $("#comboBoxTypeFilter").jqxDropDownList('getSelectedIndex');
-                    if(sourceFilter[idx].cat === "decimal"){
-                        $("#caMinRangeFilter").jqxNumberInput('decimalDigits',10);
-                        $("#caMaxRangeFilter").jqxNumberInput('decimalDigits',10);
-                    }else{
-                        $("#caMinRangeFilter").jqxNumberInput('decimalDigits',0);
-                        $("#caMaxRangeFilter").jqxNumberInput('decimalDigits',0);
-                    }
-                    $("#caMinRangeFilter").jqxNumberInput('val',0);
-                    $("#caMaxRangeFilter").jqxNumberInput('val',0);
+                sourceFilter.forEach(function (elem, i) {
+                    $("#comboBoxTypeFilter").append($('<option>', {
+                        value: i,
+                        text: elem.label
+                    }));
                 });
 
+                $("#comboBoxTypeFilter").on('change', function () {
+                    var idx = $("#comboBoxTypeFilter").prop('selectedIndex');
+                    if (sourceFilter[idx].cat === "decimal") {
+                        $("#caMinRangeFilter").jqxNumberInput('decimalDigits', 10);
+                        $("#caMaxRangeFilter").jqxNumberInput('decimalDigits', 10);
+                    } else {
+                        $("#caMinRangeFilter").jqxNumberInput('decimalDigits', 0);
+                        $("#caMaxRangeFilter").jqxNumberInput('decimalDigits', 0);
+                    }
+                    $("#caMinRangeFilter").jqxNumberInput('val', 0);
+                    $("#caMaxRangeFilter").jqxNumberInput('val', 0);
+                });
 
-                $("#caMinRangeFilter").jqxNumberInput({ width: '130px', height: '25px', inputMode: 'simple',spinButtons: true, decimalDigits: 10, min:0});
+                $("#caMinRangeFilter").jqxNumberInput({
+                    width: '130px',
+                    height: '25px',
+                    inputMode: 'simple',
+                    spinButtons: true,
+                    decimalDigits: 10,
+                    min: 0
+                });
 
-                $("#caMaxRangeFilter").jqxNumberInput({ width: '130px', height: '25px', inputMode: 'simple',spinButtons: true, decimalDigits: 10, min:0});
-
-                $("#btnApplyFilter").jqxButton({ width: '110', height: '25'});
+                $("#caMaxRangeFilter").jqxNumberInput({
+                    width: '130px',
+                    height: '25px',
+                    inputMode: 'simple',
+                    spinButtons: true,
+                    decimalDigits: 10,
+                    min: 0
+                });
 
                 $("#btnApplyFilter").on('click', function () {
-                    var idx =  $("#comboBoxTypeFilter").jqxDropDownList('getSelectedIndex');
+                    var idx = $("#comboBoxTypeFilter").prop('selectedIndex');
                     var tipo = sourceFilter[idx].type;
                     var color = sourceFilter[idx].color;
-                    var tipoCompleto = sourceFilter[idx].typeFull;
-                    var filtro = {type:tipo, min:$("#caMinRangeFilter").val(), max:$("#caMaxRangeFilter").val(),
-                        excitatory:$("#chkNeuronType1").val(), inhibitory:$("#chkNeuronType2").val()};
-                    idx =  _SimulationFilter.filters.length;
+                    var tipoCompleto = sourceFilter[idx].label;
+                    var filtro = {
+                        type: tipo, min: $("#caMinRangeFilter").val(), max: $("#caMaxRangeFilter").val(),
+                        excitatory: $("#chkNeuronType1").val(), inhibitory: $("#chkNeuronType2").val()
+                    };
+                    idx = _SimulationFilter.filters.length;
                     _SimulationFilter.filters.push(filtro);
 
-                    $("#listaFiltros").append('<div class="filtro"><div class="filterTitle" style="background-color:'+color+'"><span class="filterTitleText">'+tipoCompleto+'</span><button class="btnFiltro">X</button> </div>' +
-                        '<div><span class="filterTitleSecondary">Applies to:</span><div class="filterContent">'+(filtro.excitatory ? '<div class="filterE"></div>' :"") + (filtro.inhibitory ? '<div class="filterI"></div>' :"")+'</div></div>'+
-                        '<div><span class="filterTitleSecondary">Min:</span><span >'+(filtro.min)+'</span></div>'+
-                        '<div><span class="filterTitleSecondary">Max:</span><span>'+(filtro.max)+'</span></div></div>');
-                    $(".btnFiltro").last().on('click',function () {
+                    $("#listaFiltros").append('<div class="filtro"><div class="filterTitle" style="background-color:' + color + '"><span class="filterTitleText">' + tipoCompleto + '</span><button class="btnFiltro">X</button> </div>' +
+                        '<div><span class="filterTitleSecondary">Applies to:</span><div class="filterContent">' + (filtro.excitatory ? '<div class="filterE"></div>' : "") + (filtro.inhibitory ? '<div class="filterI"></div>' : "") + '</div></div>' +
+                        '<div><span class="filterTitleSecondary">Min:</span><span >' + (filtro.min) + '</span></div>' +
+                        '<div><span class="filterTitleSecondary">Max:</span><span>' + (filtro.max) + '</span></div></div>');
+                    $(".btnFiltro").last().on('click', function () {
                         self.deleteFilter($(this.parentNode).parent());
                     })
                 });
 
                 /* Filter */
 
-
-
                 /* Sort */
-
-                $("#jqxCheckBoxMixNeurons").jqxCheckBox({ width: 140, height: 25,  checked: true}).css("margin-top","10px");
+                $("#jqxCheckBoxMixNeurons").jqxCheckBox({width: 140, height: 25, checked: true}).css("margin-top", "10px");
                 $("#jqxCheckBoxMixNeurons").on('change', function (event) {
                     _SimulationFilter.orderMix = event.args.checked;
                     self.updateSimulationFromTimeline();
 
                 });
 
-                $("#jqxCheckBoxInverseSort").jqxCheckBox({ width: 140, height: 25, checked: false})
+                $("#jqxCheckBoxInverseSort").jqxCheckBox({width: 140, height: 25, checked: false})
                 $("#jqxCheckBoxInverseSort").on('change', function (event) {
                     _SimulationFilter.inverseOrder = event.args.checked;
                     self.updateSimulationFromTimeline();
                 });
 
-                $("#jqxRadioNoSort").jqxRadioButton({ width: 140, height: 25, groupName:"sort", checked: true});
+                $("#jqxRadioNoSort").jqxRadioButton({width: 140, height: 25, groupName: "sort", checked: true});
                 $("#jqxRadioNoSort").on('change', function () {
                     _SimulationFilter.order = "none";
                     self.updateSimulationFromTimeline();
 
                 });
 
-                $("#jqxRadioSortByCa").jqxRadioButton({ width: 140, height: 25, groupName:"sort"});
+                $("#jqxRadioSortByCa").jqxRadioButton({width: 140, height: 25, groupName: "sort"});
                 $("#jqxRadioSortByCa").on('change', function () {
                     _SimulationFilter.order = "calcium";
                     self.updateSimulationFromTimeline();
 
                 });
 
-                $("#jqxRadioSortEConn").jqxRadioButton({ width: 140, height: 25, groupName:"sort"});
+                $("#jqxRadioSortEConn").jqxRadioButton({width: 140, height: 25, groupName: "sort"});
                 $("#jqxRadioSortEConn").on('change', function () {
                     _SimulationFilter.order = "econn";
                     self.updateSimulationFromTimeline();
 
                 });
 
-                $("#jqxRadioSortIConn").jqxRadioButton({ width: 140, height: 25, groupName:"sort"});
+                $("#jqxRadioSortIConn").jqxRadioButton({width: 140, height: 25, groupName: "sort"});
                 $("#jqxRadioSortIConn").on('change', function () {
                     _SimulationFilter.order = "iconn";
                     self.updateSimulationFromTimeline();
 
                 });
 
-                $("#jqxRadioSortAConn").jqxRadioButton({ width: 140, height: 25, groupName:"sort"});
+                $("#jqxRadioSortAConn").jqxRadioButton({width: 140, height: 25, groupName: "sort"});
                 $("#jqxRadioSortAConn").on('change', function () {
                     _SimulationFilter.order = "aconn";
                     self.updateSimulationFromTimeline();
 
                 });
-
                 /* Sort */
 
+                self.createColorCombos("#comboScaleTypeNeuron", "#comboScaleNeuron");
 
+                $("#comboScaleNeuron").on('change', function () {
+                    var colorDOMObject = [$("#dropDownExcitatoryButton"), $("#dropDownInhibitoryButton"), $("#dropDownAxonalButton")];
+                    var colorConfig = [_SigletonConfig.EColor, _SigletonConfig.IColor, _SigletonConfig.AColor];
+                    var idxSaleType = $("#comboScaleTypeNeuron").prop('selectedIndex');
+                    var idxColorSale = $("#comboScaleNeuron").prop('selectedIndex');
+                    var colorScale = self.colorScales[idxSaleType][idxColorSale].labelInternal;
+                    var colorScaleType = $("#comboScaleTypeNeuron option:selected").text();
+                    var isCategorical = colorScaleType === "Categorical";
 
-                var source = [
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>schemeAccent</div>", label: "schemeAccent", group: "Categorical" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>schemeDark2</div>", label: "schemeDark2", group: "Categorical" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>schemePaired</div>", label: "schemePaired", group: "Categorical" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>schemePastel1</div>", label: "schemePastel1", group: "Categorical" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>schemePastel2</div>", label: "schemePastel2", group: "Categorical" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>schemeSet1</div>", label: "schemeSet1", group: "Categorical" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>schemeSet2</div>", label: "schemeSet2", group: "Categorical" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>schemeSet3</div>", label: "schemeSet3", group: "Categorical" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>Viridis</div>", label: "Viridis", group: "Diverging" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>Inferno</div>", label: "Inferno", group: "Diverging" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>Magma</div>", label: "Magma", group: "Diverging" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>Plasma</div>", label: "Plasma", group: "Diverging" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>Warm</div>", label: "Warm", group: "Diverging" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>Cool</div>", label: "Cool", group: "Diverging" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>Cubehelix</div>", label: "CubehelixDefault", group: "Diverging" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>BrBG</div>", label: "BrBG", group: "Diverging" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>PRGn</div>", label: "PRGn", group: "Diverging" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>PiYG</div>", label: "PiYG", group: "Diverging" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>PuOr</div>", label: "PuOr", group: "Diverging" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>RdBu</div>", label: "RdBu", group: "Diverging" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>RdGy</div>", label: "RdGy", group: "Diverging" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>RdYlBu</div>", label: "RdYlBu", group: "Diverging" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>RdYlGn</div>", label: "RdYlGn", group: "Diverging" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>Spectral</div>", label: "Spectral", group: "Diverging" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>Greens</div>", label: "Greens", group: "Sequential" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>Greys</div>", label: "Greys", group: "Sequential" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>Oranges</div>", label: "Oranges", group: "Sequential" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>Purples</div>", label: "Purples", group: "Sequential" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>Reds</div>", label: "Reds", group: "Sequential" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>BuGn</div>", label: "BuGn", group: "Sequential" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>BuPu</div>", label: "BuPu", group: "Sequential" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>GnBu</div>", label: "GnBu", group: "Sequential" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>OrRd</div>", label: "OrRd", group: "Sequential" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>PuBuGn</div>", label: "PuBuGn", group: "Sequential" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>PuBu</div>", label: "PuBu", group: "Sequential" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>PuRd</div>", label: "PuRd", group: "Sequential" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>RdPu</div>", label: "RdPu", group: "Sequential" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>YlGnBu</div>", label: "YlGnBu", group: "Sequential" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>YlGn</div>", label: "YlGn", group: "Sequential" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>YlOrBr</div>", label: "YlOrBr", group: "Sequential" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>YlOrRd</div>", label: "YlOrRd", group: "Sequential" }];
-
-                var sourceScale = [
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>Viridis</div>", label: "Viridis", group: "Diverging" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>Inferno</div>", label: "Inferno", group: "Diverging" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>Magma</div>", label: "Magma", group: "Diverging" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>Plasma</div>", label: "Plasma", group: "Diverging" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>Warm</div>", label: "Warm", group: "Diverging" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>Cool</div>", label: "Cool", group: "Diverging" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>Cubehelix</div>", label: "CubehelixDefault", group: "Diverging" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>BrBG</div>", label: "BrBG", group: "Diverging" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>PRGn</div>", label: "PRGn", group: "Diverging" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>PiYG</div>", label: "PiYG", group: "Diverging" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>PuOr</div>", label: "PuOr", group: "Diverging" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>RdBu</div>", label: "RdBu", group: "Diverging" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>RdGy</div>", label: "RdGy", group: "Diverging" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>RdYlBu</div>", label: "RdYlBu", group: "Diverging" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>RdYlGn</div>", label: "RdYlGn", group: "Diverging" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>Spectral</div>", label: "Spectral", group: "Diverging" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>Greens</div>", label: "Greens", group: "Sequential" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>Greys</div>", label: "Greys", group: "Sequential" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>Oranges</div>", label: "Oranges", group: "Sequential" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>Purples</div>", label: "Purples", group: "Sequential" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>Reds</div>", label: "Reds", group: "Sequential" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>BuGn</div>", label: "BuGn", group: "Sequential" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>BuPu</div>", label: "BuPu", group: "Sequential" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>GnBu</div>", label: "GnBu", group: "Sequential" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>OrRd</div>", label: "OrRd", group: "Sequential" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>PuBuGn</div>", label: "PuBuGn", group: "Sequential" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>PuBu</div>", label: "PuBu", group: "Sequential" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>PuRd</div>", label: "PuRd", group: "Sequential" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>RdPu</div>", label: "RdPu", group: "Sequential" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>YlGnBu</div>", label: "YlGnBu", group: "Sequential" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>YlGn</div>", label: "YlGn", group: "Sequential" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>YlOrBr</div>", label: "YlOrBr", group: "Sequential" },
-                    {html: "<div tabIndex=0 style='padding: 1px;'><div>YlOrRd</div>", label: "YlOrRd", group: "Sequential" }];
-
-                $("#neuronScalePicker").jqxComboBox({theme: "arctic", selectedIndex: 5, source: source, width: 145, height: 16 });
-                $("#neuronScalePicker").on('change', function () {
-                    var domColores = [$("#dropDownExcitatoryButton"),$("#dropDownInhibitoryButton"),$("#dropDownAxonalButton")];
-                    var propColores = [_SigletonConfig.EColor, _SigletonConfig.IColor, _SigletonConfig.AColor];
-                    var colorSelec = $("#neuronScalePicker").jqxComboBox('val');
-                    propColores = _ColorPicker.generateColors( $("#neuronScalePicker"),domColores,propColores);
-                    _SigletonConfig.EColor = propColores[0];
-                    _SigletonConfig.IColor = propColores[1];
-                    _SigletonConfig.AColor = propColores[2];
-                    _SigletonConfig.neuronsScheme = colorSelec;
+                    colorConfig = _ColorPicker.generateColors(colorScale, colorDOMObject, colorConfig, isCategorical);
+                    _SigletonConfig.EColor = colorConfig[0];
+                    _SigletonConfig.IColor = colorConfig[1];
+                    _SigletonConfig.AColor = colorConfig[2];
+                    _SigletonConfig.neuronsScheme = colorScale;
                     updateCookieColor();
-                    if(_SimulationController !== null)
+                    if (_SimulationController !== null)
                         _SimulationController.view.updateVisualization()
                 });
 
-                $("#connectionsScalePicker").jqxComboBox({theme: "arctic", selectedIndex: 5, source: source, width: 145, height: 16 });
-                $("#connectionsScalePicker").on('change', function () {
-                    var domColores = [$("#dropDownEEButton"),$("#dropDownEIButton"),$("#dropDownIEButton"),$("#dropDownIIButton")];
-                    var propColores = [_SigletonConfig.EEColor, _SigletonConfig.EIColor,_SigletonConfig.IEColor,_SigletonConfig.IIColor];
-                    var colorSelec = $("#connectionsScalePicker").jqxComboBox('val');
-                    propColores = _ColorPicker.generateColors( $("#connectionsScalePicker"),domColores,propColores);
-                    _SigletonConfig.EEColor = propColores[0];
-                    _SigletonConfig.EIColor = propColores[1];
-                    _SigletonConfig.IEColor = propColores[2];
-                    _SigletonConfig.IIColor = propColores[3];
-                    _SigletonConfig.connectionsScheme = colorSelec;
+
+                $('#comboScaleTypeNeuron').on('change', function () {
+                    $("#comboScaleNeuron").empty();
+                    self.colorScales[$("#comboScaleTypeNeuron").prop('selectedIndex')].forEach(function (elem, i) {
+                        $('#comboScaleNeuron').append($('<option>', {
+                            value: i,
+                            text: elem.label
+                        }));
+                    });
+                    $('#comboScaleNeuron').trigger("change");
+                });
+
+
+                self.createColorCombos("#comboScaleTypeConnection", "#comboScaleConnection");
+
+                $("#comboScaleConnection").on('change', function () {
+                    var colorDOMObject = [$("#dropDownEEButton"), $("#dropDownEIButton"), $("#dropDownIEButton"), $("#dropDownIIButton")];
+                    var colorConfig = [_SigletonConfig.EEColor, _SigletonConfig.EIColor, _SigletonConfig.IEColor, _SigletonConfig.IIColor];
+                    var idxSaleType = $("#comboScaleTypeConnection").prop('selectedIndex');
+                    var idxColorSale = $("#comboScaleConnection").prop('selectedIndex');
+                    var colorScale = self.colorScales[idxSaleType][idxColorSale].labelInternal;
+                    var colorScaleType = $("#comboScaleTypeConnection option:selected").text();
+                    var isCategorical = colorScaleType === "Categorical";
+
+                    colorConfig = _ColorPicker.generateColors(colorScale, colorDOMObject, colorConfig, isCategorical);
+                    _SigletonConfig.EEColor = colorConfig[0];
+                    _SigletonConfig.EIColor = colorConfig[1];
+                    _SigletonConfig.IEColor = colorConfig[2];
+                    _SigletonConfig.IIColor = colorConfig[3];
+                    _SigletonConfig.connectionsScheme = colorScale;
+
                     updateCookieColor();
-                    if(_SimulationController !== null)
-                        _SimulationController.view.updateVisualization()
+                    if (_SimulationController !== null)
+                        _SimulationController.view.updateVisualization();
+                });
+
+
+                $('#comboScaleTypeConnection').on('change', function () {
+                    $("#comboScaleConnection").empty();
+                    self.colorScales[$("#comboScaleTypeConnection").prop('selectedIndex')].forEach(function (elem, i) {
+                        $('#comboScaleConnection').append($('<option>', {
+                            value: i,
+                            text: elem.label
+                        }));
+                    });
+                    $('#comboScaleConnection').trigger("change");
                 });
 
                 self.generateScaleCalcium();
-                $("#calciumScalePicker").jqxComboBox({theme: "arctic", selectedIndex: 1, source: sourceScale, width: 145, height: 16 });
-                $("#calciumScalePicker").on('change', function () {
-                    var domColores = [$("#dropDownCaMaxValueColorButton"),$("#dropDownCaMinValueColorButton")];
-                    var propColores = [_SigletonConfig.EColor, _SigletonConfig.IColor];
-                    var colorSelec = $("#calciumScalePicker").jqxComboBox('val');
-                    propColores = _ColorPicker.generateColors( $("#calciumScalePicker"),domColores,propColores);
-                    _SigletonConfig.maxCaColor = propColores[0];
-                    _SigletonConfig.minCaColor = propColores[1];
-                    _SigletonConfig.calciumScheme = colorSelec;
+
+
+                self.createColorCombos("#comboScaleTypeCalcium", "#comboScaleCalcium");
+
+                $("#comboScaleCalcium").on('change', function () {
+                    var colorDOMObject = [$("#dropDownCaMaxValueColorButton"), $("#dropDownCaMinValueColorButton")];
+                    var colorConfig = [_SigletonConfig.EColor, _SigletonConfig.IColor];
+                    var idxSaleType = $("#comboScaleTypeCalcium").prop('selectedIndex');
+                    var idxColorSale = $("#comboScaleCalcium").prop('selectedIndex');
+                    var colorScale = self.colorScales[idxSaleType][idxColorSale].labelInternal;
+                    var colorScaleType = $("#comboScaleTypeCalcium option:selected").text();
+                    var isCategorical = colorScaleType === "Categorical";
+
+                    colorConfig = _ColorPicker.generateColors(colorScale, colorDOMObject, colorConfig, isCategorical);
+                    _SigletonConfig.maxCaColor = colorConfig[0];
+                    _SigletonConfig.minCaColor = colorConfig[1];
+                    _SigletonConfig.calciumScheme = colorScale;
                     updateCookieColor();
                     self.generateScaleCalcium();
-                    if(_SimulationController !== null) {
+                    if (_SimulationController !== null) {
+                        if (_SimulationController.activeViewID !== 0 && _SimulationController.activeViewID !== 5)
+                            self.createSampleBandColor();
                         _SimulationData.recalculateScales();
                         _SimulationController.view.updateVisualization();
                     }
-
-
-                });
-
-                $("#dropDownInhibitoryButton").jqxDropDownButton({ width: 150, height: 22});
-                $("#dropDownInhibitoryButton").jqxDropDownButton('setContent', self.getTextElementByColor(new $.jqx.color({ hex: _SigletonConfig.IColor.substring(1) })));
-                $("#dropDownInhibitoryButton").css("color",_ColorPicker.getTextForColor(d4.color(_SigletonConfig.IColor)));
-
-                $("#dropDownInhibitoryButton").on('click', function () {
-                    caller = $("#dropDownInhibitoryButton");
-                    $("#colorPicker").detach().appendTo($("#inhibitoryColorPicker"));
-                });
-
-                $('#dropDownInhibitoryButton').on('close', function (event) {
-                    _SigletonConfig.IColor = _ColorPicker.rgbToHex(_ColorPicker.colorSelecGlobal);
-                    updateCookieColor();
-                });
-
-                $("#dropDownExcitatoryButton").on('click', function () {
-                    caller = $("#dropDownExcitatoryButton");
-                    $("#colorPicker").detach().appendTo($("#excitatoryColorPicker"));
-                });
-
-                $('#dropDownExcitatoryButton').on('close', function (event) {
-                    _SigletonConfig.EColor = _ColorPicker.rgbToHex(_ColorPicker.colorSelecGlobal);
-                    updateCookieColor();
-                });
-
-                $("#dropDownAxonalButton").on('click', function () {
-                    caller = $("#dropDownAxonalButton");
-                    $("#colorPicker").detach().appendTo($("#axonalColorPicker"));
-                });
-
-                $('#dropDownAxonalButton').on('close', function (event) {
-                    _SigletonConfig.AColor = _ColorPicker.rgbToHex(_ColorPicker.colorSelecGlobal);
-                    updateCookieColor();
-                });
-
-                $("#dropDownEEButton").on('click', function () {
-                    caller = $("#dropDownEEButton");
-                    $("#colorPicker").detach().appendTo($("#EEColorPicker"));
-                });
-                $('#dropDownEEButton').on('close', function (event) {
-                    _SigletonConfig.EEColor = _ColorPicker.rgbToHex(_ColorPicker.colorSelecGlobal);
-                    updateCookieColor();
-                });
-
-                $("#dropDownEIButton").on('click', function () {
-                    caller = $("#dropDownEIButton");
-                    $("#colorPicker").detach().appendTo($("#EIColorPicker"));
-                });
-                $('#dropDownEIButton').on('close', function (event) {
-                    _SigletonConfig.EIColor = _ColorPicker.rgbToHex(_ColorPicker.colorSelecGlobal);
-                    updateCookieColor();
-                });
-
-                $("#dropDownIEButton").on('click', function () {
-                    caller = $("#dropDownIEButton");
-                    $("#colorPicker").detach().appendTo($("#IEColorPicker"));
-                });
-                $('#dropDownIEButton').on('close', function (event) {
-                    _SigletonConfig.IEColor = _ColorPicker.rgbToHex(_ColorPicker.colorSelecGlobal);
-                    updateCookieColor();
-                });
-
-                $("#dropDownIIButton").on('click', function () {
-                    caller = $("#dropDownIIButton");
-                    $("#colorPicker").detach().appendTo($("#IIColorPicker"));
-                });
-                $('#dropDownIIButton').on('close', function (event) {
-                    _SigletonConfig.IIColor = _ColorPicker.rgbToHex(_ColorPicker.colorSelecGlobal);
-                    updateCookieColor();
-                });
-
-                $("#dropDownCaMinValueColorButton").on('click', function () {
-                    caller = $("#dropDownCaMinValueColorButton");
-                    $("#colorPicker").detach().appendTo($("#CaMinValueColorColorPicker"));
-                });
-                $('#dropDownCaMinValueColorButton').on('close', function (event) {
-                    _SigletonConfig.minCaColor = _ColorPicker.rgbToHex(_ColorPicker.colorSelecGlobal);
-                    updateCookieColor();
-                });
-
-                $("#dropDownCaMaxValueColorButton").on('click', function () {
-                    caller = $("#dropDownCaMaxValueColorButton");
-                    $("#colorPicker").detach().appendTo($("#CaMaxValueColorColorPicker"));
-                });
-                $('#dropDownCaMaxValueColorButton').on('close', function (event) {
-                    _SigletonConfig.maxCaColor = _ColorPicker.rgbToHex(_ColorPicker.colorSelecGlobal);
-                    updateCookieColor();
                 });
 
 
-                $("#dropDownExcitatoryButton").jqxDropDownButton({ width: 150, height: 22});
-                $("#dropDownExcitatoryButton").jqxDropDownButton('setContent', self.getTextElementByColor(new $.jqx.color({ hex: _SigletonConfig.EColor.substring(1)})));
-                $("#dropDownExcitatoryButton").css("color",_ColorPicker.getTextForColor(d4.color(_SigletonConfig.EColor)));
+                $('#comboScaleTypeCalcium').on('change', function () {
+                    $("#comboScaleCalcium").empty();
+                    self.colorScales[$("#comboScaleTypeCalcium").prop('selectedIndex')].forEach(function (elem, i) {
+                        $('#comboScaleCalcium').append($('<option>', {
+                            value: i,
+                            text: elem.label
+                        }));
+                    });
+                    $('#comboScaleCalcium').trigger("change");
+                });
 
 
-                $("#dropDownAxonalButton").jqxDropDownButton({ width: 150, height: 22});
-                $("#dropDownAxonalButton").jqxDropDownButton('setContent', self.getTextElementByColor(new $.jqx.color({ hex: _SigletonConfig.AColor.substring(1)})));
-                $("#dropDownAxonalButton").css("color",_ColorPicker.getTextForColor(d4.color(_SigletonConfig.AColor)));
+                $("#dropDownInhibitoryButton").on('click', self.selectColor);
+                $("#dropDownExcitatoryButton").on('click', self.selectColor);
+                $("#dropDownAxonalButton").on('click', self.selectColor);
+                $("#dropDownEEButton").on('click', self.selectColor);
+                $("#dropDownEIButton").on('click', self.selectColor);
+                $("#dropDownIEButton").on('click', self.selectColor);
+                $("#dropDownIIButton").on('click', self.selectColor);
+                $("#dropDownCaMinValueColorButton").on('click', self.selectColor);
+                $("#dropDownCaMaxValueColorButton").on('click', self.selectColor);
 
 
-                $("#dropDownEEButton").jqxDropDownButton({ width: 150, height: 22});
-                $("#dropDownEEButton").jqxDropDownButton('setContent', self.getTextElementByColor(new $.jqx.color({ hex: _SigletonConfig.EEColor.substring(1) })));
-                $("#dropDownEEButton").css("color",_ColorPicker.getTextForColor(d4.color(_SigletonConfig.EEColor)));
+                $("#dropDownInhibitoryButton").children("div").css("background", _SigletonConfig.IColor);
+                $("#dropDownInhibitoryButton").children("span").text(_SigletonConfig.IColor);
+
+                $("#dropDownExcitatoryButton").children("div").css("background", _SigletonConfig.EColor);
+                $("#dropDownExcitatoryButton").children("span").text(_SigletonConfig.EColor);
+
+                $("#dropDownAxonalButton").children("div").css("background", _SigletonConfig.AColor);
+                $("#dropDownAxonalButton").children("span").text(_SigletonConfig.AColor);
+
+                $("#dropDownEEButton").children("div").css("background", _SigletonConfig.EEColor);
+                $("#dropDownEEButton").children("span").text(_SigletonConfig.EEColor);
                 //EI color picker
-                // $("#EIColorPicker").on('colorchange', function (event)
-                // 								{
-                // 					                    $("#dropDownEIButton").jqxDropDownButton('setContent', self.getTextElementByColor(event.args.color));
-                // 					                    _SigletonConfig.EIColor = "#"+event.args.color.hex;
-                // 					                });
-                // $("#EIColorPicker").jqxColorPicker({ color: "FFA500", colorMode: 'hue', width: 220, height: 220});
-                $("#dropDownEIButton").jqxDropDownButton({ width: 150, height: 22});
-                $("#dropDownEIButton").jqxDropDownButton('setContent', self.getTextElementByColor(new $.jqx.color({ hex: _SigletonConfig.EIColor.substring(1) })));
-                $("#dropDownEIButton").css("color",_ColorPicker.getTextForColor(d4.color(_SigletonConfig.EIColor)));
+                $("#dropDownEIButton").children("div").css("background", _SigletonConfig.EIColor);
+                $("#dropDownEIButton").children("span").text(_SigletonConfig.EIColor);
                 //IE color picker
-                // $("#IEColorPicker").on('colorchange', function (event)
-                // 									{
-                // 				                    $("#dropDownIEButton").jqxDropDownButton('setContent', self.getTextElementByColor(event.args.color));
-                // 				                    _SigletonConfig.IEColor = "#"+event.args.color.hex;
-                // 				                });
-                // $("#IEColorPicker").jqxColorPicker({ color: "8C00FF", colorMode: 'hue', width: 220, height: 220});
-                $("#dropDownIEButton").jqxDropDownButton({ width: 150, height: 22});
-                $("#dropDownIEButton").jqxDropDownButton('setContent', self.getTextElementByColor(new $.jqx.color({ hex: _SigletonConfig.IEColor.substring(1) })));
-                $("#dropDownIEButton").css("color",_ColorPicker.getTextForColor(d4.color(_SigletonConfig.IEColor)));
+                $("#dropDownIEButton").children("div").css("background", _SigletonConfig.IEColor);
+                $("#dropDownIEButton").children("span").text(_SigletonConfig.IEColor);
                 //II color picker
-                // $("#IIColorPicker").on('colorchange', function (event)
-                // 									{
-                // 				                    $("#dropDownIIButton").jqxDropDownButton('setContent', self.getTextElementByColor(event.args.color));
-                // 				                    _SigletonConfig.IIColor = "#"+event.args.color.hex;
-                // 				                });
-                // $("#IIColorPicker").jqxColorPicker({ color: "0000FF", colorMode: 'hue', width: 220, height: 220});
-                $("#dropDownIIButton").jqxDropDownButton({ width: 150, height: 22});
-                $("#dropDownIIButton").jqxDropDownButton('setContent', self.getTextElementByColor(new $.jqx.color({ hex: _SigletonConfig.IIColor.substring(1) })));
-                $("#dropDownIIButton").css("color",_ColorPicker.getTextForColor(d4.color(_SigletonConfig.IIColor)));
+                $("#dropDownIIButton").children("div").css("background", _SigletonConfig.IIColor);
+                $("#dropDownIIButton").children("span").text(_SigletonConfig.IIColor);
                 //Ca min value color picker
-                // $("#CaMinValueColorColorPicker").on('colorchange', function (event)
-                // 									{
-                // 				                    $("#dropDownCaMinValueColorButton").jqxDropDownButton('setContent', self.getTextElementByColor(event.args.color));
-                // 				                    _SigletonConfig.minCaColor = "#"+event.args.color.hex;
-                // 				                });
-                // $("#CaMinValueColorColorPicker").jqxColorPicker({ color: "0000FF", colorMode: 'hue', width: 220, height: 220});
-                $("#dropDownCaMinValueColorButton").jqxDropDownButton({ width: 150, height: 22});
-                $("#dropDownCaMinValueColorButton").jqxDropDownButton('setContent', self.getTextElementByColor(new $.jqx.color({ hex: _SigletonConfig.minCaColor.substring(1) })));
-                $("#dropDownCaMinValueColorButton").css("color",_ColorPicker.getTextForColor(d4.color(_SigletonConfig.minCaColor)));
+                $("#dropDownCaMinValueColorButton").children("div").css("background", _SigletonConfig.minCaColor);
+                $("#dropDownCaMinValueColorButton").children("span").text(_SigletonConfig.minCaColor);
                 //Ca max value color picker
-                // $("#CaMaxValueColorColorPicker").on('colorchange', function (event)
-                // 									{
-                // 				                    $("#dropDownCaMaxValueColorButton").jqxDropDownButton('setContent', self.getTextElementByColor(event.args.color));
-                // 				                    _SigletonConfig.maxCaColor = "#"+event.args.color.hex;
-                // 				                });
-                // $("#CaMaxValueColorColorPicker").jqxColorPicker({ color: "FF0000", colorMode: 'hue', width: 220, height: 220});
-                $("#dropDownCaMaxValueColorButton").jqxDropDownButton({ width: 150, height: 22});
-                $("#dropDownCaMaxValueColorButton").jqxDropDownButton('setContent', self.getTextElementByColor(new $.jqx.color({ hex: _SigletonConfig.maxCaColor.substring(1) })));
-                $("#dropDownCaMaxValueColorButton").css("color",_ColorPicker.getTextForColor(d4.color(_SigletonConfig.maxCaColor)));
+                $("#dropDownCaMaxValueColorButton").children("div").css("background", _SigletonConfig.maxCaColor);
+                $("#dropDownCaMaxValueColorButton").children("span").text(_SigletonConfig.maxCaColor);
 
-                $('#jqxMacroVControls_SliderApha').jqxSlider({ tooltip: true, mode: 'fixed', width:'150px', showTicks: true, max: 1, showButtons: true, step: 0.01 });
-                $('#jqxMacroVControls_SliderApha').on('slideEnd', function (event) {
-                    _SigletonConfig.macroVAlpha = event.args.value;
+
+                $("#jqxMacroVControls_SliderApha").jqxNumberInput({
+                    width: '100px', height: '25px', inputMode: 'simple'
+                    , spinButtons: true, decimalDigits: 2, min: 0, max: 1
+                });
+                $('#jqxMacroVControls_SliderApha').val(_SigletonConfig.macroVAlpha);
+                $('#jqxMacroVControls_SliderApha').on('change', function (event) {
+                    _SigletonConfig.macroVAlpha = $('#jqxMacroVControls_SliderApha').val();
                 });
 
 
-
-                $("#jqxRadioButtonCaSetPointFromFile").jqxRadioButton({groupName: '1', width: 190, height: 25, checked: true });
+                $("#jqxRadioButtonCaSetPointFromFile").jqxRadioButton({
+                    groupName: '1',
+                    width: 190,
+                    height: 25,
+                    checked: true
+                });
                 $("#jqxRadioButtonCaSetPointFromNeuronValues").jqxRadioButton({groupName: '1', width: 190, height: 25});
-                $("#jqxRadioButtonHSLColorInterpol").jqxRadioButton({groupName: '2', width: 190, height: 25, checked: true });
-                $("#jqxRadioButtonRGBColorInterpol").jqxRadioButton({groupName: '2', width: 190, height: 25});
+
 
                 $("#jqxRadioButtonCaSetPointFromFile").on('change', function (event) {
                     var checked = event.args.checked;
-                    if (checked)
-                    {
-                        _SigletonConfig.CaMaxMinValueTypes=0;
+                    if (checked) {
+                        _SigletonConfig.CaMaxMinValueTypes = 0;
                     }
                 });
 
                 $("#jqxRadioButtonCaSetPointFromNeuronValues").on('change', function (event) {
                     var checked = event.args.checked;
-                    if (checked)
-                    {
-                        _SigletonConfig.CaMaxMinValueTypes=1;
+                    if (checked) {
+                        _SigletonConfig.CaMaxMinValueTypes = 1;
                     }
                 });
 
-                $("#jqxRadioButtonHSLColorInterpol").on('change', function (event) {
-                    var checked = event.args.checked;
-                    if (checked)
-                    {
-                        _SigletonConfig.ColorInerpolMethod="HSL";
-                    }
-                });
-
-                $("#jqxRadioButtonRGBColorInterpol").on('change', function (event) {
-                    var checked = event.args.checked;
-                    if (checked)
-                    {
-                        _SigletonConfig.ColorInerpolMethod="RGB";
-                    }
-                });
 
                 $("#jqxRadioButtonCaSetPointFromFile").jqxRadioButton('check');
-                $("#jqxRadioButtonHSLColorInterpol").jqxRadioButton('check');
 
-                var lCaInterpolMethods = [
-                    "Linear",
-                    "Log",
-                    "Identity",
-                    "Power",
-                    "Quantize",
-                    "Quantile"
-                ];
 
-                $("#dropDownCaInterpolMethodButton").jqxComboBox({ source: lCaInterpolMethods, selectedIndex: 0, width: '100px', height: '25', disabled:"true"});
-
-                var lSEViewrSelector= [
+                var lSEViewrSelector = [
                     "All",
                     "Vacants only",
-                    "Connected only",
+                    "Connected only"
                 ];
 
-                $("#dropDownSynapticElementsToViewButton").jqxComboBox({ source: lSEViewrSelector, selectedIndex: 0, width: '150px', height: '25'});
-                $("#dropDownSynapticElementsToViewButton").on("change",function (event)
-                {
+                lSEViewrSelector.forEach(function (elem, i) {
+                    $('#dropDownSynapticElementsToViewButton').append($('<option>', {
+                        value: i,
+                        text: elem
+                    }));
+                });
+
+                $("#dropDownSynapticElementsToViewButton").on("change", function (event) {
                     _SigletonConfig.SEViewSelector = event.args.index;
                 });
 
-                $("#jqxNumericInput_SimulationVelocity").jqxNumberInput({ width: '100px', height: '25px', inputMode: 'simple'
-                    ,spinButtons: true, decimalDigits: 0, min:0});
+                $("#jqxNumericInput_SimulationVelocity").jqxNumberInput({
+                    width: '100px', height: '25px', inputMode: 'simple'
+                    , spinButtons: true, decimalDigits: 0, min: 0
+                });
                 $('#jqxNumericInput_SimulationVelocity').val(200);
                 $('#jqxNumericInput_SimulationVelocity').on('change', function (event) {
                     _SimulationController.setVisualizationInterval($('#jqxNumericInput_SimulationVelocity').val());
                 });
 
-                //-->>Global View controls
-                $("#jqxRadioButtonGlobalVBarrs").jqxRadioButton({ width: 250, height: 25, checked: true});
-                $("#jqxRadioButtonGlobalVFuncts").jqxRadioButton({  width: 250, height: 25});
-
                 //-->>MacroView controls
-                $("#jqxCheckBox_EEConnect").jqxCheckBox({ width: 140, height: 25, checked: true}).css("margin-top","10px");
+                $("#jqxCheckBox_EEConnect").jqxCheckBox({width: 140, height: 25, checked: true}).css("margin-top", "10px");
                 $("#jqxCheckBox_EEConnect").on('change', function (event) {
                     _SimulationData.drawEEConn = event.args.checked;
                 });
 
-                $("#jqxCheckBox_EIConnect").jqxCheckBox({ width: 140, height: 25, checked: true});
+                $("#jqxCheckBox_EIConnect").jqxCheckBox({width: 140, height: 25, checked: true});
                 $("#jqxCheckBox_EIConnect").on('change', function (event) {
                     _SimulationData.drawEIConn = event.args.checked;
                 });
 
-                $("#jqxCheckBox_IEConnect").jqxCheckBox({ width: 140, height: 25, checked: true});
+                $("#jqxCheckBox_IEConnect").jqxCheckBox({width: 140, height: 25, checked: true});
                 $("#jqxCheckBox_IEConnect").on('change', function (event) {
                     _SimulationData.drawIEConn = event.args.checked;
                 });
 
-                $("#jqxCheckBox_IIConnect").jqxCheckBox({ width: 140, height: 25, checked: true});
+                $("#jqxCheckBox_IIConnect").jqxCheckBox({width: 140, height: 25, checked: true});
                 $("#jqxCheckBox_IIConnect").on('change', function (event) {
                     _SimulationData.drawIIConn = event.args.checked;
                 });
@@ -872,18 +757,34 @@ UI.Visualizator.prototype = {
 
 
                 $('#jqxWindow_ImgExporter').jqxWindow({
-                    showCollapseButton: true, maxHeight: 1280, maxWidth: 1024, minHeight: 200, minWidth: 200, height: 480, width: 700
-                    ,'resizable': true, 'draggable': true, autoOpen: false,
-                    initContent: function ()
-                    {
+                    showCollapseButton: true,
+                    maxHeight: 1280,
+                    maxWidth: 1024,
+                    minHeight: 200,
+                    minWidth: 200,
+                    height: 480,
+                    width: 700
+                    ,
+                    'resizable': true,
+                    'draggable': true,
+                    autoOpen: false,
+                    initContent: function () {
                     }
                 });
 
                 $('#jqxWindow_Info').jqxWindow({
-                    showCollapseButton: true, maxHeight: 1280, maxWidth: 1024, minHeight: 200, minWidth: 200, height: 480, width: 700
-                    ,'resizable': true, 'draggable': true, autoOpen: false,
-                    initContent: function ()
-                    {
+                    showCollapseButton: true,
+                    maxHeight: 1280,
+                    maxWidth: 1024,
+                    minHeight: 200,
+                    minWidth: 200,
+                    height: 480,
+                    width: 700
+                    ,
+                    'resizable': true,
+                    'draggable': true,
+                    autoOpen: false,
+                    initContent: function () {
 
 
                     }
@@ -896,15 +797,20 @@ UI.Visualizator.prototype = {
         //Borrar solo para testeo.
         loadCookieColor();
     },
-    generateScaleCalcium: function(){
+    selectColor: function () {
+        caller = $(this);
+        $("#popup").css({"visibility": "visible"});
+    }
+    ,
+    generateScaleCalcium: function () {
 
         d4.select("#calciumColorScale").selectAll("svg").remove();
-        var colorRange = d4["interpolate"+_SigletonConfig.calciumScheme];
+        var colorRange = d4["interpolate" + _SigletonConfig.calciumScheme];
         var svgContainer = d4.select("#calciumColorScale").append("svg")
-            .attr("x",0).attr("y",0)
+            .attr("x", 0).attr("y", 0)
             .attr("width", 150)
             .attr("height", 25)
-            .attr("class","color");
+            .attr("class", "color");
 
         var lg = svgContainer.append("defs").append("linearGradient")
             .attr("id", "gradient")
@@ -913,10 +819,10 @@ UI.Visualizator.prototype = {
             .attr("y1", "0%")
             .attr("y2", "0%");
 
-        for(var i = 0; i<=20; i++) {
+        for (var i = 0; i <= 20; i++) {
             lg.append("stop")
-                .attr("offset", (i*5)+"%")
-                .style("stop-color", colorRange(i/20))
+                .attr("offset", (i * 5) + "%")
+                .style("stop-color", colorRange(i / 20))
                 .style("stop-opacity", 1);
         }
 
@@ -927,30 +833,28 @@ UI.Visualizator.prototype = {
             .attr("cursor", "pointer")
             .attr("width", 150)
             .attr("fill", "url(#gradient)");
-    }
-    ,
-    openNav: function() {
-        document.getElementById("sideNav").style.left = "50px";
-    }
-    ,
-    closeNav: function() {
-        document.getElementById("sideNav").style.left = "-200px";
-        document.getElementById("closeTabs").src = "menu.png"
+    },
+    openNav: function () {
+        var spacing = Math.max($(window).width() * 0.025, 48);
+        $("#sideNav").css("left", spacing);
+    },
+    closeNav: function () {
+        document.getElementById("sideNav").style.left = "-14%";
+        document.getElementById("closeTabs").src = "./content/images/menu.png";
         var x = document.getElementsByClassName("tabs");
-        for (i = 0; i < x.length; i++) {
+        for (i = 0; i < x.length; i++)
             x[i].style.display = "none";
-        }
+
 
         var y = document.getElementsByClassName("navOptionsButton");
-        for(i=0;i<y.length;i++){
+        for (i = 0; i < y.length; i++) {
             $(".navOptionsButton").eq(i).removeClass("active");
-            $(".navOptionsButton img").eq(i).attr("src",$(".navOptionsButton img").eq(i).attr("src").replace("B.png", ".png"));
+            $(".navOptionsButton img").eq(i).attr("src", $(".navOptionsButton img").eq(i).attr("src").replace("B.png", ".png"));
         }
-    }
-    ,openTab : function(tabName,z) {
-        var tabNames = ["File","Color preferences","Global Configuration","View Configuration", "Filter data", "Sort Data"];
-        if($(".navOptionsButton").eq(z).attr('class') === "navOptionsButton active")
-        {
+    },
+    openTab: function (tabName, z) {
+        var tabNames = ["File", "Color preferences", "Global Configuration", "View Configuration", "Filter data", "Sort Data"];
+        if ($(".navOptionsButton").eq(z).attr('class') === "navOptionsButton active") {
             this.closeNav();
             return false;
         }
@@ -961,55 +865,53 @@ UI.Visualizator.prototype = {
         for (i = 0; i < x.length; i++)
             x[i].style.display = "none";
 
+
         var y = document.getElementsByClassName("navOptionsButton");
-        for(i=0;i<y.length;i++){
+        for (i = 0; i < y.length; i++) {
             $(".navOptionsButton").eq(i).removeClass("active");
-            $(".navOptionsButton img").eq(i).attr("src",$(".navOptionsButton img").eq(i).attr("src").replace("B.png", ".png"));
+            $(".navOptionsButton img").eq(i).attr("src", $(".navOptionsButton img").eq(i).attr("src").replace("B.png", ".png"));
         }
 
         $(".navOptionsButton").eq(z).addClass("active");
-        $(".navOptionsButton img").eq(z).attr("src",$(".navOptionsButton img").eq(z).attr("src").match(/[^\.]+/) + "B.png");
-        if(tabName === 'config'){
+        $(".navOptionsButton img").eq(z).attr("src", $(".navOptionsButton img").eq(z).attr("src").replace(".png", "") + "B.png");
+        if (tabName === 'config') {
             var id = _SimulationController.activeViewID;
-            if(id === 1 || id === 4 || id === 5 || id === 6 || id===7){
-                document.getElementById('macroViewTab').style.display = "block";
-                if(id ===4)
-                    document.getElementById('macroViewElipseTab').style.display = "block";
-            }
-            else if(id === 2)
-            {
-                document.getElementById('microViewTab').style.display = "block";
-            }
-            else if(id === 3){
-                document.getElementById('detailedMicroViewTab').style.display = "block";
-            }
-            else if(id === 0){
-                document.getElementById('gloablViewTab').style.display = "block";
-            }
-            else{
+            if (id === 1 || id === 4 || id === 5 || id === 6 || id === 7) {
+                document.getElementById('macroViewTab').style.display = "flex";
+
+                if (id === 4)
+                    document.getElementById('macroViewElipseTab').style.display = "flex";
 
             }
-        }else {
-            document.getElementById(tabName).style.display = "block";
+            else if (id === 2) {
+                document.getElementById('microViewTab').style.display = "flex";
+            }
+            else if (id === 3) {
+                document.getElementById('detailedMicroViewTab').style.display = "flex";
+            }
+            else if (id === 0) {
+                document.getElementById('gloablViewTab').style.display = "flex";
+            }
+            else {
+
+            }
+        } else {
+            document.getElementById(tabName).style.display = "flex";
         }
-        document.getElementById("closeTabs").src = "close.png"
-    }
-
-    ,navBarSelectView: function (z)
-    {
+        document.getElementById("closeTabs").src = "./content/images/close.png"
+    },
+    navBarSelectView: function (z) {
         var i;
         var y = document.getElementsByClassName("navViewButton");
-        for(i=0;i<y.length;i++){
+        for (i = 0; i < y.length; i++) {
             $(".navViewButton").eq(i).removeClass("active");
             //$(".navViewButton img").eq(i).attr("src",$(".navViewButton img").eq(i).attr("src").replace("B.png", ".png"));
         }
 
         $(".navViewButton").eq(z).addClass("active");
         //$(".navViewButton img").eq(z).attr("src",$(".navViewButton img").eq(z).attr("src").match(/[^\.]+/) + "B.png");
-    }
-
-    ,getTextElementByColor: function (color)
-    {
+    },
+    getTextElementByColor: function (color) {
         if (color == 'transparent' || color.hex == "") {
             return $("<div style='text-shadow: none; position: relative; padding-bottom: 2px; margin-top: 2px;'>transparent</div>");
         }
@@ -1017,19 +919,14 @@ UI.Visualizator.prototype = {
         element.css('background', "#" + color.hex);
         element.addClass('jqx-rc-all');
         return element;
-    }
-
-    ,generateCanvas: function (pMssg)
-    {
-        if (_SigletonConfig.svg!=null )
-        {
-            d3.select("svg")
-                .remove();
-        }
+    },
+    generateCanvas: function (pMssg) {
+        d3.selectAll("svg").filter(function () {
+            return !this.classList.contains('color')
+        }).remove();
 
         _SigletonConfig.svg = d3.select("#renderArea")
-            .append("svg:svg")
-            .text ("Text de texto")
+            .append("svg")
             .attr("width", _SigletonConfig.width)
             .attr("height", _SigletonConfig.height)
         ;
@@ -1037,107 +934,99 @@ UI.Visualizator.prototype = {
         var lScale = 5;
         var lText = "MSPViz";
 
-        if (pMssg!=undefined) lText = pMssg;
+        if (pMssg != undefined) lText = pMssg;
 
         _SigletonConfig.svg.append("text")         			// append text
             .style("fill", "black")   			// fill the text with the colour black
-            .attr("x", _SigletonConfig.width/2) // set x position of left side of text
-            .attr("y", _SigletonConfig.height/2)// set y position of bottom of text
+            .attr("x", _SigletonConfig.width / 2) // set x position of left side of text
+            .attr("y", _SigletonConfig.height / 2)// set y position of bottom of text
             .attr("dy", ".35em")           		// set offset y position
             .attr("text-anchor", "middle") 		// set anchor y justification
-            .style("font-size","68px")
+            .style("font-size", "68px")
             .text(lText);          				// define the text to display
-    }
-
-    ,generateView: function (pViewId)
-    {
-        if (_SimulationController!=null)
-        {
+    },
+    generateView: function (pViewId) {
+        if (_SimulationController != null) {
 
 
             $("#idSelector").css('display', 'none');
             _SimulationController.activeViewID = pViewId;
-            switch (pViewId)
-            {
+            switch (pViewId) {
                 case 0:
                     $("#colorSampleBand").empty();
-                    if (this.activeView!=null) delete this.activeView;
-                    this.activeView=null;
+                    if (this.activeView != null) delete this.activeView;
+                    this.activeView = null;
                     this.activeView = new MSP.GlobalConnectionsView();
                     this.activeView.generateGlobalConnectionsView();
 
                     break;
                 case 1:
-                    if (this.activeView!=null) delete this.activeView;
-                    this.activeView	= null;
+                    if (this.activeView != null) delete this.activeView;
+                    this.activeView = null;
                     this.activeView = new MSP.MacroscopicViewGrid();
                     this.activeView.generateMacroscopicViewGrid();
                     break;
                 case 4:
-                    if (this.activeView!=null) delete this.activeView;
-                    this.activeView	= null;
+                    if (this.activeView != null) delete this.activeView;
+                    this.activeView = null;
                     this.activeView = new MSP.MacroscopicViewElipse();
                     this.activeView.generateMacroscopicViewElipse();
                     break;
                 case 5:
-                    if (this.activeView!=null) delete this.activeView;
-                    this.activeView	= null;
+                    if (this.activeView != null) delete this.activeView;
+                    this.activeView = null;
                     this.activeView = new MSP.GlobalConnectionsViewGraph();
                     this.activeView.generateGlobalConnectionsViewGraph();
                     break;
 
                 case 6:
-                    if (this.activeView!=null) delete this.activeView;
-                    this.activeView	= null;
+                    if (this.activeView != null) delete this.activeView;
+                    this.activeView = null;
                     this.activeView = new MSP.MacroscopicViewForce();
                     this.activeView.generateMacroscopicViewForce();
                     break;
                 case 7:
-                    if (this.activeView!=null) delete this.activeView;
-                    this.activeView	= null;
+                    if (this.activeView != null) delete this.activeView;
+                    this.activeView = null;
                     this.activeView = new MSP.MacroscopicViewCanvas();
                     this.activeView.generateMacroscopicViewCanvas();
                     break;
                 case 8:
-                    if (this.activeView!=null) delete this.activeView;
-                    this.activeView	= null;
+                    if (this.activeView != null) delete this.activeView;
+                    this.activeView = null;
                     this.activeView = new MSP.MacroscopicViewGrid();
                     this.activeView.generateMacroscopicViewGrid();
                     break;
                 case 2:
                     //Constraint
-                    if (_SigletonConfig.gSelectionIds.length>0)
-                    {
-                        if (this.activeView!=null) delete this.activeView;
-                        this.activeView	=null;
+                    if (_SigletonConfig.gSelectionIds.length > 0) {
+                        if (this.activeView != null) delete this.activeView;
+                        this.activeView = null;
                         this.activeView = new MSP.MicroscopicView();
                         this.activeView.generateMicroscopicView();
                     }
-                    else
-                    {
+                    else {
                         window.alert("Please, select some neurons in Macroscopic View");
                         return false
                     }
                     break;
                 case 3:
-                    if (_SigletonConfig.neuronSelected !=-1)
-                    {
-                        if (this.activeView!=null) delete this.activeView;
-                        this.activeView=null;
+                    if (_SigletonConfig.neuronSelected != -1) {
+                        if (this.activeView != null) delete this.activeView;
+                        this.activeView = null;
                         this.activeView = new MSP.DetailMicroscopicView();
                         this.activeView.generateDetailMicroscopicView();
                         $("#idSelector").css('display', 'inline');
                     }
-                    else
-                    {
+                    else {
                         var neuronID = prompt("Please, enter a neuron ID", "1");
 
                         if (neuronID == null || neuronID == "") {
                             return false
                         } else {
                             _SigletonConfig.neuronSelected = neuronID;
-                            if (this.activeView!=null) delete this.activeView;
-                            this.activeView=null;
+                            if (this.activeView != null) delete this.activeView;
+                            this.activeView = null;
                             this.activeView = new MSP.DetailMicroscopicView();
                             this.activeView.generateDetailMicroscopicView();
                             $("#idSelector").css('display', 'inline');
@@ -1155,258 +1044,311 @@ UI.Visualizator.prototype = {
             console.log("********Generando vista y concreteSimulationStep");
             _SimulationController.concreteSimulationStep(_SimulationController.actSimStep);
 
-            //TODO: definir resize
             this.resize();
-
+            $("#jqxBottomControls").css("visibility", "visible");
             return true;
 
         }
-        else
-        {
+        else {
             window.alert("Please, load simulation files first.");
             return false;
         }
-    }
+    },
+    resize: function () {
+        var self = this;
+        $('#jqxBottomControls_SliderTimeline').jqxSlider('width', 0);
+        _SigletonConfig.height = $(window).height() - $("#jqxBottomControls").height() - $("#colorSampleBand").height();
+        _SigletonConfig.width = $(window).width() - $("#icon-bar").width();
+        if (_SimulationController !== null) {
+            _SimulationController.view.resize();
+            _SimulationController.view.updateVisualization();
+            if (_SimulationController.activeViewID !== 0 && _SimulationController.activeViewID !== 5)
+                self.createSampleBandColor();
+        }
+        else {
+            this.generateCanvas("MSPViz");
+        }
+        var width = ($('#control1').width() + $('#control2').width() + $('#control4').width() + $('#control5').width()) * 1.1;
+        $('#jqxBottomControls_SliderTimeline').jqxSlider('width', $('#controles').width() - width);
+        _ColorPicker.resize();
+    }, createColorCombos: function (idComboType, idComboScheme) {
 
-    ,resize: function ()
-    {
-        var width = ($('#control1').width()+$('#control2').width()+$('#control4').width()+$('#control5').width())*1.1;
-        $('#jqxBottomControls_SliderTimeline').jqxSlider('width',0);
-        $('#jqxBottomControls_SliderTimeline').jqxSlider('width',$('#controles').width()-width);
-    }
+        this.colorScaleTypes.forEach(function (elem, i) {
+            $(idComboType).append($('<option>', {
+                value: i,
+                text: elem
+            }));
+        });
 
-    ,showPreferences: function ()
-    {
-    }
+        this.colorScales[0].forEach(function (elem, i) {
+            $(idComboScheme).append($('<option>', {
+                value: i,
+                text: elem.label
+            }));
+        });
 
-    ,showInfo: function ()
-    {
+    }
+    ,
+    showPreferences: function () {
+
+    },
+    showInfo: function () {
         $('#jqxWindow_Info').jqxWindow('open');
-    }
+    },
+    showLoadSimulation: function () {
 
-    ,showLoadSimulation: function()
-    {
+    },
+    showLoadRemoteSimulationFromServer: function () {
 
-    }
+    },
+    showLoadRemoteSimulationFromDCache: function () {
 
-    ,showLoadRemoteSimulationFromServer: function()
-    {
-
-    }
-
-    ,showLoadRemoteSimulationFromDCache: function()
-    {
-
-    }
-
-    ,updateSimulationFromTimeline: function  ()
-    {
+    },
+    updateSimulationFromTimeline: function () {
         var lValue = $('#jqxBottomControls_SliderTimeline').jqxSlider('val');
         $('#jqxBottomControls_NumericInputStep').val(lValue);
 
         _SimulationController.actSimStep = lValue;
         _SimulationController.concreteSimulationStep(_SimulationController.actSimStep);
-    }
-
-    ,updateSimulationFromStep: function ()
-    {
+    },
+    updateSimulationFromStep: function () {
         var lValue = $('#jqxBottomControls_NumericInputStep').jqxNumberInput('val');
         $('#jqxBottomControls_SliderTimeline').val(lValue);
 
         _SimulationController.actSimStep = lValue;
         _SimulationController.concreteSimulationStep(_SimulationController.actSimStep);
-    }
-
-    ,changeTheme: function ()
-    {
-        _SigletonConfig.theme="custom";
+    },
+    changeTheme: function () {
+        _SigletonConfig.theme = "custom";
 
 
-    }
-
-    ,loadLocalSimulation: function()
-    {
+    },
+    loadLocalSimulation: function () {
         $("#fileDialog").click();
         //this.loadLocalFiles();
-    }
-
-    ,loadLocalConfiguration: function()
-    {
+    },
+    loadLocalConfiguration: function () {
         $("#fileDialogConfig").click();
         //this.loadLocalFiles();
-    }
-
-    ,loadLocalFiles: function()
-    {
+    },
+    loadLocalFiles: function () {
         var self = this;
 
-        if (Object.keys(self.simulationFiles).length==6)
-        {
+        if (Object.keys(self.simulationFiles).length == 6) {
             this.generateCanvas("Loading simulation ...");
 
-            if (_SimulationData!=null) 	delete _SimulationData;
-            _SimulationData 	= 		new MSP.SimulationData();
-            _SimulationFilter   = new MSP.SimulationFilter();
+            if (_SimulationData != null) delete _SimulationData;
+            _SimulationData = new MSP.SimulationData();
+            _SimulationFilter = new MSP.SimulationFilter();
 
             _SimulationData.LoadLocalSimulation(self.simulationFiles);
 
-            if (_SimulationController 	!= null)	delete _SimulationController;
-            _SimulationController 		= new 		MSP.SimulationController();
+            if (_SimulationController != null) delete _SimulationController;
+            _SimulationController = new MSP.SimulationController();
 
             _SigletonConfig.recalculatePosScales();
         }
-        else
-        {
-            alert ("Please, select the 6 minimal simulation files");
+        else {
+            alert("Please, select the 6 minimal simulation files");
         }
-    }
-
-    ,loadLocalConfigurationFiles: function()
-    {
+    },
+    loadLocalConfigurationFiles: function () {
         var self = this;
         var config = null;
-        if (Object.keys(self.simulationFilesConfig).length==1)
-        {
+        if (Object.keys(self.simulationFilesConfig).length == 1) {
             this.generateCanvas("Loading configuration ...");
-            var readerSimulationFiles 		= new FileReader();
-            readerSimulationFiles.onloadend 	= function(evt)
-            {
-                config = JSON.parse(readerSimulationFiles.result );
+            var readerSimulationFiles = new FileReader();
+            readerSimulationFiles.onloadend = function (evt) {
+                config = JSON.parse(readerSimulationFiles.result);
                 loadConfig(config);
                 self.generateCanvas("Configuration loaded.");
 
             };
-            readerSimulationFiles.readAsText(new Blob(self.simulationFilesConfig),"utf-8");
-
+            readerSimulationFiles.readAsText(new Blob(self.simulationFilesConfig), "utf-8");
 
 
         }
-        else
-        {
-            alert ("Please, select the 6 minimal simulation files");
+        else {
+            alert("Please, select the 6 minimal simulation files");
         }
-    }
-
-    ,loadRemoteSimulationFromServer: function(pSimulationId)
-    {
+    },
+    loadRemoteSimulationFromServer: function (pSimulationId) {
         var self = this;
 
-        if (pSimulationId.length!=0)
-        {
+        if (pSimulationId.length != 0) {
             this.generateCanvas("Loading simulation from server");
 
-            if (_SimulationData!=null) 	delete _SimulationData;
-            _SimulationData 	= 		new MSP.SimulationData();
-            _SimulationFilter   = new MSP.SimulationFilter();
+            if (_SimulationData != null) delete _SimulationData;
+            _SimulationData = new MSP.SimulationData();
+            _SimulationFilter = new MSP.SimulationFilter();
 
             _SimulationData.loadRemoteSimulationFromServer(pSimulationId);
 
-            if (_SimulationController 	!= null)	delete _SimulationController;
-            _SimulationController 		= new 		MSP.SimulationController();
+            if (_SimulationController != null) delete _SimulationController;
+            _SimulationController = new MSP.SimulationController();
 
             _SigletonConfig.recalculatePosScales();
 
         }
-        else
-        {
-            alert ("Please, select valid simulation id.");
+        else {
+            alert("Please, select valid simulation id.");
         }
 
-    }
-
-    ,loadRemoteSimulationFromDCache: function(address, simId, user, pass)
-    {
+    },
+    loadRemoteSimulationFromDCache: function (address, simId, user, pass) {
         this.generateCanvas("Loading simulation from DCache");
 
-        if (_SimulationData!=null) 	delete _SimulationData;
-        _SimulationData = 	new MSP.SimulationData();
-        _SimulationFilter   = new MSP.SimulationFilter();
+        if (_SimulationData != null) delete _SimulationData;
+        _SimulationData = new MSP.SimulationData();
+        _SimulationFilter = new MSP.SimulationFilter();
 
         _SimulationData.loadRemoteSimulationFromDCache(address, simId, user, pass);
 
-        if (_SimulationController != null)	delete _SimulationController;
+        if (_SimulationController != null) delete _SimulationController;
         _SimulationController = new MSP.SimulationController();
 
         _SigletonConfig.recalculatePosScales();
-    }
-
-    ,resetSimulation: function()
-    {
+    },
+    resetSimulation: function () {
         this.generateCanvas("MSPViz");
 
-        if (_SimulationData!=null) 			delete _SimulationData;
-        if (_SimulationController != null)	delete _SimulationController;
-        if (this.activeView!=null)			delete this.activeView;
+        if (_SimulationData != null) delete _SimulationData;
+        if (_SimulationController != null) delete _SimulationController;
+        if (this.activeView != null) delete this.activeView;
 
-        _SimulationData 		= null;
-        _SimulationController 	= null;
-        this.activeView 		= null;
+        _SimulationData = null;
+        _SimulationController = null;
+        this.activeView = null;
 
-        $("#jqxBottomControls_ButtonSimulate").jqxButton({ disabled: true });
+        $("#jqxBottomControls_ButtonSimulate").prop('disabled', true);
 
-        $('#jqxBottomControls_SliderTimeline').jqxSlider({ disabled: true });
-        $("#jqxBottomControls_NumericInputStep").jqxNumberInput({ disabled: true });
-    }
-
-    ,simulate: function (value)
-    {
-        if (_SimulationController!=null)
-            if(!value)
+        $('#jqxBottomControls_SliderTimeline').jqxSlider({disabled: true});
+        $("#jqxBottomControls_NumericInputStep").jqxNumberInput({disabled: true});
+    },
+    simulate: function (value) {
+        if (_SimulationController != null)
+            if (!value)
                 _SimulationController.startVisualization();
             else
                 _SimulationController.stopVisualization();
-    }
-
-    ,stopSimulation: function ()
-    {
-        if (_SimulationController!=null)
+    },
+    stopSimulation: function () {
+        if (_SimulationController != null)
             _SimulationController.stopVisualization();
-    }
+    },
+    disableUI: function (pVal) {
 
-    ,disableUI: function (pVal)
-    {
+        $("#jqxBottomControls_ButtonSimulate").prop('disabled', pVal);
+        $('#jqxBottomControls_SliderTimeline').jqxSlider({disabled: pVal});
+        $("#jqxBottomControls_NumericInputStep").jqxNumberInput({disabled: pVal});
 
-        $("#jqxBottomControls_ButtonSimulate").jqxButton({ disabled: pVal });
-        $('#jqxBottomControls_SliderTimeline').jqxSlider({ disabled: pVal });
-        $("#jqxBottomControls_NumericInputStep").jqxNumberInput({ disabled: pVal });
-
-        if (!pVal)
-        {
+        if (!pVal) {
             this.generateView(0);
         }
 
-    }
+    },
+    updateSampleBandColor: function (interpolator) {
 
-    ,updateSampleBandColor: function(interpolator)
-    {
-
-        z = d4.scaleSequential(d4["interpolate"+interpolator]);
+        z = d4.scaleSequential(d4["interpolate" + interpolator]);
         d4.select("#mygrad2")
             .selectAll("stop")
-            .each(function(d,i) {
-                d4.select(this).style("stop-color", z(i/20));
+            .each(function (d, i) {
+                d4.select(this).style("stop-color", z(i / 20));
 
             });
-        if(typeof _SimulationController !== "undefined")
+        if (typeof _SimulationController !== "undefined")
             _SimulationController.view.updateVisualization();
-    }
-
-    ,saveImageToSVG: function ()
-    {
+    },
+    saveImageToSVG: function () {
         $('#jqxWindow_ImgExporter').jqxWindow('open');
         saveAsImage();
-    }
+    },
+    createSampleBandColor: function () {
 
-    ,deleteFilter: function(currentElem)
-    {
+        var windowHeight = $(window).height();
+        var windowWidth = $(window).width();
+        var heightSVG = $(window).height() * 0.06;
+        var marginAxis = windowHeight * 0.002;
+        var scaleYPos = windowHeight * 0.02;
+        var scaleHeight = heightSVG / 3;
+        var marginSide = windowWidth * 0.01;
+        var tickSize = heightSVG / 9;
+
+        d4.select("#colorSampleBand").selectAll("svg").remove();
+
+        var svgContainer = d4.select("#colorSampleBand").append("svg")
+            .attr("width", _SigletonConfig.width)
+            .attr("height", heightSVG)
+            .attr("class", "color");
+
+        var z = d4.scaleSequential(d4["interpolate" + _SigletonConfig.calciumScheme]);
+
+        var gradient = svgContainer.append("defs").append("linearGradient")
+            .attr("id", "scaleGradient")
+            .attr("x1", "0%")
+            .attr("x2", "100%")
+            .attr("y1", "0%")
+            .attr("y2", "0%");
+
+        for (var i = 0; i <= 20; i++) {
+            gradient.append("stop")
+                .attr("offset", (i * 5) + "%")
+                .style("stop-color", z(i / 20))
+                .style("stop-opacity", 1);
+        }
+
+        svgContainer.append("rect")
+            .attr("id", "colorScale")
+            .attr("height", scaleHeight)
+            .attr("y", scaleYPos)
+            .attr("x", marginSide)
+            .attr("width", _SigletonConfig.width - marginSide * 2)
+            .attr("fill", "url(#scaleGradient)");
+
+        var xI = d3.scale.linear()
+            .range([0, _SigletonConfig.width - marginSide * 2])
+            .domain([_SimulationData.minICalciumValue, _SimulationData.maxICalciumValue]);
+
+        var xE = d3.scale.linear()
+            .range([0, _SigletonConfig.width - marginSide * 2])
+            .domain([_SimulationData.minECalciumValue, _SimulationData.maxECalciumValue]);
+
+        var xAxisI = d3.svg.axis()
+            .scale(xI)
+            .orient("bottom")
+            .tickValues(xI.ticks().concat(xI.domain()))
+            .tickSize(-tickSize);
+
+        var xAxisE = d3.svg.axis()
+            .scale(xE)
+            .orient("top")
+            .tickValues(xE.ticks().concat(xE.domain()))
+            .tickSize(-tickSize);
+
+        svgContainer.append("g")
+            .attr("class", "x axis E")
+            .attr("transform", "translate(" + marginSide + "," + (scaleYPos + scaleHeight + marginAxis) + ")")
+            .call(xAxisI);
+
+        svgContainer.append("g")
+            .attr("class", "x axis I")
+            .attr("transform", "translate(" + marginSide + "," + (scaleYPos - marginAxis) + ")")
+            .call(xAxisE);
+
+        $(".x.axis.I text").first().css("text-anchor", "start");
+        $(".x.axis.E text").first().css("text-anchor", "start");
+        $(".x.axis.I text").last().css("text-anchor", "end");
+        $(".x.axis.E text").last().css("text-anchor", "end");
+
+    },
+    deleteFilter: function (currentElem) {
         var elem = $(".filtro");
-        for(var i = 0;i<elem.length;i++){
-            if(elem.eq(i).is(currentElem)) {
-                _SimulationFilter.filters.splice(i,1);
+        for (var i = 0; i < elem.length; i++) {
+            if (elem.eq(i).is(currentElem)) {
+                _SimulationFilter.filters.splice(i, 1);
                 $("#listaFiltros").children()[i].remove();
             }
         }
-
 
 
     }

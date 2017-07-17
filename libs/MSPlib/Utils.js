@@ -9,39 +9,35 @@
 var MSP = MSP || {};
 var UI = UI || {};
 
-function removeA(arr)
-{
+function removeA(arr) {
     var what, a = arguments, L = a.length, ax;
-    while (L > 1 && arr.length)
-    {
+    while (L > 1 && arr.length) {
         what = a[--L];
-        while ((ax= arr.indexOf(what)) !== -1)
-        {
+        while ((ax = arr.indexOf(what)) !== -1) {
             arr.splice(ax, 1);
         }
     }
     return arr;
 }
 
-function isDefined( variable) { return (typeof(window[variable]) != "undefined");}
+function isDefined(variable) {
+    return (typeof(window[variable]) != "undefined");
+}
 
-d3.selection.prototype.moveToFront = function()
-{
-    return this.each(function()
-    {
+d3.selection.prototype.moveToFront = function () {
+    return this.each(function () {
         this.parentNode.appendChild(this);
     });
 };
 
-function saveAsImage()
-{
+function saveAsImage() {
     var html = d3.select("svg")
         .attr("version", 1.1)
         .attr("xmlns", "http://www.w3.org/2000/svg")
         .node().parentNode.innerHTML;
 
-    var imgsrc = 'data:image/svg+xml;base64,'+ btoa(html);
-    var img = '<img src="'+imgsrc+'">';
+    var imgsrc = 'data:image/svg+xml;base64,' + btoa(html);
+    var img = '<img src="' + imgsrc + '">';
     d3.select("#svgdataurl").html(img);
 
     var canvas = document.querySelector("canvas"),
@@ -49,13 +45,12 @@ function saveAsImage()
 
     var image = new Image;
     image.src = imgsrc;
-    image.onload = function()
-    {
+    image.onload = function () {
         context.drawImage(image, 0, 0);
 
         var canvasdata = canvas.toDataURL("image/png");
 
-        var pngimg = '<img src="'+canvasdata+'">';
+        var pngimg = '<img src="' + canvasdata + '">';
         d3.select("#pngdataurl").html(pngimg);
 
         var a = document.createElement("a");
@@ -117,8 +112,7 @@ function saveAsImage()
 
 }
 
-function make_base_auth(user, password)
-{
+function make_base_auth(user, password) {
     var tok = user + ':' + password;
     var hash = btoa(tok);
     return "Basic " + hash;
@@ -126,22 +120,18 @@ function make_base_auth(user, password)
 
 
 //Create the XHR object.
-function createCORSRequest(method, url)
-{
+function createCORSRequest(method, url) {
     var xhr = new XMLHttpRequest();
 
-    if ("withCredentials" in xhr)
-    {
+    if ("withCredentials" in xhr) {
         // XHR for Chrome/Firefox/Opera/Safari.
         xhr.open(method, url, true);
-    } else if (typeof XDomainRequest != "undefined")
-    {
+    } else if (typeof XDomainRequest != "undefined") {
         // XDomainRequest for IE.
         xhr = new XDomainRequest();
         xhr.open(method, url);
     }
-    else
-    {
+    else {
         // CORS not supported.
         xhr = null;
     }
@@ -149,47 +139,40 @@ function createCORSRequest(method, url)
 }
 
 //Helper method to parse the title tag from the response.
-function getTitle(text)
-{
+function getTitle(text) {
     return text.match('<title>(.*)?</title>')[1];
 }
 
 //Make the actual CORS request.
-function makeCorsRequest(pURL)
-{
+function makeCorsRequest(pURL) {
 
     // All HTML5 Rocks properties support CORS.
-    var  	url 	= pURL;
-    var  	method 	= "GET";
-    var 	xhr 	= new XMLHttpRequest();
+    var url = pURL;
+    var method = "GET";
+    var xhr = new XMLHttpRequest();
 
-    if ("withCredentials" in xhr)
-    {
+    if ("withCredentials" in xhr) {
         // XHR for Chrome/Firefox/Opera/Safari.
         xhr.open(method, url, true);
-    } else if (typeof XDomainRequest != "undefined")
-    {
+    } else if (typeof XDomainRequest != "undefined") {
         // XDomainRequest for IE.
         xhr = new XDomainRequest();
         xhr.open(method, url);
     }
-    else
-    {
+    else {
         // CORS not supported.
         xhr = null;
     }
     //return xhr;
     //////////////////////////////////////////////////
 
-    if (!xhr)
-    {
+    if (!xhr) {
         alert('CORS not supported');
         return;
     }
 
     // Response handlers.
-    xhr.onload = function()
-    {
+    xhr.onload = function () {
 //		var text = xhr.responseText;
 //		var title = getTitle(text);
 //		alert('Response from CORS request to ' + url + ': ' + title);
@@ -199,8 +182,7 @@ function makeCorsRequest(pURL)
         //_GlobalSimulationParams.LoadSimulation(url);
     };
 
-    xhr.onerror = 	function()
-    {
+    xhr.onerror = function () {
 
         alert('There was an error making the request.');
         console.log(xhr.responseText);
@@ -214,14 +196,14 @@ function makeCorsRequest(pURL)
 function setCookie(cname, cvalue, exdays) {
     var d = new Date();
     d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
-    var expires = "expires="+d.toUTCString();
+    var expires = "expires=" + d.toUTCString();
     document.cookie = cname + "=" + JSON.stringify(cvalue) + ";" + expires + ";path=/";
 }
 
 function getCookie(cname) {
     var name = cname + "=";
     var ca = document.cookie.split(';');
-    for(var i = 0; i < ca.length; i++) {
+    for (var i = 0; i < ca.length; i++) {
         var c = ca[i];
         while (c.charAt(0) == ' ') {
             c = c.substring(1);
@@ -233,115 +215,118 @@ function getCookie(cname) {
     return "";
 }
 
-function updateCookieColor(){
-    var valores = {colorS:5,excitatoryC:'#e41a1c',inhibitoryC:'#377eb8',
-        connS:5,EEC:'#e41a1c',EIC:'#377eb8',IEC:'#4daf4a',IIC:'#984ea3',
-        calciumS:1, caMaxC:'#000004',caMinC:'#fcffa4'};
-
-    valores.colorS = $("#neuronScalePicker").jqxComboBox('getSelectedIndex');
-    valores.connS = $("#connectionsScalePicker").jqxComboBox('getSelectedIndex');
-    valores.calciumS = $("#calciumScalePicker").jqxComboBox('getSelectedIndex');
-    valores.excitatoryC = $("#dropDownExcitatoryButton").val();
-    valores.inhibitoryC = $("#dropDownInhibitoryButton").val();
-    valores.EEC = $("#dropDownEEButton").val();
-    valores.EIC = $("#dropDownEIButton").val();
-    valores.IEC = $("#dropDownIEButton").val();
-    valores.IIC = $("#dropDownIIButton").val();
-    valores.caaxC = $("#dropDownCaMinValueColorButton").val();
-    valores.caMinC = $("#dropDownCaMaxValueColorButton").val();
-
-    setCookie("color",valores,2000);
+function updateCookieColor() {
+    var valores = getConfig();
+    setCookie("color", valores, 2000);
 }
 
-function getConfig(){
-    var valores = {colorS:5,excitatoryC:'#e41a1c',inhibitoryC:'#377eb8',
-        connS:5,EEC:'#e41a1c',EIC:'#377eb8',IEC:'#4daf4a',IIC:'#984ea3',
-        calciumS:1, caMaxC:'#000004',caMinC:'#fcffa4'};
+function getConfig() {
+    var valores = {
+        neuronST: 0, neuronS: 5, excitatoryC: '#e41a1c', inhibitoryC: '#377eb8',
+        connST: 0, connS: 5, EEC: '#e41a1c', EIC: '#377eb8', IEC: '#4daf4a', IIC: '#984ea3',
+        calciumST: 1, calciumS: 1, caMaxC: '#000004', caMinC: '#fcffa4'
+    };
 
-    valores.colorS = $("#neuronScalePicker").jqxComboBox('getSelectedIndex');
-    valores.connS = $("#connectionsScalePicker").jqxComboBox('getSelectedIndex');
-    valores.calciumS = $("#calciumScalePicker").jqxComboBox('getSelectedIndex');
-    valores.excitatoryC = $("#dropDownExcitatoryButton").val();
-    valores.inhibitoryC = $("#dropDownInhibitoryButton").val();
-    valores.EEC = $("#dropDownEEButton").val();
-    valores.EIC = $("#dropDownEIButton").val();
-    valores.IEC = $("#dropDownIEButton").val();
-    valores.IIC = $("#dropDownIIButton").val();
-    valores.caaxC = $("#dropDownCaMinValueColorButton").val();
-    valores.caMinC = $("#dropDownCaMaxValueColorButton").val();
-
-   return valores;
+    valores.neuronST = $("#comboScaleTypeNeuron").prop('selectedIndex');
+    valores.connST = $("#comboScaleTypeConnection").prop('selectedIndex');
+    valores.calciumST = $("#comboScaleTypeCalcium").prop('selectedIndex');
+    valores.neuronS = $("#comboScaleNeuron").prop('selectedIndex');
+    valores.connS = $("#comboScaleConnection").prop('selectedIndex');
+    valores.calciumS = $("#comboScaleCalcium").prop('selectedIndex');
+    valores.excitatoryC = $("#dropDownExcitatoryButton").children("span").text();
+    valores.inhibitoryC = $("#dropDownInhibitoryButton").children("span").text();
+    valores.EEC = $("#dropDownEEButton").children("span").text();
+    valores.EIC = $("#dropDownEIButton").children("span").text();
+    valores.IEC = $("#dropDownIEButton").children("span").text();
+    valores.IIC = $("#dropDownIIButton").children("span").text();
+    valores.caaxC = $("#dropDownCaMinValueColorButton").children("span").text();
+    valores.caMinC = $("#dropDownCaMaxValueColorButton").children("span").text();
+    return valores;
 }
 
-function generateNav(){
+function generateNav() {
 
-   var data =  _SigletonConfig.navBar;
-   var divPadre =  $("#navButtons");
-   divPadre.empty();
-   data.forEach(function(d,i)
-   {
-       divPadre.append('<input class="btnSwitch'+(i===0 ? ' active':'')+'" type="button" value="'+d.label+'" onclick="navBar('+i+','+d.viewID+')"/>');
-   })
-
+    var data = _SigletonConfig.navBar;
+    var divPadre = $("#navButtons");
+    divPadre.empty();
+    data.forEach(function (d, i) {
+        divPadre.append('<input class="btnSwitch' + (i === 0 ? ' active' : '') + '" type="button" value="' + d.label + '" onclick="navBar(' + i + ',' + d.viewID + ')"/>');
+    })
 
 
 }
 
 function delCenter(idx) {
     _SimulationData.gNeurons[idx].centerElipse = false;
-    $(".listaCentro").each(function(){
-        if($( this ).text() === idx+'X ') $( this ).remove();
+    $(".btnCentro").each(function () {
+        if ($(this).text() === idx+"") $(this).remove();
     });
     _SimulationController.view.update();
 }
 
 
-function navBar(btnIdx,viewID) {
+function navBar(btnIdx, viewID) {
     var btnsBar = $(".btnSwitch");
     btnsBar.removeClass("active");
     btnsBar.eq(btnIdx).addClass("active");
     _gVisualizatorUI.generateView(viewID);
 }
 
-function loadCookieColor(){
+function loadCookieColor() {
     var valCookie = getCookie("color");
-    if(valCookie!="") {
+    if (valCookie != "") {
         var valores = JSON.parse(valCookie);
-        $("#neuronScalePicker").jqxComboBox('selectIndex', valores.colorS);
-        $("#connectionsScalePicker").jqxComboBox('selectIndex', valores.connS);
-        $("#calciumScalePicker").jqxComboBox('selectIndex', valores.calciumS);
-        valores.excitatoryC = $("#dropDownExcitatoryButton").val();
-        valores.inhibitoryC = $("#dropDownInhibitoryButton").val();
-        valores.EEC = $("#dropDownEEButton").val();
-        valores.EIC = $("#dropDownEIButton").val();
-        valores.IEC = $("#dropDownIEButton").val();
-        valores.IIC = $("#dropDownIIButton").val();
-        valores.caMaxC = $("#dropDownCaMinValueColorButton").val();
-        valores.caMinC = $("#dropDownCaMaxValueColorButton").val();
+        $("#comboScaleTypeNeuron").prop('selectedIndex', valores.neuronST);
+        $('#comboScaleTypeNeuron').trigger('change');
+        $("#comboScaleTypeConnection").prop('selectedIndex', valores.connST);
+        $('#comboScaleTypeConnection').trigger('change');
+        $("#comboScaleTypeCalcium").prop('selectedIndex', valores.calciumST);
+        $('#comboScaleTypeCalcium').trigger('change');
+        $("#comboScaleNeuron").prop('selectedIndex', valores.neuronS);
+        $('#comboScaleNeuron').trigger('change');
+        $("#comboScaleConnection").prop('selectedIndex', valores.connS);
+        $('#comboScaleConnection').trigger('change');
+        $("#comboScaleCalcium").prop('selectedIndex', valores.calciumS);
+        $('#comboScaleCalcium').trigger('change');
+        $("#dropDownExcitatoryButton").children("span").text(valores.excitatoryC);
+        $("#dropDownInhibitoryButton").children("span").text(valores.inhibitoryC);
+        $("#dropDownEEButton").children("span").text(valores.EEC);
+        $("#dropDownEIButton").children("span").text(valores.EIC);
+        $("#dropDownIEButton").children("span").text(valores.IEC);
+        $("#dropDownIIButton").children("span").text(valores.IIC);
+        $("#dropDownCaMinValueColorButton").children("span").text(valores.caMaxC);
+        $("#dropDownCaMaxValueColorButton").children("span").text(valores.caMinC);
         console.log(valores);
     }
 
 }
 
-function loadConfig(valores){
+function loadConfig(valores) {
 
-        $("#neuronScalePicker").jqxComboBox('selectIndex', valores.colorS);
-        $("#connectionsScalePicker").jqxComboBox('selectIndex', valores.connS);
-        $("#calciumScalePicker").jqxComboBox('selectIndex', valores.calciumS);
-        valores.excitatoryC = $("#dropDownExcitatoryButton").val();
-        valores.inhibitoryC = $("#dropDownInhibitoryButton").val();
-        valores.EEC = $("#dropDownEEButton").val();
-        valores.EIC = $("#dropDownEIButton").val();
-        valores.IEC = $("#dropDownIEButton").val();
-        valores.IIC = $("#dropDownIIButton").val();
-        valores.caMaxC = $("#dropDownCaMinValueColorButton").val();
-        valores.caMinC = $("#dropDownCaMaxValueColorButton").val();
-        updateCookieColor();
-
-
+    $("#comboScaleTypeNeuron").prop('selectedIndex', valores.neuronST);
+    $('#comboScaleTypeNeuron').trigger('change');
+    $("#comboScaleTypeConnection").prop('selectedIndex', valores.connST);
+    $('#comboScaleTypeConnection').trigger('change');
+    $("#comboScaleTypeCalcium").prop('selectedIndex', valores.calciumST);
+    $('#comboScaleTypeCalcium').trigger('change');
+    $("#comboScaleNeuron").prop('selectedIndex', valores.neuronS);
+    $('#comboScaleNeuron').trigger('change');
+    $("#comboScaleConnection").prop('selectedIndex', valores.connS);
+    $('#comboScaleConnection').trigger('change');
+    $("#comboScaleCalcium").prop('selectedIndex', valores.calciumS);
+    $('#comboScaleCalcium').trigger('change');
+    $("#dropDownExcitatoryButton").children("span").text(valores.excitatoryC);
+    $("#dropDownInhibitoryButton").children("span").text(valores.inhibitoryC);
+    $("#dropDownEEButton").children("span").text(valores.EEC);
+    $("#dropDownEIButton").children("span").text(valores.EIC);
+    $("#dropDownIEButton").children("span").text(valores.IEC);
+    $("#dropDownIIButton").children("span").text(valores.IIC);
+    $("#dropDownCaMinValueColorButton").children("span").text(valores.caMaxC);
+    $("#dropDownCaMaxValueColorButton").children("span").text(valores.caMinC);
+    updateCookieColor();
 }
 
-function saveConfig(){
+function saveConfig() {
     var textToSave = JSON.stringify(getConfig());
     var hiddenElement = document.createElement('a');
     hiddenElement.href = 'data:attachment/text,' + encodeURI(textToSave);

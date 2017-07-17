@@ -4,15 +4,15 @@
     <title>MSP Visualizator</title>
 	<meta charset="utf-8">
 
-
 	<!-- Styles of components -->
     <link rel="stylesheet" href="./libs/jqwidgets/styles/jqx.base.css" type="text/css" />
 	<link rel="stylesheet" href="./libs/jqwidgets/styles/jqx.custom.css" type="text/css" />
+    <link rel="stylesheet" href="./wrapperStyles.css" type="text/css" />
 	<link rel="stylesheet" href="./style.css" type="text/css" />
-    <link rel='stylesheet' href='./libs/spectrum/spectrum.css' />
-    <!-- D3 library -->
+    <!-- D4 library -->
     <script type="text/javascript" src="./libs/d3/d3.v4.js"></script>
     <script> var d4 = d3; </script>
+    <!-- D3 library -->
     <script type="text/javascript" src="./libs/d3/d3-scale-chromatic.v1.min.js"></script>
 	<script type="text/javascript" src="./libs/d3/d3.js"></script>
     <script type="text/javascript" src="./libs/d3/d3-ease.v1.min.js"></script>
@@ -26,9 +26,6 @@
 	<!-- KolorWheel -->
     <script type="text/javascript" src="./libs/kolorWheel/KolorWheel.min.js"></script>
     <script type="text/javascript" src="./libs/kolorWheel/colors.js"></script>
-
-    <!-- Spectrum -->
-    <script src='./libs/spectrum/spectrum.js'></script>
 
     <!-- Interface objects -->
     <script type="text/javascript" src="./libs/jqwidgets/jqxcore.js"></script>
@@ -55,7 +52,7 @@
     <script type="text/javascript" src="./libs/MSPlib/JAWDL.js"></script>
     <script type="text/javascript" src="./libs/MSPlib/YAALocalDiskLib.js"></script>        
     <script type="text/javascript" src="./libs/MSPlib/SingletonConfig.js"></script>
-    <script type="text/javascript" src="./libs/MSPlib/MacroscopicViewGridM.js"></script>
+    <script type="text/javascript" src="libs/MSPlib/MacroscopicViewGridM.js"></script>
     <script type="text/javascript" src="./libs/MSPlib/MacroscopicViewElipse.js"></script>
     <script type="text/javascript" src="libs/MSPlib/GlobalConnectionsViewGraph.js"></script>
     <script type="text/javascript" src="libs/MSPlib/MacroscopicViewForceWebWorker.js"></script>
@@ -64,7 +61,6 @@
 	<script type="text/javascript" src="./libs/MSPlib/GlobalConnectionsView.js"></script>
 	<script type="text/javascript" src="./libs/MSPlib/DetailMicroscopicView.js"></script>
     <script type="text/javascript" src="./libs/MSPlib/ColorPicker.js"></script>
-
     <script type="text/javascript" src="./libs/MSPlib/SimulationData.js"></script>
     <script type="text/javascript" src="./libs/MSPlib/SimulationFilter.js"></script>
     <script type="text/javascript" src="./libs/MSPlib/SimulationController.js"></script>
@@ -92,10 +88,7 @@
         {
             $("#interface").load("./libs/MSPlib/InterfaceComponents.html");
         });
-
     </script>
-
-
 </head>
 <body>
 	<div id="interface"></div>

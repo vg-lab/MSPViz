@@ -1,0 +1,155 @@
+.numeriInputWrapper {
+    height: 3vmin !important;
+    width: 100% !important;
+    font-size: 1.4vmin !important;
+    display: flex !important;
+    flex-flow: row !important;
+    margin-bottom: 1.2vmin;
+}
+
+.numeriInputWrapper input {
+    padding: 0 !important;
+    position: relative !important;
+    border-width: 0 !important;
+    text-align: right !important;
+    height: 100% !important;
+    width: 90% !important;
+    flex-grow: 1 !important;
+    margin-right: 0.1vw !important;
+    font-size: 1.4vmin !important;
+}
+
+.numeriInputWrapper div {
+    float: right !important;
+    height: 100% !important;
+    overflow: hidden !important;
+    position: relative !important;
+    border-width: 0 0 0 1px !important;
+    width: 10% !important;
+    flex-grow: 0 !important;
+}
+
+.numeriInputWrapper div div {
+    overflow: hidden !important;
+    padding: 0 !important;
+    margin-left: -1px !important;
+    position: relative !important;
+    border-width: 0 !important;
+    width: 100% !important;
+    height: 50% !important;
+}
+
+.numeriInputWrapper div div div {
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 auto !important;
+}
+
+.numeriInputShort {
+    height: 3vmin !important;
+    width: 5vw !important;
+}
+
+.numeriInputShort input {
+    width: 70% !important;
+}
+
+.numeriInputShort div {
+    width: 30% !important;
+}
+
+.checkBoxWrapper {
+    width: 100% !important;
+    cursor: pointer !important;
+    margin: 0 0 1.2vmin !important;
+    font-size: 1.4vmin !important;
+    display: flex !important;
+    flex-flow: row;
+    align-items: center;
+    height: auto !important;
+}
+
+.checkBoxWrapper div div {
+    width: 2vmin !important;
+    height: 2vmin !important;
+}
+
+.checkBoxWrapper div div span {
+    width: 2vmin !important;
+    height: 2vmin !important;
+    opacity: 1 !important;
+    background-size: 0.6vw 0.6vw !important;
+}
+
+.radioWrapper {
+    width: 100% !important;
+    height: auto !important;
+    cursor: pointer !important;
+    margin: 0 0 1.2vmin !important;
+    font-size: 1.4vmin !important;
+    display: flex !important;
+    flex-flow: row;
+    align-items: center;
+}
+
+.radioWrapper span {
+    white-space: normal !important;
+    display: block !important;
+}
+
+.radioWrapper div div {
+    width: 2vmin !important;
+    height: 2vmin !important;
+}
+
+.radioWrapper div div span {
+    width: 1vmin !important;
+    height: 1vmin !important;
+    margin-left: 23% !important;
+    margin-top: 23% !important;
+
+}
+
+.slideWrapper {
+    height: auto !important;
+}
+
+.slideWrapper div:nth-child(1) {
+    margin-top: 0 !important;
+}
+
+.slideWrapper div div:nth-child(2) {
+    background: #efefef !important;
+    height: 0.6vmin !important;
+}
+
+.slideWrapper div div:nth-child(2) div:nth-child(2) {
+    margin-top: -0.3vmin !important;
+    width: 1.4vmin !important;
+    height: 1.4vmin !important;
+    border: 0.1vmin solid #aaa !important;
+}
+
+.slideWrapper div div:nth-child(2) div:nth-child(1) {
+    font-size: 1.4vmin !important;
+}
+
+.slideWrapper div div:nth-child(2) div:nth-child(3) {
+    height: 0.8vmin !important;
+    background: #a7a7a7 !important;
+}
+
+.jqx-tooltip-text {
+    font-size: 1.4vmin;
+}
+
+.colorPickerWrapper span {
+    font-size: 1.2vmin !important;
+    font-weight: 700 !important;
+}
+
+.colorPickerWrapper input {
+    height: 2vh !important;
+    font-size: 1.4vmin !important;
+}
+

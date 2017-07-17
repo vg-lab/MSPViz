@@ -105,8 +105,6 @@ MSP.MacroscopicViewForce.prototype =
         d3.selectAll("canvas")
             .remove();
 
-        this.createSampleBandColor(_SigletonConfig.calciumScheme);
-
         var self=this;
         self.idx = 0;
 
@@ -116,7 +114,7 @@ MSP.MacroscopicViewForce.prototype =
             .append("canvas")
             .attr("id","canvas")
             .attr("width", _SigletonConfig.width)
-            .attr("height", _SigletonConfig.height-_SigletonConfig.scaleBandHeight)
+            .attr("height", _SigletonConfig.height)
             .attr("tabindex",1)
             .style("outline","none")
             .style("cursor","crosshair")
@@ -626,58 +624,4 @@ MSP.MacroscopicViewForce.prototype =
                 _SigletonConfig.svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
             }
         }
-        ,createSampleBandColor: function(interpolator)
-    {
-
-        var self = this;
-
-        var svgContainer = d4.select("#colorSampleBand").append("svg")
-            .attr("x",0).attr("y",20)
-            .attr("width", _SigletonConfig.width)
-            .attr("height", 60);
-        var z = d4.scaleSequential(d4["interpolate"+interpolator]);
-        var lg = svgContainer.append("defs").append("linearGradient")
-            .attr("id", "mygrad2")
-            .attr("x1", "0%")
-            .attr("x2", "100%")
-            .attr("y1", "0%")
-            .attr("y2", "0%")
-        ;
-        for(var i = 0; i<=20; i++) {
-            lg.append("stop")
-                .attr("offset", (i*5)+"%")
-                .style("stop-color", z(i/20))
-                .style("stop-opacity", 1);
-        }
-
-        var rectangle = svgContainer.append("rect")
-            .attr("id","boix2")
-            .attr("height", 20)
-            .attr("y", 22)
-            .attr("x", 10)
-            .attr("width", _SigletonConfig.width-20)
-            .attr("fill","url(#mygrad2)");
-
-        var x = d3.scale.linear().range([ 0, _SigletonConfig.width-20]).domain([_SimulationData.minICalciumValue, _SimulationData.maxICalciumValue]);
-        var xE = d3.scale.linear().range([ 0, _SigletonConfig.width-20]).domain([_SimulationData.minECalciumValue, _SimulationData.maxECalciumValue]);
-        var xInverted = d3.scale.linear().range([_SimulationData.minICalciumValue, _SimulationData.maxICalciumValue]).domain([ 10, _SigletonConfig.width-10]);
-        var xAxis = d3.svg.axis().scale(x).orient("bottom").tickValues(x.ticks().concat(x.domain())).tickSize(-10);
-        var xAxisE = d3.svg.axis().scale(xE).orient("top").tickValues(xE.ticks().concat(xE.domain())).tickSize(-10);
-
-        svgContainer.append("g")
-            .attr("class", "x axis E")
-            .attr("transform", "translate(10,45)")
-            .call(xAxis);
-
-        svgContainer.append("g")
-            .attr("class", "x axis I")
-            .attr("transform", "translate(10,18)")
-            .call(xAxisE);
-
-        $(".x.axis.I text").first().css("text-anchor","start");
-        $(".x.axis.E text").first().css("text-anchor","start");
-        $(".x.axis.I text").last().css("text-anchor","end");
-        $(".x.axis.E text").last().css("text-anchor","end");
-
-    }
     };
