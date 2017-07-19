@@ -26,18 +26,18 @@ MSP.MacroscopicViewGrid = function ()
     this.posYA = [];
     this.indx = [];
     this.numNeurons = _SimulationData.gNeurons.length;
-    this.lado;
-    this.enX;
-    this.enY;
+    this.squareSideLength;
+    this.horizontalPositionsNum;
+    this.verticalPositionsNum;
     this.selecting = false;
     this.idx = 0;
     this.context;
-    this.translate0=0;
-    this.translate1=0;
+    this.translateX=0;
+    this.translateY=0;
     this.scale=1;
-    this.contextHidden;
+    this.hiddenCanvasContext;
     this.scaleBandHeight;
-    this.figSize;
+    this.sizeRatio;
 };
 
 function sortWithIndeces(arr) {
@@ -103,7 +103,7 @@ MSP.MacroscopicViewGrid.prototype =
             .style("display","none");
 
 
-        this.contextHidden = _SigletonConfig.svgH.node().getContext("2d");
+        this.hiddenCanvasContext = _SigletonConfig.svgH.node().getContext("2d");
         var context = _SigletonConfig.svg.node().getContext("2d");
         this.context = context;
         var scale = d3.scale.linear()
@@ -153,7 +153,7 @@ MSP.MacroscopicViewGrid.prototype =
                 recti.x = d3.mouse(this)[0];
                 recti.y = d3.mouse(this)[1];
                 down = true;
-                var color  = self.contextHidden.getImageData(parseInt((d3.mouse(this)[0]-self.translate0)/self.scale,10), parseInt((d3.mouse(this)[1]-self.translate1)/self.scale,10), 1, 1).data;
+                var color  = self.hiddenCanvasContext.getImageData(parseInt((d3.mouse(this)[0]-self.translateX)/self.scale,10), parseInt((d3.mouse(this)[1]-self.translateY)/self.scale,10), 1, 1).data;
                 if(color[3]===255) {
                     _SimulationData.gNeurons[color[0] * 255 * 256 + color[1] * 256 + color[2]].selected = !_SimulationData.gNeurons[color[0] * 255 * 256 + color[1] * 256 + color[2]].selected ;
                     self.draw();
@@ -169,8 +169,8 @@ MSP.MacroscopicViewGrid.prototype =
                 self.zoombehavior.translate([0,0]).scale(1);
                 context.save();
                 context.clearRect(0, 0, _SigletonConfig.width, _SigletonConfig.height);
-                self.translate0 = 0;
-                self.translate1 = 0;
+                self.translateX = 0;
+                self.translateY = 0;
                 self.scale =1;
                 self.draw();
                 context.restore();
@@ -185,10 +185,10 @@ MSP.MacroscopicViewGrid.prototype =
             if(down &&  _SigletonConfig.shiftKey) {
                 recti.x2 = d3.mouse(this)[0];
                 recti.y2 = d3.mouse(this)[1];
-                var x = (recti.x-self.translate0)/self.scale;
-                var y = (recti.y-self.translate1)/self.scale;
-                var x2 = (recti.x2-self.translate0)/self.scale;
-                var y2 = (recti.y2-self.translate1)/self.scale;
+                var x = (recti.x-self.translateX)/self.scale;
+                var y = (recti.y-self.translateY)/self.scale;
+                var x2 = (recti.x2-self.translateX)/self.scale;
+                var y2 = (recti.y2-self.translateY)/self.scale;
 
                 _SimulationFilter.gNeuronsFilter.forEach(function (z) {
                     var d = _SimulationData.gNeurons[z];
@@ -202,7 +202,7 @@ MSP.MacroscopicViewGrid.prototype =
                 self.draw();
                 context.fillStyle="rgb(0,0,0)";
 
-                context.rect((recti.x-self.translate0)/self.scale, (recti.y-self.translate1)/self.scale, (recti.x2-self.translate0)/self.scale-(recti.x-self.translate0)/self.scale, (recti.y2-self.translate1)/self.scale-(recti.y-self.translate1)/self.scale);
+                context.rect((recti.x-self.translateX)/self.scale, (recti.y-self.translateY)/self.scale, (recti.x2-self.translateX)/self.scale-(recti.x-self.translateX)/self.scale, (recti.y2-self.translateY)/self.scale-(recti.y-self.translateY)/self.scale);
                 context.stroke();
                 context.globalAlpha=0.1;
                 context.fill();
@@ -213,7 +213,7 @@ MSP.MacroscopicViewGrid.prototype =
             var color = context.getImageData(parseInt(d3.mouse(this)[0]), parseInt(d3.mouse(this)[1]), 1, 1).data;
             //TODO: cambiar condicion por colores
             if ((color[0] + color[1] + color[2]) < 600) {
-                self.draw(parseInt(parseInt((d3.mouse(this)[0] - self.translate0) / self.scale, 10) / 7),parseInt(parseInt((d3.mouse(this)[1] - self.translate1) / self.scale, 10) / 7));
+                self.draw(parseInt(parseInt((d3.mouse(this)[0] - self.translateX) / self.scale, 10) / 7),parseInt(parseInt((d3.mouse(this)[1] - self.translateY) / self.scale, 10) / 7));
                 var posX = d3.mouse(this)[0]+60;
                 var width = $("#tooltip").width();
                 if((posX+width+50)>$(window).width()) posX -= width+20;
@@ -222,8 +222,8 @@ MSP.MacroscopicViewGrid.prototype =
                     .style("left",posX + "px")
                     .style("top", d3.mouse(this)[1] +10+ "px")
                     .html(
-                        "From: <b>" + _SimulationFilter.orderIndex[parseInt(parseInt((d3.mouse(this)[1] - self.translate0) / self.scale, 10) / 7)]
-                        + "</b><br> To: <b>" + _SimulationFilter.orderIndex[parseInt(parseInt((d3.mouse(this)[0] - self.translate1) / self.scale, 10) / 7)]+"</b>"
+                        "From: <b>" + _SimulationFilter.orderIndex[parseInt(parseInt((d3.mouse(this)[1] - self.translateX) / self.scale, 10) / 7)]
+                        + "</b><br> To: <b>" + _SimulationFilter.orderIndex[parseInt(parseInt((d3.mouse(this)[0] - self.translateY) / self.scale, 10) / 7)]+"</b>"
                     );
                 d3.select("#tooltip").classed("hidden", false);
             } else {
@@ -255,9 +255,9 @@ MSP.MacroscopicViewGrid.prototype =
 
             context.save();
             context.clearRect(0, 0, _SigletonConfig.width, _SigletonConfig.height);
-            self.translate0 =  Math.max(Math.min(d3.event.translate[0],40),((-_SimulationData.gNeurons.length*7)+_SigletonConfig.width)*d3.event.scale);
-            self.translate1 =   Math.max(Math.min(d3.event.translate[1],40),((-_SimulationData.gNeurons.length*7)+_SigletonConfig.height)*d3.event.scale);
-            self.zoombehavior.translate([self.translate0,self.translate1]).scale(d3.event.scale);
+            self.translateX =  Math.max(Math.min(d3.event.translate[0],40),((-_SimulationData.gNeurons.length*7)+_SigletonConfig.width)*d3.event.scale);
+            self.translateY =   Math.max(Math.min(d3.event.translate[1],40),((-_SimulationData.gNeurons.length*7)+_SigletonConfig.height)*d3.event.scale);
+            self.zoombehavior.translate([self.translateX,self.translateY]).scale(d3.event.scale);
             self.scale = d3.event.scale;
             self.draw();
             context.restore();
@@ -276,11 +276,11 @@ MSP.MacroscopicViewGrid.prototype =
         var context= this.context;
         context.setTransform(1, 0, 0, 1, 0, 0);
         context.clearRect(0,0,_SigletonConfig.width,_SigletonConfig.height);
-        context.translate(_SimulationController.view.translate0,_SimulationController.view.translate1);
+        context.translate(_SimulationController.view.translateX,_SimulationController.view.translateY);
         context.scale(_SimulationController.view.scale,_SimulationController.view.scale);
 
         var lIndex = _SimulationController.actSimStep % _SimulationData.numSimStepsPerFile;
-        context.lineWidth = this.figSize*0.2;
+        context.lineWidth = this.sizeRatio*0.2;
 
 
 
@@ -298,10 +298,10 @@ MSP.MacroscopicViewGrid.prototype =
         context.fill();
         context.fillStyle = "#dfdfdf";
         context.beginPath();
-        context.rect(-(_SimulationController.view.translate0/_SimulationController.view.scale),(y*7)+1,_SigletonConfig.width/_SimulationController.view.scale,6);
+        context.rect(-(_SimulationController.view.translateX/_SimulationController.view.scale),(y*7)+1,_SigletonConfig.width/_SimulationController.view.scale,6);
         context.fill();
         context.beginPath();
-        context.rect((x*7)+1,-(_SimulationController.view.translate1/_SimulationController.view.scale),6,_SigletonConfig.height/_SimulationController.view.scale);
+        context.rect((x*7)+1,-(_SimulationController.view.translateY/_SimulationController.view.scale),6,_SigletonConfig.height/_SimulationController.view.scale);
         context.fill();
 
         context.fillStyle = "#dfdfdf";
@@ -336,21 +336,21 @@ MSP.MacroscopicViewGrid.prototype =
             }
         );
 
-        var figureSize = this.figSize;
+        var figureSize = this.sizeRatio;
 
 
 
 
         context.fillStyle = "#ffffff";
         context.beginPath();
-        context.rect(-(_SimulationController.view.translate0/_SimulationController.view.scale),
-            -((_SimulationController.view.translate1)/_SimulationController.view.scale),_SigletonConfig.width/_SimulationController.view.scale,40/_SimulationController.view.scale);
+        context.rect(-(_SimulationController.view.translateX/_SimulationController.view.scale),
+            -((_SimulationController.view.translateY)/_SimulationController.view.scale),_SigletonConfig.width/_SimulationController.view.scale,40/_SimulationController.view.scale);
         context.fill();
 
 
         context.beginPath();
-        context.rect(-(_SimulationController.view.translate0/_SimulationController.view.scale),
-            -((_SimulationController.view.translate1)/_SimulationController.view.scale),40/_SimulationController.view.scale,_SigletonConfig.height/_SimulationController.view.scale);
+        context.rect(-(_SimulationController.view.translateX/_SimulationController.view.scale),
+            -((_SimulationController.view.translateY)/_SimulationController.view.scale),40/_SimulationController.view.scale,_SigletonConfig.height/_SimulationController.view.scale);
 
         context.fill();
         context.textBaseline = "middle";
@@ -359,44 +359,44 @@ MSP.MacroscopicViewGrid.prototype =
         context.fillStyle = "#000";
         for(var k = 0; k<_SimulationData.gNeurons.length; k+= Math.min(Math.max(Math.round(4/_SimulationController.view.scale),1),_SimulationData.gNeurons.length/4)) {
             context.rotate(-Math.PI / 2);
-            context.fillText(_SimulationFilter.orderIndex[k], ((_SimulationController.view.translate1-32)/_SimulationController.view.scale), ((k+1) * 7)-2.5);
+            context.fillText(_SimulationFilter.orderIndex[k], ((_SimulationController.view.translateY-32)/_SimulationController.view.scale), ((k+1) * 7)-2.5);
             context.rotate(Math.PI / 2);
-            context.fillText(_SimulationFilter.orderIndex[k], -(_SimulationController.view.translate0/_SimulationController.view.scale)+((30/(_SimulationFilter.orderIndex[k].toString().length*2))+5)/_SimulationController.view.scale, ((k+1) * 7) -2.5);
+            context.fillText(_SimulationFilter.orderIndex[k], -(_SimulationController.view.translateX/_SimulationController.view.scale)+((30/(_SimulationFilter.orderIndex[k].toString().length*2))+5)/_SimulationController.view.scale, ((k+1) * 7) -2.5);
             context.beginPath();
-            context.rect( -((_SimulationController.view.translate0-36)/_SimulationController.view.scale), ((k+1) * 7) -2.5,4/_SimulationController.view.scale,1/_SimulationController.view.scale);
-            context.rect( ((k+1) * 7) -2.5,-((_SimulationController.view.translate1-36)/_SimulationController.view.scale),1/_SimulationController.view.scale,4/_SimulationController.view.scale);
+            context.rect( -((_SimulationController.view.translateX-36)/_SimulationController.view.scale), ((k+1) * 7) -2.5,4/_SimulationController.view.scale,1/_SimulationController.view.scale);
+            context.rect( ((k+1) * 7) -2.5,-((_SimulationController.view.translateY-36)/_SimulationController.view.scale),1/_SimulationController.view.scale,4/_SimulationController.view.scale);
             context.fill();
         }
         context.fillStyle = "#f5f5f5";
         context.beginPath();
-        context.rect(-(_SimulationController.view.translate0/_SimulationController.view.scale),
-            -((_SimulationController.view.translate1)/_SimulationController.view.scale),40/_SimulationController.view.scale,40/_SimulationController.view.scale);
+        context.rect(-(_SimulationController.view.translateX/_SimulationController.view.scale),
+            -((_SimulationController.view.translateY)/_SimulationController.view.scale),40/_SimulationController.view.scale,40/_SimulationController.view.scale);
         context.fill();
 
         context.fillStyle = "#000000";
         context.beginPath();
-        context.moveTo(-((_SimulationController.view.translate0)/_SimulationController.view.scale),
-            -((_SimulationController.view.translate1-40)/_SimulationController.view.scale));
-        context.lineTo(-((_SimulationController.view.translate0-40-_SigletonConfig.width)/_SimulationController.view.scale),
-            -((_SimulationController.view.translate1-40)/_SimulationController.view.scale));
+        context.moveTo(-((_SimulationController.view.translateX)/_SimulationController.view.scale),
+            -((_SimulationController.view.translateY-40)/_SimulationController.view.scale));
+        context.lineTo(-((_SimulationController.view.translateX-40-_SigletonConfig.width)/_SimulationController.view.scale),
+            -((_SimulationController.view.translateY-40)/_SimulationController.view.scale));
         context.lineWidth = 1/_SimulationController.view.scale;
         context.stroke();
 
         context.beginPath();
-        context.moveTo(-((_SimulationController.view.translate0-40)/_SimulationController.view.scale),
-            -((_SimulationController.view.translate1)/_SimulationController.view.scale));
-        context.lineTo(-((_SimulationController.view.translate0-40)/_SimulationController.view.scale),
-            -((_SimulationController.view.translate1-40-_SigletonConfig.height)/_SimulationController.view.scale));
+        context.moveTo(-((_SimulationController.view.translateX-40)/_SimulationController.view.scale),
+            -((_SimulationController.view.translateY)/_SimulationController.view.scale));
+        context.lineTo(-((_SimulationController.view.translateX-40)/_SimulationController.view.scale),
+            -((_SimulationController.view.translateY-40-_SigletonConfig.height)/_SimulationController.view.scale));
         context.lineWidth = 1/_SimulationController.view.scale;
         context.stroke();
 
-        context.fillText("home", -((_SimulationController.view.translate0)/_SimulationController.view.scale), -((_SimulationController.view.translate1-20)/_SimulationController.view.scale));
+        context.fillText("home", -((_SimulationController.view.translateX)/_SimulationController.view.scale), -((_SimulationController.view.translateY-20)/_SimulationController.view.scale));
 
     },drawHidden : function()
     {
-        var contextHidden= this.contextHidden;
+        var contextHidden= this.hiddenCanvasContext;
         var self = this;
-        var figureSize = this.figSize;
+        var figureSize = this.sizeRatio;
         _SimulationFilter.gNeuronsFilter.forEach(function (z, i) {
             var d = _SimulationData.gNeurons[z];
             var colorHexString = self.toColor(i);
@@ -410,23 +410,23 @@ MSP.MacroscopicViewGrid.prototype =
     {
         var self = this;
         var width = _SigletonConfig.width;
-        this.figSize = _SigletonConfig.height/180;
+        this.sizeRatio = _SigletonConfig.height/180;
         var height = _SigletonConfig.height;
-        this.lado = Math.sqrt((width*height)/_SimulationData.gNeurons.length);
-        this.enX = Math.floor(width/this.lado);
-        this.enY = Math.floor(height/this.lado);
+        this.squareSideLength = Math.sqrt((width*height)/_SimulationData.gNeurons.length);
+        this.horizontalPositionsNum = Math.floor(width/this.squareSideLength);
+        this.verticalPositionsNum = Math.floor(height/this.squareSideLength);
         this.posXA=[];
         this.posYA=[];
         for (var i = 0; i <= _SimulationData.gNeurons.length; i++) {
-            this.posXA.push((i%this.enX)*(this.lado)+9);
+            this.posXA.push((i%this.horizontalPositionsNum)*(this.squareSideLength)+9);
         }
 
         var j = 1;
         var val = 10;
         while(j<=_SimulationData.gNeurons.length){
             this.posYA.push(val);
-            if(j%this.enX===0){
-                val+=(this.lado);
+            if(j%this.horizontalPositionsNum===0){
+                val+=(this.squareSideLength);
             }
             j++;
         }

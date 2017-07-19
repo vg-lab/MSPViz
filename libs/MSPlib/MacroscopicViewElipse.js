@@ -18,7 +18,7 @@ MSP.MacroscopicViewElipse = function ()
     this.EIconnectGroup;
     this.IEconnectGroup;
     this.IIconnectGroup;
-    this.figSize;
+    this.sizeRatio;
     this.MSPViewType="MacroV";
     this.x=0;
     this.posXA = [];
@@ -97,7 +97,7 @@ MSP.MacroscopicViewElipse.prototype =
                 .style("display","none");
 
 
-            this.contextHidden = _SigletonConfig.svgH.node().getContext("2d");
+            this.hiddenCanvasContext = _SigletonConfig.svgH.node().getContext("2d");
             var context = _SigletonConfig.svg.node().getContext("2d");
             this.context = context;
             var scale = d3.scale.linear()
@@ -147,7 +147,7 @@ MSP.MacroscopicViewElipse.prototype =
                     recti.x = d3.mouse(this)[0];
                     recti.y = d3.mouse(this)[1];
                     down = true;
-                    var color  = self.contextHidden.getImageData(parseInt((d3.mouse(this)[0]-self.translate0)/self.scale,10), parseInt((d3.mouse(this)[1]-self.translate1)/self.scale,10), 1, 1).data;
+                    var color  = self.hiddenCanvasContext.getImageData(parseInt((d3.mouse(this)[0]-self.translateX)/self.scale,10), parseInt((d3.mouse(this)[1]-self.translateY)/self.scale,10), 1, 1).data;
                     if(color[3]===255) {
                         var idx = _SimulationFilter.orderIndex[color[0] * 255 * 256 + color[1] * 256 + color[2]];
                         _SimulationData.gNeurons[idx].selected = !_SimulationData.gNeurons[idx].selected ;
@@ -167,10 +167,10 @@ MSP.MacroscopicViewElipse.prototype =
                 if(down &&  _SigletonConfig.shiftKey) {
                     recti.x2 = d3.mouse(this)[0];
                     recti.y2 = d3.mouse(this)[1];
-                    var x = (recti.x-self.translate0)/self.scale;
-                    var y = (recti.y-self.translate1)/self.scale;
-                    var x2 = (recti.x2-self.translate0)/self.scale;
-                    var y2 = (recti.y2-self.translate1)/self.scale;
+                    var x = (recti.x-self.translateX)/self.scale;
+                    var y = (recti.y-self.translateY)/self.scale;
+                    var x2 = (recti.x2-self.translateX)/self.scale;
+                    var y2 = (recti.y2-self.translateY)/self.scale;
 
                     _SimulationData.gNeurons.forEach(function (d,i) {
                         var posX = self.posXA[d.index];
@@ -186,14 +186,14 @@ MSP.MacroscopicViewElipse.prototype =
                     self.draw();
                     context.fillStyle="rgb(0,0,0)";
 
-                    context.rect((recti.x-self.translate0)/self.scale, (recti.y-self.translate1)/self.scale, (recti.x2-self.translate0)/self.scale-(recti.x-self.translate0)/self.scale, (recti.y2-self.translate1)/self.scale-(recti.y-self.translate1)/self.scale);
+                    context.rect((recti.x-self.translateX)/self.scale, (recti.y-self.translateY)/self.scale, (recti.x2-self.translateX)/self.scale-(recti.x-self.translateX)/self.scale, (recti.y2-self.translateY)/self.scale-(recti.y-self.translateY)/self.scale);
                     context.stroke();
                     context.globalAlpha=0.1;
                     context.fill();
                     context.globalAlpha=1;
 
                 }
-                var color  = self.contextHidden.getImageData(parseInt((d3.mouse(this)[0]-self.translate0)/self.scale,10), parseInt((d3.mouse(this)[1]-self.translate1)/self.scale,10), 1, 1).data;
+                var color  = self.hiddenCanvasContext.getImageData(parseInt((d3.mouse(this)[0]-self.translateX)/self.scale,10), parseInt((d3.mouse(this)[1]-self.translateY)/self.scale,10), 1, 1).data;
                 if(color[3]===255) {
                     var idx = _SimulationFilter.orderIndex[color[0] * 255 * 256 + color[1] * 256 + color[2]];
                     var d = _SimulationData.gNeurons[idx];
@@ -238,8 +238,8 @@ MSP.MacroscopicViewElipse.prototype =
 
                 context.save();
                 context.clearRect(0, 0, _SigletonConfig.width, _SigletonConfig.height);
-                self.translate0 = d3.event.translate[0];
-                self.translate1 = d3.event.translate[1];
+                self.translateX = d3.event.translate[0];
+                self.translateY = d3.event.translate[1];
                 self.scale = d3.event.scale;
 
                 self.draw();
@@ -260,15 +260,15 @@ MSP.MacroscopicViewElipse.prototype =
         var context= this.context;
         context.setTransform(1, 0, 0, 1, 0, 0);
         context.clearRect(0,0,_SigletonConfig.width,_SigletonConfig.height);
-        context.translate(_SimulationController.view.translate0,_SimulationController.view.translate1);
+        context.translate(_SimulationController.view.translateX,_SimulationController.view.translateY);
         context.scale(_SimulationController.view.scale,_SimulationController.view.scale);
 
         var lIndex = _SimulationController.actSimStep % _SimulationData.numSimStepsPerFile;
-        context.lineWidth = this.figSize*0.2;
+        context.lineWidth = this.sizeRatio*0.2;
 
         function canvas_arrow(context, fromx, fromy, tox, toy){
 
-            var figureSize = self.figSize;
+            var figureSize = self.sizeRatio;
             var headlen = figureSize;
             var distFig = figureSize*2.5;
             var angle = Math.atan2(toy-fromy,tox-fromx);
@@ -327,7 +327,7 @@ MSP.MacroscopicViewElipse.prototype =
             }
         );
 
-        var figureSize = this.figSize;
+        var figureSize = this.sizeRatio;
         _SimulationData.gNeurons.forEach(function (d, i) {
 
             var posX = self.posXA[d.index];
@@ -367,9 +367,9 @@ MSP.MacroscopicViewElipse.prototype =
         });
     },drawHidden : function()
     {
-        var contextHidden= this.contextHidden;
+        var contextHidden= this.hiddenCanvasContext;
         var self = this;
-        var figureSize = this.figSize;
+        var figureSize = this.sizeRatio;
         _SimulationData.gNeurons.forEach(function (d, i) {
             contextHidden.fillStyle = self.toColor(i);
             contextHidden.fillRect(d.PosX - 2*figureSize,d.PosY - 2*figureSize,figureSize*4,figureSize*4);
@@ -378,7 +378,7 @@ MSP.MacroscopicViewElipse.prototype =
     }, recalcultePositions: function()
     {
         var self = this;
-        this.figSize = _SigletonConfig.height/1000;
+        this.sizeRatio = _SigletonConfig.height/1000;
         var radius = _SigletonConfig.height-50;
 
         var selected = [];

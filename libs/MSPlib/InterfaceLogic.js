@@ -1057,19 +1057,19 @@ UI.Visualizator.prototype = {
     resize: function () {
         var self = this;
         $('#jqxBottomControls_SliderTimeline').jqxSlider('width', 0);
-        _SigletonConfig.height = $(window).height() - $("#jqxBottomControls").height() - $("#colorSampleBand").height();
-        _SigletonConfig.width = $(window).width() - $("#icon-bar").width();
+        if (_SimulationController !== null && _SimulationController.activeViewID !== 0 && _SimulationController.activeViewID !== 5)
+            self.createSampleBandColor();
+        _SigletonConfig.height = $(window).height() - $("#jqxBottomControls").outerHeight() - $("#colorSampleBand").outerHeight();
+        _SigletonConfig.width = $(window).width() - $("#icon-bar").outerWidth();
         if (_SimulationController !== null) {
             _SimulationController.view.resize();
             _SimulationController.view.updateVisualization();
-            if (_SimulationController.activeViewID !== 0 && _SimulationController.activeViewID !== 5)
-                self.createSampleBandColor();
         }
         else {
             this.generateCanvas("MSPViz");
         }
-        var width = ($('#control1').width() + $('#control2').width() + $('#control4').width() + $('#control5').width()) * 1.1;
-        $('#jqxBottomControls_SliderTimeline').jqxSlider('width', $('#controles').width() - width);
+        var width = ($('#control1').outerWidth() + $('#control2').outerWidth() + $('#control4').outerWidth() + $('#control5').outerWidth()) * 1.1;
+        $('#jqxBottomControls_SliderTimeline').jqxSlider('width', $('#controles').outerWidth() - width);
         _ColorPicker.resize();
     }, createColorCombos: function (idComboType, idComboScheme) {
 
