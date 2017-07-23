@@ -46,6 +46,7 @@ MSP.GraphMicroscopicView = function() {
     this.maxAConn;
     this.MSPViewType="GlobalCV";
     this.colorScale;
+    this.tooltipMarginRatio = 0.005;
 };
 
 MSP.GraphMicroscopicView.prototype =
@@ -107,8 +108,7 @@ MSP.GraphMicroscopicView.prototype =
                 .attr("width", self.width)
                 .attr("height", _SigletonConfig.height)
                 .append("g")
-                .call(d3.behavior.zoom().scaleExtent([1, 10])
-                    .on("zoom", self.zoom))
+                .call(d3.behavior.zoom().scaleExtent([1, 10]).on("zoom", self.zoom))
                 .attr("transform", "translate(" + self.margin.left + "," + self.margin.top + ")")
                 .append("g");
 
@@ -199,29 +199,6 @@ MSP.GraphMicroscopicView.prototype =
             dataA.push(data);
         });
 
-// for(var i = 0; i<lIndex+1;i++)
-// {
-//     data.data.push({
-//         value : i,
-//         data : _SimulationData.gNeuronsDetails[_SigletonConfig.neuronSelected].Calcium[i]
-//     });
-//
-//     dataE.data.push({
-//         value : i,
-//         data : _SimulationData.gNeuronsDetails[_SigletonConfig.neuronSelected].DeSeEA[i]
-//     });
-//
-//     dataI.data.push({
-//         value : i,
-//         data : _SimulationData.gNeuronsDetails[_SigletonConfig.neuronSelected].DeSeIA[i]
-//     });
-//
-//     dataA.data.push({
-//         value : i,
-//         data : _SimulationData.gNeuronsDetails[_SigletonConfig.neuronSelected].AxSeA[i]
-//     });
-//
-// }
 
         this.graph(1,this.svg,this.width,this.margin.left,this.margin.top,this.height,dataCalcium,false,4,selectedID);
         this.graph(2,this.svg,this.width,this.margin2.left,this.margin2.top,this.height2,dataE,false,4,selectedID);
@@ -358,7 +335,6 @@ MSP.GraphMicroscopicView.prototype =
                         .attr("d", area);
                 }
 
-
                 glineas.append("path")
                     .attr("class", "graphLine")
                     .attr("id",d.id)
@@ -385,17 +361,6 @@ MSP.GraphMicroscopicView.prototype =
                     .style("stroke", d.color)
                     .style("fill", "none")
                     .attr("r", 6);
-                g.append("circle")
-                    .attr("class", "circleTxt")
-                    .style("display", "none")
-                    .style("stroke", d.color)
-                    .style("fill", d.color)
-                    .attr("r", 3);
-
-
-                g.append("text")
-                    .attr("class", "texto")
-                    .style("display", "none");
             }
         });
 
@@ -437,17 +402,6 @@ MSP.GraphMicroscopicView.prototype =
                     .style("stroke",  colorRange[z%numColors])
                     .style("fill", "none")
                     .attr("r", 6);
-                g.append("circle")
-                    .attr("class", "circleTxt")
-                    .style("display", "none")
-                    .style("stroke",  colorRange[z%numColors])
-                    .style("fill", colorRange[z%numColors])
-                    .attr("r", 3);
-
-
-                g.append("text")
-                    .attr("class", "texto")
-                    .style("display", "none");
             }
 
         });
@@ -464,6 +418,27 @@ MSP.GraphMicroscopicView.prototype =
             .attr("y",marginTop)
             .attr("height", height)
             .on("mousemove", function () {
+                var mousePos = d3.mouse(this);
+                var tooltipX = d3.mouse(d3.select('body').node())[0];
+                var tooltipY = d3.mouse(d3.select('body').node())[1];
+                var tooltipWidth = $("#tooltip").outerWidth();
+                var simulationStep = parseInt(x(mousePos[0]));
+
+                if ((tooltipX + tooltipWidth) > $(window).width())
+                    tooltipX -= tooltipWidth;
+
+                var tooltipHTML = "<span class='stepTooltip'><b>" + simulationStep + "</b></span>";
+                data.forEach(function (d) {
+                    tooltipHTML += "<div class='circle' style='background-color:" + d.color + "'></div><b>" + d.textShort +
+                        "</b> - " + d.data[Math.floor(x(mousePos[0]))].data + "<br>";
+                });
+
+                d3.select("#tooltip")
+                    .html(tooltipHTML)
+                    .style("left", tooltipX + self.tooltipMarginRatio * _SigletonConfig.width + "px")
+                    .style("top", tooltipY + self.tooltipMarginRatio * _SigletonConfig.height + "px")
+                    .classed("hidden", false);
+
                 var coordinate = d3.mouse(this);
                 var ys = [];
                 g.selectAll('.circlePos')[0].forEach(function(d,i){
@@ -476,73 +451,6 @@ MSP.GraphMicroscopicView.prototype =
                     .style("z-index",1000)
                     .attr("x1",parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep))
                     .attr("x2",parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep));
-
-                var maxlen = 0;
-                g.selectAll('.texto')
-                    .style("display", "inline")
-                    .attr("x",function(){
-                        var pos = parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep)+30+10;
-                        if(((maxlen*8+20)+pos+5) > width)
-                            return parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep)-(maxlen*8+20);
-                        else
-                            return parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep)+30+20
-                    })
-                    .attr("y",function(d,i){
-                        return ini+((i+1)*20);
-                    })
-                    .text(function(d,i){
-                        if((data[i].textShort+" "+ data[i].data[Math.floor(x(coordinate[0]))].data).length > maxlen) maxlen = (data[i].textShort+" "+ data[i].data[Math.floor(x(coordinate[0]))].data).length;
-                        return data[i].textShort+" "+ data[i].data[Math.floor(x(coordinate[0]))].data;
-                    });
-
-
-
-
-                g.selectAll('.circleTxt')
-                    .style("display", "inline")
-                    .attr("cx", function(){
-                        var pos = parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep)+30+10;
-                        if(((maxlen*8+20)+pos+5) > width)
-                            return parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep)-(maxlen*8+30);
-                        else
-                            return parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep)+30+10
-                    })
-                    .attr("cy",function(d,i){
-                        return ini+((i+1)*20);
-                    });
-
-                g.selectAll('.texto')
-                    .style("display", "inline")
-                    .attr("x",function(){
-                        var pos = parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep)+30+10;
-                        if(((maxlen*8+20)+pos+5) > width)
-                            return parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep)-(maxlen*8+20);
-                        else
-                            return parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep)+30+20
-                    })
-                    .attr("y",function(d,i){
-                        return ini+((i+1)*20);
-                    })
-                    .text(function(d,i){
-                        return data[i].textShort+" "+ data[i].data[Math.floor(x(coordinate[0]))].data;
-                    });
-
-
-                g.selectAll('.rect_over')
-                    .style("display", "inline")
-                    .attr("width",maxlen*8+20)
-                    .attr("x",function(){
-                        var pos = parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep)+30+10;
-                        if(((maxlen*8+20)+pos+5) > width)
-                            return parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep)-(maxlen*8+40);
-                        else
-                            return parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep)+30;
-                    })
-                    .attr("y",function(){
-                        return ini;
-                    });
-
-
 
                 g.selectAll('.circlePos')
                     .style("display", "inline")
@@ -559,10 +467,8 @@ MSP.GraphMicroscopicView.prototype =
                     .attr("cx",parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep));
             })
             .on("mouseout", function () {
-                d3.selectAll('.circleTxt').style("display", "none");
                 d3.selectAll('.line_over'+i).style("display", "none");
-                d3.selectAll('.rect_over').style("display", "none");
-                d3.selectAll('.texto').style("display", "none");
+                d3.select("#tooltip").classed("hidden", true);
                 d3.selectAll('.circlePos').style("display", "none");
                 d3.selectAll('.circleBck').style("display", "none");
             });

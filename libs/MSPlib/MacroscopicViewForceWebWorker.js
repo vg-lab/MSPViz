@@ -35,7 +35,6 @@ MSP.MacroscopicViewForce = function ()
     this.translateX=0;
     this.translateY=0;
     this.scale=1;
-    this.hiddenCanvasContext;
     this.scaleBandHeight;
     this.sizeRatio;
 
@@ -120,15 +119,8 @@ MSP.MacroscopicViewForce.prototype =
             .style("cursor","crosshair")
             .call(this.zoombehavior);
 
-        _SigletonConfig.svgH = d3.select("body")
-            .append("canvas")
-            .attr("id","canvasHidden")
-            .attr("width", 8000)
-            .attr("height", 8000)
-            .style("display","none");
 
 
-        this.hiddenCanvasContext = _SigletonConfig.svgH.node().getContext("2d");
         var context = _SigletonConfig.svg.node().getContext("2d");
         this.context = context;
 
@@ -140,7 +132,7 @@ MSP.MacroscopicViewForce.prototype =
 
         rect = {};
         var  drag = false;
-        //self.drawHidden();
+
         function keyDown(e) {
             _SigletonConfig.shiftKey = d3.event.shiftKey || d3.event.metaKey;
             if (_SigletonConfig.shiftKey) {
@@ -174,9 +166,29 @@ MSP.MacroscopicViewForce.prototype =
                 recti.x = d3.mouse(this)[0];
                 recti.y = d3.mouse(this)[1];
                 down = true;
-                var color  = self.hiddenCanvasContext.getImageData(parseInt((d3.mouse(this)[0]-self.translateX)/self.scale,10), parseInt((d3.mouse(this)[1]-self.translateY)/self.scale,10), 1, 1).data;
-                if(color[3]===255) {
-                    var idx = _SimulationFilter.orderIndex[color[0] * 255 * 256 + color[1] * 256 + color[2]];
+                var sizeRatio = self.sizeRatio;
+
+                var x = (d3.mouse(this)[0] - self.translateX) / self.scale;
+                var y = (d3.mouse(this)[1] - self.translateY) / self.scale;
+
+
+                var minX = x - sizeRatio;
+                var maxX = x + sizeRatio;
+                var minY = y - sizeRatio;
+                var maxY = y + sizeRatio;
+                var found = false;
+                var idx = -1;
+                var length = _SimulationData.gNeurons.length;
+
+                for (var i = 0; i < length; i++) {
+                    var d = _SimulationData.gNeurons[i];
+                    if (d.PosX >= minX && d.PosX <= maxX && d.PosY >= minY && d.PosY <= maxY) {
+                        found = true;
+                        idx = i;
+                        break;
+                    }
+                }
+                if(found){
                     _SimulationData.gNeurons[idx].selected = !_SimulationData.gNeurons[idx].selected ;
                     self.draw();
                 }
@@ -220,25 +232,46 @@ MSP.MacroscopicViewForce.prototype =
                 context.globalAlpha=1;
 
             }
-            var color  = self.hiddenCanvasContext.getImageData(self.rescaleX((d3.mouse(this)[0]-self.translateX)/self.scale), self.rescaleY((d3.mouse(this)[1]-self.translateY)/self.scale), 1, 1).data;
-            if(color[3]===255) {
-                var idx = _SimulationFilter.orderIndex[color[0] * 255 * 256 + color[1] * 256 + color[2]];
+            var sizeRatio = self.sizeRatio;
+
+            var x = (d3.mouse(this)[0] - self.translateX) / self.scale;
+            var y = (d3.mouse(this)[1] - self.translateY) / self.scale;
+
+
+            var minX = x - sizeRatio;
+            var maxX = x + sizeRatio;
+            var minY = y - sizeRatio;
+            var maxY = y + sizeRatio;
+            var found = false;
+            var idx = -1;
+            var length = _SimulationData.gNeurons.length;
+
+            for (var i = 0; i < length; i++) {
+                var d = _SimulationData.gNeurons[i];
+                if (d.PosX >= minX && d.PosX <= maxX && d.PosY >= minY && d.PosY <= maxY) {
+                    found = true;
+                    idx = i;
+                    break;
+                }
+            }
+            if (found) {
                 var d = _SimulationData.gNeurons[idx];
-                var posX = d3.mouse(this)[0]+50;
-                var width = $("#tooltip").width();
-                if((posX+width+50)>$(window).width()) posX -= width+20;
+                var tooltipX = d3.mouse(d3.select('body').node())[0];
+                var tooltipWidth = $("#tooltip").outerWidth();
+
+                if ((tooltipX + tooltipWidth) > $(window).width())
+                    tooltipX -= tooltipWidth;
 
                 d3.select("#tooltip")
                     .html(
                         "Id: <b>" + d.NId
-                        + "</b><br> CaC= <b>" + _SimulationData.gNeuronsDetails[d.NId].Calcium[lIndex]+"</b>"
+                        + "</b><br> CaC= <b>" + _SimulationData.gNeuronsDetails[d.NId].Calcium[lIndex] + "</b>"
                     )
-                    .style("left",posX + "px")
-                    .style("top", d3.mouse(this)[1]+10 + "px");
-                d3.select("#tooltip").classed("hidden", false);
-            }else
-            {
-                d3.select("#tooltip").classed("hidden",true);
+                    .style("left", tooltipX + "px")
+                    .style("top", d3.mouse(this)[1] + 10 + "px")
+                    .classed("hidden", false);
+            } else {
+                d3.select("#tooltip").classed("hidden", true);
             }
         }
 
@@ -258,12 +291,11 @@ MSP.MacroscopicViewForce.prototype =
 
         $('body').on('contextmenu', '#canvas', function(e){ return false; });
 
-        for (var i = 0; i < _SimulationData.gNeurons.length; i++) {
-            var elem = _SimulationData.gNeurons[i];
-            elem["PosX"] = 0;
-            elem["PosY"] = 0;
+        _SimulationData.gNeurons.forEach(function (d) {
+            d.PosX = _SigletonConfig.width * 0.5;
+            d.PosY = _SigletonConfig.height * 0.5;
+        });
 
-        }
         this.nodesB = JSON.parse(JSON.stringify(_SimulationData.gNeurons));
         this.nodes = _SimulationData.gNeurons;
 
@@ -306,7 +338,7 @@ MSP.MacroscopicViewForce.prototype =
                     if (t === 1){
                         self.nodesB = JSON.parse(JSON.stringify(_SimulationData.gNeurons));
                         self.linksPrev = self.linksPrevActual;
-                        self.drawHidden();
+
                         return true;
 
                     }
@@ -460,26 +492,6 @@ MSP.MacroscopicViewForce.prototype =
             }
 
         });
-    },drawHidden : function()
-    {
-        var contextHidden= this.hiddenCanvasContext;
-        contextHidden.clearRect(0,0,_SigletonConfig.width,_SigletonConfig.height);
-        var self = this;
-        var figureSize = 10;
-        this.rescaleX = d3.scale
-            .linear()
-            .domain([this.bounds.minX-figureSize,this.bounds.maxX+figureSize])
-            .range([0,  8000]);
-
-        this.rescaleY = d3.scale
-            .linear()
-            .domain([this.bounds.minY-figureSize,this.bounds.maxY+figureSize])
-            .range([0, 8000]);
-        _SimulationData.gNeurons.forEach(function (d, i) {
-            contextHidden.fillStyle = self.toColor(i);
-            contextHidden.fillRect( self.rescaleX(d.PosX-figureSize) , self.rescaleY(d.PosY-figureSize),figureSize*2.5,figureSize*1.5);
-        });
-
     }, recalcultePositions: function()
     {
         var self = this;

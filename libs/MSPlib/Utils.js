@@ -334,4 +334,15 @@ function saveConfig() {
     hiddenElement.download = 'config.json';
     hiddenElement.click();
 }
+
+function rgbToHex(color) {
+    var hexColor = "#";
+    for(var i =0 ; i< 3; i++){
+        var hexChannel = color[i].toString(16);
+        if(hexChannel.length === 1)
+            hexChannel = "0" + hexChannel;
+        hexColor += hexChannel;
+    }
+    return hexColor;
+}
 //# sourceURL=Utils.js

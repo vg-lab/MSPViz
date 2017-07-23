@@ -110,11 +110,11 @@ path.selected {
 }
 
 .textoL {
-    font: 14px sans-serif;
+    font: 0.8vw sans-serif;
 }
 
 .textoA {
-    font: 14px sans-serif;
+    font: 1vw sans-serif;
 }
 
 .x.axis text {
@@ -468,7 +468,7 @@ html {
 .graphLine {
     fill: none;
     stroke: steelblue;
-    stroke-width: 1.5px;
+    stroke-width: 0.15vmin;
 }
 
 .a20 {
@@ -817,6 +817,21 @@ hr {
     align-self: center;
 }
 
+.circle {
+    width: 1vmin;
+    height: 1vmin;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.stepTooltip {
+    display: block;
+    width: 100%;
+    border-bottom: 1px solid #858585;
+    text-align: center;
+    margin-bottom: 1vh
+}
+
 @media screen and (max-width: 1919px) {
     #jqxWidgets {
         height: 100vh;
@@ -845,6 +860,15 @@ hr {
     .navViewButton.active {
         border-left: 4px solid #FF9800;
     }
+
+    .textoL {
+        font: 14px sans-serif;
+    }
+
+    .textoA {
+        font: 14px sans-serif;
+    }
+
 }
 
 @media screen and (max-height: 1000px) {
