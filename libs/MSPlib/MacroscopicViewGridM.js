@@ -21,8 +21,8 @@ MSP.MacroscopicViewGrid = function () {
     this.indX = 0;
     this.MSPViewType = "MacroV";
     this.x = 0;
-    this.posXA = [];
-    this.posYA = [];
+    this.neuronsPosX = [];
+    this.neuronsPosY = [];
     this.indx = [];
     this.numNeurons = _SimulationData.gNeurons.length;
     this.squareSideLength;
@@ -329,16 +329,16 @@ MSP.MacroscopicViewGrid.prototype =
         this.squareSideLength = Math.sqrt((width * height) / _SimulationData.gNeurons.length);
         this.horizontalPositionsNum = Math.floor(width / this.squareSideLength);
         this.verticalPositionsNum = Math.floor(height / this.squareSideLength);
-        this.posXA = [];
-        this.posYA = [];
+        this.neuronsPosX = [];
+        this.neuronsPosY = [];
         for (var i = 0; i <= _SimulationData.gNeurons.length; i++) {
-            this.posXA.push((i % this.horizontalPositionsNum) * (this.squareSideLength) + 9);
+            this.neuronsPosX.push((i % this.horizontalPositionsNum) * (this.squareSideLength) + 9);
         }
 
         var j = 1;
         var val = 10;
         while (j <= _SimulationData.gNeurons.length) {
-            this.posYA.push(val);
+            this.neuronsPosY.push(val);
             if (j % this.horizontalPositionsNum === 0) {
                 val += (this.squareSideLength);
             }
@@ -346,8 +346,8 @@ MSP.MacroscopicViewGrid.prototype =
         }
 
         _SimulationData.gNeurons.forEach(function (d, i) {
-            d.PosX = self.posXA[i];
-            d.PosY = self.posYA[i];
+            d.PosX = self.neuronsPosX[i];
+            d.PosY = self.neuronsPosY[i];
         });
 
     }, sortNeuronsByCa: function () {
@@ -358,11 +358,11 @@ MSP.MacroscopicViewGrid.prototype =
         for (var i = 0; i < _SimulationData.gNeuronsDetails.length; i++)
             calcios.push(_SimulationData.gNeuronsDetails[i].Calcium[lIndex])
         var sorted = sortWithIndeces(calcios).sortIndices;
-        var posXA2 = self.posXA.slice(0);
-        var posYA2 = self.posYA.slice(0);
+        var posXA2 = self.neuronsPosX.slice(0);
+        var posYA2 = self.neuronsPosY.slice(0);
         for (i = 0; i < sorted.length; i++) {
-            posXA2[sorted[i]] = self.posXA[i];
-            posYA2[sorted[i]] = self.posYA[i];
+            posXA2[sorted[i]] = self.neuronsPosX[i];
+            posYA2[sorted[i]] = self.neuronsPosY[i];
         }
         _SimulationData.gNeuronsRep.attr("transform", function (d) {
 
@@ -378,8 +378,8 @@ MSP.MacroscopicViewGrid.prototype =
         self.idx = 0;
         _SimulationData.gNeuronsRep.attr("transform", function (d) {
 
-                d.PosX = self.posXA[self.idx];
-                d.PosY = self.posYA[self.idx];
+                d.PosX = self.neuronsPosX[self.idx];
+                d.PosY = self.neuronsPosY[self.idx];
                 self.idx += 1;
                 return "translate(" + d.PosX + "," + d.PosY + ")";
             }

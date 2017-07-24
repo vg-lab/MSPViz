@@ -31,8 +31,9 @@ MSP.GlobalConnectionsViewGraph.prototype = {
         this.generateGlobalConnectionsViewGraph();
     },
     generateGlobalConnectionsViewGraph: function () {
-        d3.selectAll("svg")
-            .remove();
+        d3.selectAll("svg").filter(function() {
+            return !this.classList.contains('color')
+        }).remove();
 
         d3.selectAll("canvas")
             .remove();
@@ -258,7 +259,7 @@ MSP.GlobalConnectionsViewGraph.prototype = {
                 .attr("r", renderHeight * 0.01);
         });
 
-
+        var spacing
         d3.select(".graphs")
             .append("rect")
             .attr("class", "overlay a" + i)
@@ -267,30 +268,34 @@ MSP.GlobalConnectionsViewGraph.prototype = {
             .attr("height", height)
             .on("mousemove", function () {
                 var mousePos = d3.mouse(this);
-                var tooltipX = d3.mouse(d3.select('body').node())[0];
-                var tooltipY = d3.mouse(d3.select('body').node())[1];
+                var tooltipX = d3.mouse(d3.select('body').node())[0] + self.tooltipMarginRatio * _SigletonConfig.width;
+                var tooltipY = d3.mouse(d3.select('body').node())[1] + self.tooltipMarginRatio * _SigletonConfig.height;
                 var tooltipWidth = $("#tooltip").outerWidth();
-                var simulationStep = parseInt(x(mousePos[0]));
+                var tooltipHeight = $("#tooltip").outerHeight();
+                var simulationStep = Math.round(x(mousePos[0]));
                 var graphStepPosition = simulationStep * (width / _SimulationController.actSimStep);
 
                 if ((tooltipX + tooltipWidth) > $(window).width())
                     tooltipX -= tooltipWidth;
 
+                if ((tooltipY + tooltipHeight) > $("#renderArea").height())
+                    tooltipY -= tooltipHeight;
+
                 var tooltipHTML = "<span class='stepTooltip'><b>" + simulationStep + "</b></span>";
                 data.forEach(function (d) {
                     tooltipHTML += "<div class='circle' style='background-color:" + d.color + "'></div><b>" + d.textShort +
-                        "</b><b> " + d.data[Math.floor(x(mousePos[0]))].data + "</b><br>";
+                        "</b><b> " + d.data[Math.round(x(mousePos[0]))].data + "</b><br>";
                 });
 
                 d3.select("#tooltip")
                     .html(tooltipHTML)
-                    .style("left", tooltipX + self.tooltipMarginRatio * _SigletonConfig.width + "px")
-                    .style("top", tooltipY + self.tooltipMarginRatio * _SigletonConfig.height + "px")
+                    .style("left", tooltipX+ "px")
+                    .style("top", tooltipY +"px")
                     .classed("hidden", false);
 
                 var ys = [];
                 g.selectAll('.circleIndicator')[0].forEach(function (d, i) {
-                    ys.push(y(data[i].data[Math.floor(x(mousePos[0]))].data));
+                    ys.push(y(data[i].data[Math.round(x(mousePos[0]))].data));
                 });
 
                 d3.selectAll('.verticalLine' + i)
@@ -301,14 +306,14 @@ MSP.GlobalConnectionsViewGraph.prototype = {
                 g.selectAll('.circleIndicator')
                     .style("display", "inline")
                     .attr("cy", function (d, i) {
-                        return y(data[i].data[Math.floor(x(mousePos[0]))].data);
+                        return y(data[i].data[Math.round(x(mousePos[0]))].data);
                     })
                     .attr("cx", graphStepPosition);
 
                 gBurbujas.selectAll('.circleIndicatorBackground')
                     .style("display", "inline")
                     .attr("cy", function (d, i) {
-                        return y(data[i].data[Math.floor(x(mousePos[0]))].data);
+                        return y(data[i].data[Math.round(x(mousePos[0]))].data);
                     })
                     .attr("cx", graphStepPosition);
             })

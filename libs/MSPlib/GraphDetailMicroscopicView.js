@@ -736,30 +736,34 @@ MSP.GraphDetailMicroscopicView.prototype =
             .attr("height", height)
             .on("mousemove", function () {
                 var mousePos = d3.mouse(this);
-                var tooltipX = d3.mouse(d3.select('body').node())[0];
-                var tooltipY = d3.mouse(d3.select('body').node())[1];
+                var tooltipX = d3.mouse(d3.select('body').node())[0] + self.tooltipMarginRatio * _SigletonConfig.width;
+                var tooltipY = d3.mouse(d3.select('body').node())[1] + self.tooltipMarginRatio * _SigletonConfig.height;
                 var tooltipWidth = $("#tooltip").outerWidth();
-                var simulationStep = parseInt(x(mousePos[0]));
+                var tooltipHeight = $("#tooltip").outerHeight();
+                var simulationStep = Math.round(x(mousePos[0]));
 
                 if ((tooltipX + tooltipWidth) > $(window).width())
                     tooltipX -= tooltipWidth;
 
+                if ((tooltipY + tooltipHeight) > $("#renderArea").height())
+                    tooltipY -= tooltipHeight;
+
                 var tooltipHTML = "<span class='stepTooltip'><b>" + simulationStep + "</b></span>";
                 data.forEach(function (d) {
                     tooltipHTML += "<div class='circle' style='background-color:" + d.color + "'></div><b>" + d.textShort +
-                        "</b><b> " + d.data[Math.floor(x(mousePos[0]))].data + "</b><br>";
+                        "</b><b> " + d.data[Math.round(x(mousePos[0]))].data + "</b><br>";
                 });
 
                 d3.select("#tooltip")
                     .html(tooltipHTML)
-                    .style("left", tooltipX + self.tooltipMarginRatio * _SigletonConfig.width + "px")
-                    .style("top", tooltipY + self.tooltipMarginRatio * _SigletonConfig.height + "px")
+                    .style("left", tooltipX + "px")
+                    .style("top", tooltipY + "px")
                     .classed("hidden", false);
 
                 var coordinate = d3.mouse(this);
                 var ys = [];
                 g.selectAll('.circlePos')[0].forEach(function(d,i){
-                    ys.push(y(data[i].data[Math.floor(x(coordinate[0]))].data));
+                    ys.push(y(data[i].data[Math.round(x(coordinate[0]))].data));
                 });
                 d3.selectAll('.line_over'+i)
                     .style("display", "inline")
@@ -770,14 +774,14 @@ MSP.GraphDetailMicroscopicView.prototype =
                 g.selectAll('.circlePos')
                     .style("display", "inline")
                     .attr("cy",function(d,i){
-                        return y(data[i].data[Math.floor(x(coordinate[0]))].data);
+                        return y(data[i].data[Math.round(x(coordinate[0]))].data);
                     })
                     .attr("cx",parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep));
 
                 gBurbujas.selectAll('.circleBck')
                     .style("display", "inline")
                     .attr("cy",function(d,i){
-                        return y(data[i].data[Math.floor(x(coordinate[0]))].data);
+                        return y(data[i].data[Math.round(x(coordinate[0]))].data);
                     })
                     .attr("cx",parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep));
             })

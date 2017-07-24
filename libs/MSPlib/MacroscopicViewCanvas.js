@@ -9,8 +9,8 @@ MSP.MacroscopicViewCanvas = function () {
     this.selecting = false;
     this.zoombehavior;
     this.MSPViewType = "MacroV";
-    this.posXA = [];
-    this.posYA = [];
+    this.neuronsPosX = [];
+    this.neuronsPosY = [];
     this.squareSideLength;
     this.horizontalPositionsNum;
     this.idx = 0;
@@ -91,13 +91,10 @@ MSP.MacroscopicViewCanvas.prototype = {
     },
     mouseUp: function (e) {
         var self = _SimulationController.view;
-        _SimulationData.gNeurons.forEach(function (d, i) {
-            if (d.selected) {
+        _SigletonConfig.gSelectionIds = [];
+        _SimulationData.gNeurons.forEach(function (d) {
+            if (d.selected)
                 _SigletonConfig.gSelectionIds.push(d.NId);
-            }
-            else {
-                removeA(_SigletonConfig.gSelectionIds, d.NId);
-            }
         });
         self.selecting = (_SigletonConfig.gSelectionIds.length > 0);
         self.draw();
@@ -147,8 +144,8 @@ MSP.MacroscopicViewCanvas.prototype = {
             scaledSelectionRect.height = scaledSelectionRect.yEnd - scaledSelectionRect.yStart;
 
             _SimulationData.gNeurons.forEach(function (d) {
-                var posX = self.posXA[d.index];
-                var posY = self.posYA[d.index];
+                var posX = self.neuronsPosX[d.index];
+                var posY = self.neuronsPosY[d.index];
                 d.selected = d.previouslySelected ^ (scaledSelectionRect.xStart <= posX
                     && posX < scaledSelectionRect.xEnd && scaledSelectionRect.yStart <= posY
                     && posY < scaledSelectionRect.yEnd);
@@ -272,11 +269,11 @@ MSP.MacroscopicViewCanvas.prototype = {
                             context.globalAlpha = _SigletonConfig.macroVAlpha;
                             context.strokeStyle = color;
                         }
-                        context.moveTo(self.posXA[_SimulationData.gNeurons[d[0]].index], self.posYA[_SimulationData.gNeurons[d[0]].index]);
-                        context.lineTo(self.posXA[_SimulationData.gNeurons[d[1]].index], self.posYA[_SimulationData.gNeurons[d[1]].index]);
+                        context.moveTo(self.neuronsPosX[_SimulationData.gNeurons[d[0]].index], self.neuronsPosY[_SimulationData.gNeurons[d[0]].index]);
+                        context.lineTo(self.neuronsPosX[_SimulationData.gNeurons[d[1]].index], self.neuronsPosY[_SimulationData.gNeurons[d[1]].index]);
                         context.stroke();
-                        canvas_arrow(context, self.posXA[_SimulationData.gNeurons[d[0]].index], self.posYA[_SimulationData.gNeurons[d[0]].index],
-                            self.posXA[_SimulationData.gNeurons[d[1]].index], self.posYA[_SimulationData.gNeurons[d[1]].index]);
+                        canvas_arrow(context, self.neuronsPosX[_SimulationData.gNeurons[d[0]].index], self.neuronsPosY[_SimulationData.gNeurons[d[0]].index],
+                            self.neuronsPosX[_SimulationData.gNeurons[d[1]].index], self.neuronsPosY[_SimulationData.gNeurons[d[1]].index]);
                         context.globalAlpha = 1;
 
 
@@ -289,8 +286,8 @@ MSP.MacroscopicViewCanvas.prototype = {
         var sizeRatio = this.sizeRatio;
         _SimulationData.gNeurons.forEach(function (d, i) {
 
-            var posX = self.posXA[d.index];
-            var posY = self.posYA[d.index];
+            var posX = self.neuronsPosX[d.index];
+            var posY = self.neuronsPosY[d.index];
             context.lineWidth = sizeRatio * self.strokeWidth;
             context.globalAlpha = 1;
             if (d.NAct === "E")
@@ -342,17 +339,17 @@ MSP.MacroscopicViewCanvas.prototype = {
         var height = _SigletonConfig.height;
         this.squareSideLength = Math.sqrt((width * height) / _SimulationData.gNeurons.length);
         this.horizontalPositionsNum = Math.floor(width / this.squareSideLength);
-        this.posXA = [];
-        this.posYA = [];
+        this.neuronsPosX = [];
+        this.neuronsPosY = [];
 
         for (var i = 0; i <= _SimulationData.gNeurons.length; i++) {
-            this.posXA.push((i % this.horizontalPositionsNum) * (this.squareSideLength) + 9);
+            this.neuronsPosX.push((i % this.horizontalPositionsNum) * (this.squareSideLength) + 9);
         }
 
         var j = 1;
         var val = 10;
         while (j <= _SimulationData.gNeurons.length) {
-            this.posYA.push(val);
+            this.neuronsPosY.push(val);
             if (j % this.horizontalPositionsNum === 0) {
                 val += (this.squareSideLength);
             }
@@ -360,8 +357,8 @@ MSP.MacroscopicViewCanvas.prototype = {
         }
 
         _SimulationData.gNeurons.forEach(function (d, i) {
-            d.PosX = self.posXA[i];
-            d.PosY = self.posYA[i];
+            d.PosX = self.neuronsPosX[i];
+            d.PosY = self.neuronsPosY[i];
         });
 
     },
