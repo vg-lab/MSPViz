@@ -575,28 +575,29 @@ MSP.GraphDetailMicroscopicView.prototype =
         var dataE = {text:"Excitatory", textShort:"", color:_SigletonConfig.EColor, data:[]};
         var dataI = {text:"Inhibitory", textShort:"", color:_SigletonConfig.IColor, data:[]};
         var dataA = {text:"Axonal", textShort:"", color:_SigletonConfig.AColor, data:[]};
+        var startStep = _SimulationData.actFile*_SimulationData.numSimStepsPerFile;
         for(var i = 0; i<lIndex+1;i++)
         {
             data.data.push({
-                value : i,
+                value : startStep,
                 data : _SimulationData.gNeuronsDetails[_SigletonConfig.neuronSelected].Calcium[i]
             });
 
             dataE.data.push({
-                value : i,
+                value : startStep,
                 data : _SimulationData.gNeuronsDetails[_SigletonConfig.neuronSelected].DeSeEA[i]
             });
 
             dataI.data.push({
-                value : i,
+                value : startStep,
                 data : _SimulationData.gNeuronsDetails[_SigletonConfig.neuronSelected].DeSeIA[i]
             });
 
             dataA.data.push({
-                value : i,
+                value : startStep,
                 data : _SimulationData.gNeuronsDetails[_SigletonConfig.neuronSelected].AxSeA[i]
             });
-
+            startStep++;
         }
 
         this.graph(1,this.svg,this.width2,this.margin2.left,this.margin2.top,this.height2,[data],false,4);
@@ -664,7 +665,7 @@ MSP.GraphDetailMicroscopicView.prototype =
         });
 
         var x2 = d3.scale.linear().range([ 0, width], 1);
-        x2.domain([0,_SimulationController.actSimStep]);
+        x2.domain([_SimulationData.actFile*_SimulationData.numSimStepsPerFile, _SimulationController.actSimStep]);
         var xAxis2 = d3.svg.axis().scale(x2).tickValues(x2.ticks().concat(x2.domain())).orient("bottom").innerTickSize(-height).outerTickSize(3);
 
         var y = d3.scale.linear().range([ height, 0 ]).domain([0,max]).nice(steps);
@@ -686,8 +687,8 @@ MSP.GraphDetailMicroscopicView.prototype =
             .call(yAxis);
 
 
-        xx.domain([0,_SimulationController.actSimStep]);
-        var x = d3.scale.linear().range([0, _SimulationController.actSimStep]);
+        xx.domain([_SimulationData.actFile*_SimulationData.numSimStepsPerFile, _SimulationController.actSimStep]);
+        var x = d3.scale.linear().range([_SimulationData.actFile*_SimulationData.numSimStepsPerFile, _SimulationController.actSimStep]);
         x.domain([0,   width]);
         var gBurbujas = svg.append("g").attr("class","history c"+i).attr("transform","translate(0,"+marginTop+")");
         var glineas = svg.append("g").attr("class","history b"+i).attr("transform","translate(0,"+marginTop+")");
@@ -740,7 +741,11 @@ MSP.GraphDetailMicroscopicView.prototype =
                 var tooltipY = d3.mouse(d3.select('body').node())[1] + self.tooltipMarginRatio * _SigletonConfig.height;
                 var tooltipWidth = $("#tooltip").outerWidth();
                 var tooltipHeight = $("#tooltip").outerHeight();
+                var dataIndex = Math.round(x(mousePos[0]))%_SimulationData.numSimStepsPerFile;
                 var simulationStep = Math.round(x(mousePos[0]));
+                var linePosX = (parseInt(x(mousePos[0]))-_SimulationData.numSimStepsPerFile*_SimulationData.actFile)
+                    * (width / (_SimulationController.actSimStep-_SimulationData.numSimStepsPerFile
+                        *_SimulationData.actFile));
 
                 if ((tooltipX + tooltipWidth) > $(window).width())
                     tooltipX -= tooltipWidth;
@@ -751,7 +756,7 @@ MSP.GraphDetailMicroscopicView.prototype =
                 var tooltipHTML = "<span class='stepTooltip'><b>" + simulationStep + "</b></span>";
                 data.forEach(function (d) {
                     tooltipHTML += "<div class='circle' style='background-color:" + d.color + "'></div><b>" + d.textShort +
-                        "</b><b> " + d.data[Math.round(x(mousePos[0]))].data + "</b><br>";
+                        "</b><b> " + d.data[dataIndex].data + "</b><br>";
                 });
 
                 d3.select("#tooltip")
@@ -760,30 +765,30 @@ MSP.GraphDetailMicroscopicView.prototype =
                     .style("top", tooltipY + "px")
                     .classed("hidden", false);
 
-                var coordinate = d3.mouse(this);
+
                 var ys = [];
                 g.selectAll('.circlePos')[0].forEach(function(d,i){
-                    ys.push(y(data[i].data[Math.round(x(coordinate[0]))].data));
+                    ys.push(y(data[i].data[dataIndex].data));
                 });
                 d3.selectAll('.line_over'+i)
                     .style("display", "inline")
-                    .attr("x1",parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep))
-                    .attr("x2",parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep));
+                    .attr("x1",linePosX)
+                    .attr("x2",linePosX);
 
 
                 g.selectAll('.circlePos')
                     .style("display", "inline")
                     .attr("cy",function(d,i){
-                        return y(data[i].data[Math.round(x(coordinate[0]))].data);
+                        return  y(data[i].data[dataIndex].data);
                     })
-                    .attr("cx",parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep));
+                    .attr("cx",linePosX);
 
                 gBurbujas.selectAll('.circleBck')
                     .style("display", "inline")
                     .attr("cy",function(d,i){
-                        return y(data[i].data[Math.round(x(coordinate[0]))].data);
+                        return  y(data[i].data[dataIndex].data);
                     })
-                    .attr("cx",parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep));
+                    .attr("cx",linePosX);
             })
             .on("mouseout", function () {
                 d3.selectAll('.line_over'+i).style("display", "none");

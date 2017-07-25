@@ -144,8 +144,10 @@ MSP.GraphMicroscopicView.prototype =
                 data: [],
                 selected: d === selectedID
             };
+            var startStep = _SimulationData.actFile*_SimulationData.numSimStepsPerFile;
             for (var i = 0; i < lIndex + 1; i++) {
-                data.data.push({value: i, data: _SimulationData.gNeuronsDetails[d].Calcium[i]});
+                data.data.push({value: startStep, data: _SimulationData.gNeuronsDetails[d].Calcium[i]});
+                startStep++;
             }
             dataCalcium.push(data);
         });
@@ -161,8 +163,10 @@ MSP.GraphMicroscopicView.prototype =
                     color = _SigletonConfig.EColor;
             }
             var data = {text: "Excitatory", id: d, textShort: d, color: color, data: [], selected: d === selectedID};
+            var startStep = _SimulationData.actFile*_SimulationData.numSimStepsPerFile;
             for (var i = 0; i < lIndex + 1; i++) {
-                data.data.push({value: i, data: _SimulationData.gNeuronsDetails[d].DeSeEA[i]});
+                data.data.push({value: startStep, data: _SimulationData.gNeuronsDetails[d].DeSeEA[i]});
+                startStep++;
             }
             dataE.push(data);
         });
@@ -179,8 +183,10 @@ MSP.GraphMicroscopicView.prototype =
             }
 
             var data = {text: "Inhibitory", id: d, textShort: d, color: color, data: [], selected: d === selectedID};
+            var startStep = _SimulationData.actFile*_SimulationData.numSimStepsPerFile;
             for (var i = 0; i < lIndex + 1; i++) {
-                data.data.push({value: i, data: _SimulationData.gNeuronsDetails[d].DeSeIA[i]});
+                data.data.push({value: startStep, data: _SimulationData.gNeuronsDetails[d].DeSeIA[i]});
+                startStep++;
             }
             dataI.push(data);
         });
@@ -197,8 +203,10 @@ MSP.GraphMicroscopicView.prototype =
             }
 
             var data = {text: "Axonal", id: d, textShort: d, color: color, data: [], selected: d === selectedID};
+            var startStep = _SimulationData.actFile*_SimulationData.numSimStepsPerFile;
             for (var i = 0; i < lIndex + 1; i++) {
-                data.data.push({value: i, data: _SimulationData.gNeuronsDetails[d].AxSeA[i]});
+                data.data.push({value: startStep, data: _SimulationData.gNeuronsDetails[d].AxSeA[i]});
+                startStep++;
             }
             dataA.push(data);
         });
@@ -294,7 +302,7 @@ MSP.GraphMicroscopicView.prototype =
         });
 
         var x2 = d3.scale.linear().range([0, width], 1);
-        x2.domain([0, _SimulationController.actSimStep]);
+        x2.domain([_SimulationData.actFile*_SimulationData.numSimStepsPerFile, _SimulationController.actSimStep]);
         var xAxis2 = d3.svg.axis().scale(x2).tickValues(x2.ticks().concat(x2.domain())).orient("bottom").innerTickSize(-height);
 
         var y = d3.scale.linear().range([height, 0]).domain([0, max]).nice(steps);
@@ -314,8 +322,8 @@ MSP.GraphMicroscopicView.prototype =
             .call(yAxis);
 
 
-        xx.domain([0, _SimulationController.actSimStep]);
-        var x = d3.scale.linear().range([0, _SimulationController.actSimStep]);
+        xx.domain([_SimulationData.actFile*_SimulationData.numSimStepsPerFile, _SimulationController.actSimStep]);
+        var x = d3.scale.linear().range([_SimulationData.actFile*_SimulationData.numSimStepsPerFile, _SimulationController.actSimStep]);
         x.domain([0, width]);
         var gBurbujas = gGraph.append("g").attr("class", "history c" + i).attr("transform", "translate(0," + marginTop + ")");
         var glineas = gGraph.append("g").attr("class", "history b" + i).attr("transform", "translate(0," + marginTop + ")");
@@ -432,7 +440,11 @@ MSP.GraphMicroscopicView.prototype =
                 var tooltipY = d3.mouse(d3.select('body').node())[1] + self.tooltipMarginRatio * _SigletonConfig.height;
                 var tooltipWidth = $("#tooltip").outerWidth();
                 var tooltipHeight = $("#tooltip").outerHeight();
+                var dataIndex = Math.round(x(mousePos[0]))%_SimulationData.numSimStepsPerFile;
                 var simulationStep = Math.round(x(mousePos[0]));
+                var linePosX = (parseInt(x(mousePos[0]))-_SimulationData.numSimStepsPerFile*_SimulationData.actFile)
+                    * (width / (_SimulationController.actSimStep-_SimulationData.numSimStepsPerFile
+                        *_SimulationData.actFile));
 
                 if ((tooltipX + tooltipWidth) > $(window).width())
                     tooltipX -= tooltipWidth;
@@ -443,44 +455,43 @@ MSP.GraphMicroscopicView.prototype =
                 var tooltipHTML = "<span class='stepTooltip'><b>" + simulationStep + "</b></span>";
                 data.forEach(function (d, z) {
                     var color = "#ababab";
-                    if(_SimulationController.view.selectedMicro.length===0) color = d.color;
+                    if (_SimulationController.view.selectedMicro.length === 0) color = d.color;
                     else if (_SimulationData.gNeurons[d.id].selectedM) color = colorRange[z % numColors];
                     tooltipHTML += "<div class='circle' style='background-color:" + color + "'></div><b>" + d.textShort +
-                        "</b> - " + d.data[Math.round(x(mousePos[0]))].data + "<br>";
+                        "</b> - " + d.data[dataIndex].data + "<br>";
                 });
 
                 d3.select("#tooltip")
                     .html(tooltipHTML)
                     .style("left", tooltipX + "px")
-                    .style("top", tooltipY+ "px")
+                    .style("top", tooltipY + "px")
                     .classed("hidden", false);
 
-                var coordinate = d3.mouse(this);
                 var ys = [];
                 g.selectAll('.circlePos')[0].forEach(function (d, i) {
-                    ys.push(y(data[i].data[Math.round(x(coordinate[0]))].data));
+                    ys.push(y(data[i].data[dataIndex].data));
                 });
                 var ini = 0;
                 if ((data.length * 20) > height && i > 1) ini = height - (data.length * 20);
                 d3.selectAll('.line_over' + i)
                     .style("display", "inline")
                     .style("z-index", 1000)
-                    .attr("x1", parseInt(x(coordinate[0])) * (width / _SimulationController.actSimStep))
-                    .attr("x2", parseInt(x(coordinate[0])) * (width / _SimulationController.actSimStep));
+                    .attr("x1", linePosX)
+                    .attr("x2", linePosX);
 
                 g.selectAll('.circlePos')
                     .style("display", "inline")
                     .attr("cy", function (d, i) {
-                        return y(data[i].data[Math.round(x(coordinate[0]))].data);
+                        return y(data[i].data[dataIndex].data);
                     })
-                    .attr("cx", parseInt(x(coordinate[0])) * (width / _SimulationController.actSimStep));
+                    .attr("cx", linePosX);
 
                 gBurbujas.selectAll('.circleBck')
                     .style("display", "inline")
                     .attr("cy", function (d, i) {
-                        return y(data[i].data[Math.round(x(coordinate[0]))].data);
+                        return y(data[i].data[dataIndex].data);
                     })
-                    .attr("cx", parseInt(x(coordinate[0])) * (width / _SimulationController.actSimStep));
+                    .attr("cx", linePosX);
             })
             .on("mouseout", function () {
                 d3.selectAll('.line_over' + i).style("display", "none");

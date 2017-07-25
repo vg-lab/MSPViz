@@ -90,42 +90,44 @@ MSP.GlobalConnectionsViewGraph.prototype = {
         var dataII = {text: "II  Conn.", textShort: "", max:0, color: _SigletonConfig.IIColor, data: []};
         var dataAI = {text: "All E SE.", textShort: "", max:0, color: _SigletonConfig.EColor, data: []};
         var dataAE = {text: "All I SE.", textShort: "", max:0, color: _SigletonConfig.IColor, data: []};
+        var startStep = _SimulationData.actFile*_SimulationData.numSimStepsPerFile;
         for (var i = 0; i < lIndex + 1; i++) {
             dataEE.data.push({
-                value: i,
+                value: startStep,
                 data: _SimulationData.EEConn[i]
             });
             if(_SimulationData.EEConn[i]> dataEE.max) dataEE.max = _SimulationData.EEConn[i];
 
             dataEI.data.push({
-                value: i,
+                value: startStep,
                 data: _SimulationData.EIConn[i]
             });
             if(_SimulationData.EIConn[i]> dataEI.max) dataEI.max = _SimulationData.EIConn[i];
 
             dataIE.data.push({
-                value: i,
+                value: startStep,
                 data: _SimulationData.IEConn[i]
             });
             if(_SimulationData.IEConn[i]> dataIE.max) dataIE.max = _SimulationData.IEConn[i];
 
             dataII.data.push({
-                value: i,
+                value: startStep,
                 data: _SimulationData.IIConn[i]
             });
             if(_SimulationData.IIConn[i]> dataII.max) dataII.max = _SimulationData.IIConn[i];
 
             dataAE.data.push({
-                value: i,
+                value: startStep,
                 data: _SimulationData.AESe[i]
             });
             if(_SimulationData.AESe[i]> dataAE.max) dataAE.max = _SimulationData.AESe[i];
 
             dataAI.data.push({
-                value: i,
+                value: startStep,
                 data: _SimulationData.AISe[i]
             });
             if(_SimulationData.AISe[i]> dataAI.max) dataAI.max = _SimulationData.AISe[i];
+            startStep++;
         }
         var secondGraphMarginTop = this.scndGraphMargin.top + this.firstGraphHeight + this.firstGraphMargin.top + this.firstGraphMargin.bottom;
 
@@ -207,7 +209,7 @@ MSP.GlobalConnectionsViewGraph.prototype = {
         });
 
         var xScale = d3.scale.linear().range([0, width], 1);
-        xScale.domain([0, _SimulationController.actSimStep]);
+        xScale.domain([_SimulationData.actFile*_SimulationData.numSimStepsPerFile, _SimulationController.actSimStep]);
         var xAxis = d3.svg.axis()
             .scale(xScale)
             .tickValues(xScale.ticks().concat(xScale.domain()))
@@ -230,8 +232,8 @@ MSP.GlobalConnectionsViewGraph.prototype = {
         graphElements.selectAll(".y.axis.p" + i + " text").attr("transform", "translate(" + -4 + ",0)");
         graphElements.selectAll(".x.axis.p" + i + " text").attr("transform", "translate(0," + 4 + ")");
 
-        xx.domain([0, _SimulationController.actSimStep]);
-        var x = d3.scale.linear().range([0, _SimulationController.actSimStep]);
+        xx.domain([_SimulationData.actFile*_SimulationData.numSimStepsPerFile, _SimulationController.actSimStep]);
+        var x = d3.scale.linear().range([_SimulationData.actFile*_SimulationData.numSimStepsPerFile, _SimulationController.actSimStep]);
         x.domain([0, width]);
         var gBurbujas = graphElements.append("g").attr("class", "history c" + i).attr("transform", "translate(0," + marginTop + ")");
         var glineas = graphElements.append("g").attr("class", "history b" + i).attr("transform", "translate(0," + marginTop + ")");
@@ -259,7 +261,6 @@ MSP.GlobalConnectionsViewGraph.prototype = {
                 .attr("r", renderHeight * 0.01);
         });
 
-        var spacing
         d3.select(".graphs")
             .append("rect")
             .attr("class", "overlay a" + i)
