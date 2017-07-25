@@ -208,14 +208,14 @@ MSP.MacroscopicViewForce.prototype = {
                         context.beginPath();
                         context.strokeStyle = "#777777";
                         context.globalAlpha = 0.1;
-                        if ((self.selecting && (_SimulationData.gNeurons[d[0]].selected && _SigletonConfig.outgoingConn) || (_SimulationData.gNeurons[d[1]].selected && _SigletonConfig.incomingConn))
+                        if ((self.selecting && ((_SimulationData.gNeurons[d[0]].selected && _SigletonConfig.outgoingConn)
+                                || (_SimulationData.gNeurons[d[1]].selected && _SigletonConfig.incomingConn)))
                             || (!self.selecting && (_SimulationFilter.gNeuronsFilterB[d[0]] || _SimulationFilter.gNeuronsFilterB[d[1]]))) {
-                            context.globalAlpha = _SigletonConfig.macroVAlpha;
                             context.strokeStyle = color;
+                            context.globalAlpha = (1 - self.t) + _SigletonConfig.macroVAlpha * self.t;
                         }
                         if (!self.linksPrev["i" + d[0] + " " + d[1]]) {
                             context.lineWidth = (self.sizeRatio * 4 * (1 - self.t)) + (self.sizeRatio * 0.6 * self.t);
-                            context.globalAlpha = (1 - self.t) + _SigletonConfig.macroVAlpha * self.t;
                         }
                         context.moveTo(_SimulationData.gNeurons[d[0]].PosX, _SimulationData.gNeurons[d[0]].PosY);
                         context.lineTo(_SimulationData.gNeurons[d[1]].PosX, _SimulationData.gNeurons[d[1]].PosY);
@@ -467,7 +467,7 @@ MSP.MacroscopicViewForce.prototype = {
         self.scale = d3.event.scale;
         self.draw();
     },
-    getConnections: function(){
+    getConnections: function () {
         var self = this;
         var connRAWEE = _SimulationData.gConnectivity.EE[_SimulationData.steps[_SimulationController.actSimStep]];
         var connRAWEI = _SimulationData.gConnectivity.EI[_SimulationData.steps[_SimulationController.actSimStep]];

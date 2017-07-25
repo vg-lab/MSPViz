@@ -37,6 +37,7 @@ MSP.MicroscopicView = function ()
     this.semZoomActive=false;
 
     this.MSPViewType="MicroV";
+    this.tooltipMarginRatio = 0.005;
 };
 
 
@@ -131,8 +132,55 @@ MSP.MicroscopicView.prototype =
                     d3.selectAll("path").classed("selected", false);
                     _SigletonConfig.neuronSelected = -1;
                 }
+            );
+
+        this.brush = d3.svg.brush()
+            .x(_SigletonConfig.noXScale)
+            .y(_SigletonConfig.noYScale)
+            .extent([[0,0],[1000,1000]])
+            .on("brush", function(d)
+            {
+                if (_SimulationController.view.selecting) {
+
+                    var extent = d3.event.target.extent();
+                    _SigletonConfig.gSelectionIds.forEach(function(i){
+                        var d = _SimulationData.gNeurons[i];
+                        var x = (_SigletonConfig.xScale(d.PosX)-self.zoombehavior.translate()[0])/self.zoombehavior.scale();
+                        var y = (_SigletonConfig.yScale(d.PosY)-self.zoombehavior.translate()[1])/self.zoombehavior.scale();
+                        d.selectedM = (d.previouslySelectedM ^
+                            (extent[0][0] <= x
+                                && x < extent[1][0]
+                                && extent[0][1] <= y
+                                && y < extent[1][1]));
+
+                    });
+                }
+            })
+            .on("brushend", function(d)
+            {
+                self.selectedMicro=[];
+                _SigletonConfig.gSelectionIds.forEach(function (i) {
+                    _SimulationData.gNeurons[i].previouslySelectedM = _SimulationData.gNeurons[i].selectedM;
+                    if(_SimulationData.gNeurons[i].selectedM)
+                        self.selectedMicro.push(i);
+                });
+
+                d3.event.target.clear();
+                d3.select(this).call(d3.event.target);
+                if(self.selectedMicro.length>0)
+                    self.updateVisualization(true);
+            });
+
+        _SigletonConfig.svg
+            .append("g")
+            .datum(function() {
+                    return {selected: false, previouslySelected: false};
+                }
             )
-        ;
+            .attr("class", "brush")
+            .call(this.brush);
+
+        d3.select("g.brush").style("opacity", 0.0);
 
         _SigletonConfig.svg
             .append("g")
@@ -184,8 +232,17 @@ MSP.MicroscopicView.prototype =
                         return d3.select(this).attr("color")
                     }
                 });
-                var xPos = d3.event.clientX-240;
-                var yPos = d3.event.clientY+10;
+
+                var tooltipX = d3.mouse(d3.select('body').node())[0] + self.tooltipMarginRatio * _SigletonConfig.width;
+                var tooltipY = d3.mouse(d3.select('body').node())[1] + self.tooltipMarginRatio * _SigletonConfig.height;
+                var tooltipWidth = $("#tooltip").outerWidth();
+                var tooltipHeight = $("#tooltip").outerHeight();
+
+                if ((tooltipX + tooltipWidth) > $(window).width())
+                    tooltipX -= tooltipWidth;
+
+                if ((tooltipY + tooltipHeight) > $("#renderArea").height())
+                    tooltipY -= tooltipHeight;
 
 
                 var ENode = 0;
@@ -215,8 +272,8 @@ MSP.MicroscopicView.prototype =
                 }
 
                 d3.select("#tooltip")
-                    .style("left", xPos + "px")
-                    .style("top", yPos+ "px")
+                    .style("left", tooltipX + "px")
+                    .style("top", tooltipY+ "px")
                     .html(
                         "Id: <b>" + _SimulationData.gNeurons[d].NId
                         +"</b><br> CaC= <b>" + _SimulationData.gNeuronsDetails[d].Calcium[lIndex]
@@ -311,9 +368,16 @@ MSP.MicroscopicView.prototype =
                     }
                 });
 
-                //self.graph.updateGraph(d);
-                var xPos = d3.event.clientX-240;
-                var yPos = d3.event.clientY+10;
+                var tooltipX = d3.mouse(d3.select('body').node())[0] + self.tooltipMarginRatio * _SigletonConfig.width;
+                var tooltipY = d3.mouse(d3.select('body').node())[1] + self.tooltipMarginRatio * _SigletonConfig.height;
+                var tooltipWidth = $("#tooltip").outerWidth();
+                var tooltipHeight = $("#tooltip").outerHeight();
+
+                if ((tooltipX + tooltipWidth) > $(window).width())
+                    tooltipX -= tooltipWidth;
+
+                if ((tooltipY + tooltipHeight) > $("#renderArea").height())
+                    tooltipY -= tooltipHeight;
 
 
                 var ENode = 0;
@@ -343,8 +407,8 @@ MSP.MicroscopicView.prototype =
                 }
 
                 d3.select("#tooltip")
-                    .style("left", xPos + "px")
-                    .style("top", yPos+ "px")
+                    .style("left", tooltipX + "px")
+                    .style("top", tooltipY+ "px")
                     .html(
                         "Id: <b>" + _SimulationData.gNeurons[d].NId
                         +"</b><br> CaC= <b>" + _SimulationData.gNeuronsDetails[d].Calcium[lIndex]
@@ -363,97 +427,8 @@ MSP.MicroscopicView.prototype =
                     });
                     d3.select("#tooltip").classed("hidden",true);
                 }
-            );
-        ;
-        this.brush = d3.svg.brush()
-            .x(_SigletonConfig.noXScale)
-            .y(_SigletonConfig.noYScale)
-            .extent([[0,0],[1000,1000]])
-            .on("brushstart", function(d)
-            {
-                // _SigletonConfig.gSelectionIds = [];
-                //
-                // if (_SimulationController.view.selecting)
-                // {
-                //
-                //     _SimulationData.gNeuronsRep.each(function(d)
-                //         {
-                //             d.previouslySelected = _SigletonConfig.shiftKey && d.selected;
-                //         }
-                //     );
-                //
-                //     for (i=0;i<_SimulationController.view.EIconnectGroup[0].length;i++)
-                //     {
-                //         _SimulationController.view.EIconnectGroup[0][i].style = "\"stroke-opacity: "+_SigletonConfig.macroVAlpha+";\""
-                //     }
-                //
-                //     for (i=0;i<_SimulationController.view.IIconnectGroup[0].length;i++)
-                //     {
-                //         _SimulationController.view.IIconnectGroup[0][i].style = "\"stroke-opacity: "+_SigletonConfig.macroVAlpha+";\""
-                //     }
-                //
-                //     for (i=0;i<_SimulationController.view.EEconnectGroup[0].length;i++)
-                //     {
-                //         _SimulationController.view.EEconnectGroup[0][i].style = "\"stroke-opacity: "+_SigletonConfig.macroVAlpha+";\""
-                //     }
-                //
-                //     for (i=0;i<_SimulationController.view.IEconnectGroup[0].length;i++)
-                //     {
-                //         _SimulationController.view.IEconnectGroup[0][i].style = "\"stroke-opacity: "+_SigletonConfig.macroVAlpha+";\""
-                //     }
-                //
-                //
-                //
-                // }
-            })
-            .on("brush", function(d)
-            {
-                if (_SimulationController.view.selecting) {
+            );;
 
-                    var extent = d3.event.target.extent();
-                    _SigletonConfig.gSelectionIds.forEach(function(i){
-                        var d = _SimulationData.gNeurons[i];
-                        var x = (_SigletonConfig.xScale(d.PosX)-self.zoombehavior.translate()[0])/self.zoombehavior.scale();
-                        var y = (_SigletonConfig.yScale(d.PosY)-self.zoombehavior.translate()[1])/self.zoombehavior.scale();
-                        d.selectedM = (d.previouslySelectedM ^
-                                (extent[0][0] <= x
-                                && x < extent[1][0]
-                                && extent[0][1] <= y
-                                && y < extent[1][1]));
-
-                    });
-                }
-
-
-
-            })
-            .on("brushend", function(d)
-            {
-                self.selectedMicro=[];
-                _SigletonConfig.gSelectionIds.forEach(function (i) {
-                    _SimulationData.gNeurons[i].previouslySelectedM = _SimulationData.gNeurons[i].selectedM;
-                    if(_SimulationData.gNeurons[i].selectedM)
-                        self.selectedMicro.push(i);
-                });
-
-
-                d3.event.target.clear();
-                d3.select(this).call(d3.event.target);
-                if(self.selectedMicro.length>0)
-                self.updateVisualization(true);
-            });
-
-        _SigletonConfig.svg
-            .append("g")
-            .datum(function()
-                {
-                    return {selected: false, previouslySelected: false};
-                }
-            )
-            .attr("class", "brush")
-            .call(this.brush);
-
-        d3.select("g.brush").style("opacity", 0.0);
 
     }, recalculatePos: function()
     {
