@@ -133,12 +133,39 @@ MSP.MacroscopicViewElipse.prototype = {
                 data: _SimulationData.gConnectivity.II[_SimulationData.steps[_SimulationController.actSimStep]],
                 color: _SigletonConfig.IIColor
             }];
-        
+
+        var i = 0;
+        var k = 0;
+        _SimulationFilter.orderIndex.forEach(function (z) {
+            var d = _SimulationData.gNeurons[z];
+            if (d.centerElipse) {
+                d.elipseIndex = i;
+                i++;
+            }
+            else {
+                d.elipseIndex = k;
+                k++;
+            }
+        });
+
         data.forEach(function (d, i) {
                 var color = d.color;
                 if (d.draw
                     && typeof (d.data) !== "undefined") {
                     d.data.forEach(function (d) {
+                        var posX1 = self.neuronsPosX[_SimulationData.gNeurons[d[0]].elipseIndex];
+                        var posY1 = self.neuronsPosY[_SimulationData.gNeurons[d[0]].elipseIndex];
+                        var posX2 = self.neuronsPosX[_SimulationData.gNeurons[d[1]].elipseIndex];
+                        var posY2 = self.neuronsPosY[_SimulationData.gNeurons[d[1]].elipseIndex];
+                        if (_SimulationData.gNeurons[d[0]].centerElipse) {
+                            posX1 = self.neuronsPosXA[_SimulationData.gNeurons[d[0]].elipseIndex];
+                            posY1 = self.neuronsPosYA[_SimulationData.gNeurons[d[0]].elipseIndex];
+
+                        }
+                        if (_SimulationData.gNeurons[d[1]].centerElipse) {
+                            posX2 = self.neuronsPosXA[_SimulationData.gNeurons[d[1]].elipseIndex];
+                            posY2 = self.neuronsPosYA[_SimulationData.gNeurons[d[1]].elipseIndex];
+                        }
                         context.beginPath();
                         context.strokeStyle = "#777777";
                         context.globalAlpha = 0.1;
@@ -147,11 +174,10 @@ MSP.MacroscopicViewElipse.prototype = {
                             context.globalAlpha = _SigletonConfig.macroVAlpha;
                             context.strokeStyle = color;
                         }
-                        context.moveTo(self.neuronsPosX[_SimulationData.gNeurons[d[0]].index], self.neuronsPosY[_SimulationData.gNeurons[d[0]].index]);
-                        context.lineTo(self.neuronsPosX[_SimulationData.gNeurons[d[1]].index], self.neuronsPosY[_SimulationData.gNeurons[d[1]].index]);
+                        context.moveTo(posX1, posY1);
+                        context.lineTo(posX2, posY2);
                         context.stroke();
-                        canvas_arrow(context, self.neuronsPosX[_SimulationData.gNeurons[d[0]].index], self.neuronsPosY[_SimulationData.gNeurons[d[0]].index],
-                            self.neuronsPosX[_SimulationData.gNeurons[d[1]].index], self.neuronsPosY[_SimulationData.gNeurons[d[1]].index]);
+                        canvas_arrow(context, posX1, posY1, posX2, posY2);
                         context.globalAlpha = 1;
 
 
@@ -163,8 +189,16 @@ MSP.MacroscopicViewElipse.prototype = {
 
         var figureSize = this.sizeRatio;
         _SimulationData.gNeurons.forEach(function (d, i) {
-            var posX = self.neuronsPosX[d.index];
-            var posY = self.neuronsPosY[d.index];
+            var posX = 0;
+            var posY = 0;
+            if (d.centerElipse) {
+                posX = self.neuronsPosXA[d.elipseIndex];
+                posY = self.neuronsPosYA[d.elipseIndex];
+            }
+            else {
+                posX = self.neuronsPosX[d.elipseIndex];
+                posY = self.neuronsPosY[d.elipseIndex];
+            }
 
             context.lineWidth = figureSize * 10 / 100;
             context.globalAlpha = 1;
@@ -238,13 +272,13 @@ MSP.MacroscopicViewElipse.prototype = {
         }
 
         selected.forEach(function (d, i) {
-            _SimulationData.gNeurons[d].PosX = self.neuronsPosX[i];
-            _SimulationData.gNeurons[d].PosY = self.neuronsPosY[i];
+            _SimulationData.gNeurons[d].PosX = self.neuronsPosXA[i];
+            _SimulationData.gNeurons[d].PosY = self.neuronsPosYA[i];
         });
 
         nonSelected.forEach(function (d, i) {
-            _SimulationData.gNeurons[d].PosX = self.neuronsPosX[i + selected.length];
-            _SimulationData.gNeurons[d].PosY = self.neuronsPosY[i + selected.length];
+            _SimulationData.gNeurons[d].PosX = self.neuronsPosX[i];
+            _SimulationData.gNeurons[d].PosY = self.neuronsPosY[i];
         });
 
     },
@@ -272,8 +306,12 @@ MSP.MacroscopicViewElipse.prototype = {
 
             for (var i = 0; i < length; i++) {
                 var d = _SimulationData.gNeurons[i];
-                var posX = self.neuronsPosX[d.index];
-                var posY = self.neuronsPosY[d.index];
+                var posX = self.neuronsPosX[d.elipseIndex];
+                var posY = self.neuronsPosY[d.elipseIndex];
+                if (d.centerElipse) {
+                    posX = self.neuronsPosXA[d.elipseIndex];
+                    posY = self.neuronsPosYA[d.elipseIndex];
+                }
 
                 if (posX >= minX && posX <= maxX && posY >= minY && posY <= maxY) {
                     found = true;
@@ -305,8 +343,12 @@ MSP.MacroscopicViewElipse.prototype = {
             var y2 = ( self.selectionRectangle.y2 - self.translateY) / self.scale;
 
             _SimulationData.gNeurons.forEach(function (d, i) {
-                var posX = self.neuronsPosX[d.index];
-                var posY = self.neuronsPosY[d.index];
+                var posX = self.neuronsPosX[d.elipseIndex];
+                var posY = self.neuronsPosY[d.elipseIndex];
+                if (d.centerElipse) {
+                    posX = self.neuronsPosXA[d.elipseIndex];
+                    posY = self.neuronsPosYA[d.elipseIndex];
+                }
                 d.selected = d.previouslySelected ^
                     (Math.min(x, x2) <= posX
                         && posX < Math.max(x, x2)
@@ -340,8 +382,13 @@ MSP.MacroscopicViewElipse.prototype = {
 
         for (var i = 0; i < length; i++) {
             var d = _SimulationData.gNeurons[i];
-            var posX = self.neuronsPosX[d.index];
-            var posY = self.neuronsPosY[d.index];
+
+            var posX = self.neuronsPosX[d.elipseIndex];
+            var posY = self.neuronsPosY[d.elipseIndex];
+            if (d.centerElipse) {
+                posX = self.neuronsPosXA[d.elipseIndex];
+                posY = self.neuronsPosYA[d.elipseIndex];
+            }
 
             if (posX >= minX && posX <= maxX && posY >= minY && posY <= maxY) {
                 found = true;
