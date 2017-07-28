@@ -30,35 +30,69 @@ d3.selection.prototype.moveToFront = function () {
     });
 };
 
+function dataURLtoBlob(dataurl) {
+    var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+        bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+    while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new Blob([u8arr], {type: mime});
+}
+
+function downloadCanvas(imgData) {
+    var tempDownloadLink = document.createElement("a");
+    document.body.appendChild(tempDownloadLink);
+    var blob = dataURLtoBlob(imgData);
+    var objurl = URL.createObjectURL(blob);
+    tempDownloadLink.download = "sample.png";
+    tempDownloadLink.href = objurl;
+    tempDownloadLink.click();
+    document.body.removeChild(tempDownloadLink);
+}
+
 function saveAsImage() {
-    var html = d3.select("svg")
-        .attr("version", 1.1)
-        .attr("xmlns", "http://www.w3.org/2000/svg")
-        .node().parentNode.innerHTML;
-
-    var imgsrc = 'data:image/svg+xml;base64,' + btoa(html);
-    var img = '<img src="' + imgsrc + '">';
-    d3.select("#svgdataurl").html(img);
-
-    var canvas = document.querySelector("canvas"),
-        context = canvas.getContext("2d");
-
-    var image = new Image;
-    image.src = imgsrc;
-    image.onload = function () {
-        context.drawImage(image, 0, 0);
-
-        var canvasdata = canvas.toDataURL("image/png");
+    if ($("#renderArea").has("svg").size() === 0) {
+        var canvas = $("#renderArea canvas")[0];
+        var canvasdata = canvas.toDataURL({format: 'png', multiplier: 4});
 
         var pngimg = '<img src="' + canvasdata + '">';
         d3.select("#pngdataurl").html(pngimg);
 
-        var a = document.createElement("a");
-        a.download = "sample.png";
-        a.href = canvasdata;
-        a.click();
-    };
-    delete image;
+        downloadCanvas(canvasdata)
+    } else {
+
+        d3.select("#renderArea").selectAll("svg")
+            .attr("version", 1.1)
+            .attr("xmlns", "http://www.w3.org/2000/svg")
+            .each(function () {
+
+                var html = d3.select(this).node().parentNode.innerHTML;
+                var imgsrc = 'data:image/svg+xml;base64,' + btoa(html);
+                var img = '<img src="' + imgsrc + '">';
+                d3.select("#svgdataurl").html(img);
+                d3.select("#canvas")
+                    .attr("height", _SigletonConfig.height)
+                    .attr("width", _SigletonConfig.width);
+
+                var canvas = document.querySelector("canvas"),
+                    context = canvas.getContext("2d");
+
+                var image = new Image;
+                image.src = imgsrc;
+                image.onload = function () {
+                    context.clearRect(0, 0, canvas.width, canvas.height);
+                    context.drawImage(image, 0, 0);
+
+                    var canvasdata = canvas.toDataURL("image/png");
+
+                    var pngimg = '<img src="' + canvasdata + '">';
+                    d3.select("#pngdataurl").html(pngimg);
+
+                    downloadCanvas(canvasdata)
+                };
+            });
+
+    }
 
 //// Canvasg	
 //	  var html = d3.select("svg")
@@ -259,7 +293,7 @@ function generateNav() {
 function delCenter(idx) {
     _SimulationData.gNeurons[idx].centerElipse = false;
     $(".btnCentro").each(function () {
-        if ($(this).text() === idx+"") $(this).remove();
+        if ($(this).text() === idx + "") $(this).remove();
     });
     _SimulationController.view.update();
 }
@@ -337,12 +371,13 @@ function saveConfig() {
 
 function rgbToHex(color) {
     var hexColor = "#";
-    for(var i =0 ; i< 3; i++){
+    for (var i = 0; i < 3; i++) {
         var hexChannel = color[i].toString(16);
-        if(hexChannel.length === 1)
+        if (hexChannel.length === 1)
             hexChannel = "0" + hexChannel;
         hexColor += hexChannel;
     }
     return hexColor;
 }
+
 //# sourceURL=Utils.js

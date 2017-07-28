@@ -47,8 +47,9 @@ MSP.MacroscopicViewCanvas.prototype = {
             return !this.classList.contains('color')
         }).remove();
 
-        d3.selectAll("canvas")
-            .remove();
+        d3.selectAll("canvas").filter(function() {
+            return !this.classList.contains('imgCanvas')
+        }).remove();
 
 
         this.zoombehavior = d3.behavior.zoom()

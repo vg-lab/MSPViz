@@ -47,8 +47,9 @@ MSP.DetailMicroscopicView.prototype =
             return !this.classList.contains('color')
         }).remove();
 
-        d3.selectAll("canvas")
-            .remove();
+        d3.selectAll("canvas").filter(function() {
+            return !this.classList.contains('imgCanvas')
+        }).remove();
 
         this.width = _SigletonConfig.width*50/100;
         var self = this;

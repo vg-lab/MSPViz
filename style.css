@@ -742,6 +742,7 @@ html {
     margin-bottom: 2vh;
     justify-content: flex-end;
     width: 90%;
+    font-size: 1.4vmin;
 }
 
 .colorFlex div {
@@ -754,7 +755,6 @@ html {
 
 .colorFlex span {
     float: left;
-    font-size: 1.4vmin;
     margin: 0 0.2vw;
     font-family: sans-serif;
     font-weight: 700;
@@ -762,7 +762,6 @@ html {
 }
 
 .colorFlex label {
-    font-size: 1.4vmin;
     font-family: Verdana, serif;
     font-style: italic;
     flex-grow: 1;
@@ -869,11 +868,42 @@ hr {
         font: 14px sans-serif;
     }
 
+    .text-input {
+        font-size: 1.6vmin;
+    }
+
+    .button {
+        font-size: 1.6vmin;
+    }
+
+    #jqxBottomControls {
+        font-size: 1.8vmin;
+    }
+
+    .btnSwitch {
+        font-size: 1.6vmin;
+    }
+
+    .colorFlex {
+        font-size: 1.6vmin;
+    }
+
+    .checkBoxWrapper {
+        font-size: 1.6vmin !important;
+    }
+
+    .radioWrapper {
+        font-size: 1.6vmin !important;
+    }
+
+    .numeriInputWrapper input {
+        font-size: 1.6vmin !important;
+    }
 }
 
 @media screen and (max-height: 1000px) {
     .axis {
-        font: 1.2vh sans-serif;
+        font: 1.4vh sans-serif;
         stroke-width: 1px !important;
     }
 

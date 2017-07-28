@@ -184,6 +184,10 @@ UI.Visualizator.prototype = {
                     self.showInfo();
                 });
 
+                $("#navScreenCapture").on('click', function () {
+                    saveAsImage();
+                });
+
                 $("#navOptionsFile").on('click', function () {
                     self.openNav();
                     self.openTab('fileTab', 0)

@@ -84,8 +84,9 @@ MSP.GlobalConnectionsView.prototype = {
             return !this.classList.contains('color')
         }).remove();
 
-        d3.selectAll("canvas")
-            .remove();
+        d3.selectAll("canvas").filter(function() {
+            return !this.classList.contains('imgCanvas')
+        }).remove();
 
         // Redefinition of the domains for the scale
         self.x.domain(this.lConnectionTypes);
@@ -339,6 +340,10 @@ MSP.GlobalConnectionsView.prototype = {
                 return self.xI(d.connType)+self.xI.rangeBand()/2.0;
             });
 
+        d3.selectAll(".tick").selectAll("line")
+            .attr("stroke-width", 1)
+            .attr("stroke", "#000")
+            .style("opacity", "0.1");
     },
 
     updateVisualization : function() {
