@@ -39,12 +39,12 @@ function dataURLtoBlob(dataurl) {
     return new Blob([u8arr], {type: mime});
 }
 
-function downloadCanvas(imgData) {
+function downloadCanvas(imgData, name) {
     var tempDownloadLink = document.createElement("a");
     document.body.appendChild(tempDownloadLink);
     var blob = dataURLtoBlob(imgData);
     var objurl = URL.createObjectURL(blob);
-    tempDownloadLink.download = "sample.png";
+    tempDownloadLink.download = name + ".png";
     tempDownloadLink.href = objurl;
     tempDownloadLink.click();
     document.body.removeChild(tempDownloadLink);
@@ -58,15 +58,15 @@ function saveAsImage() {
         var pngimg = '<img src="' + canvasdata + '">';
         d3.select("#pngdataurl").html(pngimg);
 
-        downloadCanvas(canvasdata)
+        downloadCanvas(canvasdata, "snapshot")
     } else {
 
-        d3.select("#renderArea").selectAll("svg")
+        var html = d3.select("#renderArea").selectAll("svg")
             .attr("version", 1.1)
             .attr("xmlns", "http://www.w3.org/2000/svg")
-            .each(function () {
+            .each(function (d,i) {
 
-                var html = d3.select(this).node().parentNode.innerHTML;
+                var html = $(this)[0].outerHTML;
                 var imgsrc = 'data:image/svg+xml;base64,' + btoa(html);
                 var img = '<img src="' + imgsrc + '">';
                 d3.select("#svgdataurl").html(img);
@@ -88,7 +88,7 @@ function saveAsImage() {
                     var pngimg = '<img src="' + canvasdata + '">';
                     d3.select("#pngdataurl").html(pngimg);
 
-                    downloadCanvas(canvasdata)
+                    downloadCanvas(canvasdata, "snapshot"+i)
                 };
             });
 
