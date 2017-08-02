@@ -685,6 +685,9 @@ UI.Visualizator.prototype = {
                     if (checked) {
                         _SigletonConfig.CaMaxMinValueTypes = 0;
                     }
+                    _SimulationData.recalculateScales();
+                    _SimulationController.view.updateVisualization();
+                    self.createSampleBandColor();
                 });
 
                 $("#jqxRadioButtonCaSetPointFromNeuronValues").on('change', function (event) {
@@ -692,6 +695,9 @@ UI.Visualizator.prototype = {
                     if (checked) {
                         _SigletonConfig.CaMaxMinValueTypes = 1;
                     }
+                    _SimulationData.recalculateScales();
+                    _SimulationController.view.updateVisualization();
+                    self.createSampleBandColor();
                 });
 
 

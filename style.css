@@ -95,16 +95,7 @@ path.selected {
     overflow: hidden;
 }
 
-.bar {
-    fill: steelblue;
-    shape-rendering: crispEdges;
-}
-
-.bar:hover {
-    fill: brown;
-}
-
-.axis {
+#colorSampleBand .axis {
     font: 1.2vh sans-serif;
     stroke-width: 0.1vmin;
 }
@@ -117,17 +108,13 @@ path.selected {
     font: 1vw sans-serif;
 }
 
-.x.axis text {
-    padding-top: 2px;
-}
-
-.axis path {
+#colorSampleBand .axis path {
     fill: none;
     stroke: #000;
     shape-rendering: crispEdges;
 }
 
-.axis line {
+#colorSampleBand .axis line {
     fill: none;
     stroke: #000;
     shape-rendering: crispEdges;
@@ -902,7 +889,7 @@ hr {
 }
 
 @media screen and (max-height: 1000px) {
-    .axis {
+    #colorSampleBand .axis {
         font: 1.4vh sans-serif;
         stroke-width: 1px !important;
     }

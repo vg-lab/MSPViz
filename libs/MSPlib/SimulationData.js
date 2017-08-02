@@ -5,49 +5,48 @@
  * @remarks Do not distribute without further notice.
  */
 
-MSP.SimulationData = function()
-{
-    this.steps				=	0;
-    this.timeInterval 		=	0;
+MSP.SimulationData = function () {
+    this.steps = 0;
+    this.timeInterval = 0;
 
     //Extreme calciums values
-    this.maxCalciumEValue	=	0;
-    this.minCalciumEValue	=	0;
-    this.maxCalciumIValue	=	0;
-    this.minCalciumIValue	=	0;
-    this.maxCalciumTValue	=	0;
-    this.minCalciumTValue	=	0;
+    this.maxCalciumEValue = 0;
+    this.minCalciumEValue = 0;
+    this.maxCalciumIValue = 0;
+    this.minCalciumIValue = 0;
+    this.maxCalciumTValue = 0;
+    this.minCalciumTValue = 0;
 
     //Extreme calciums values from File
-    this.maxFileCalciumEValue	=	0;
-    this.minFileCalciumEValue	=	0;
-    this.maxFileCalciumIValue	=	0;
-    this.minFileCalciumIValue	=	0;
-    this.maxFileCalciumTValue	=	0;
-    this.minFileCalciumTValue	=	0;
+    this.maxFileCalciumEValue = 0;
+    this.minFileCalciumEValue = 0;
+    this.maxFileCalciumIValue = 0;
+    this.minFileCalciumIValue = 0;
+    this.maxFileCalciumTValue = 0;
+    this.minFileCalciumTValue = 0;
 
     //Extreme values of global connections
-    this.maxTEConn	=	0;
-    this.minTIConn	=	0;
-    this.maxEEConn	=	0;
-    this.minEIConn	=	0;
-    this.maxIEConn	=	0;
-    this.minIIConn	=	0;
+    this.maxTEConn = 0;
+    this.minTIConn = 0;
+    this.maxEEConn = 0;
+    this.minEIConn = 0;
+    this.maxIEConn = 0;
+    this.minIIConn = 0;
 
     //Number of global connections
-    this.TEConn	=	[];
-    this.TIConn	= 	[];
-    this.EEConn	= 	[];
-    this.EIConn	= 	[];
-    this.IEConn	= 	[];
-    this.IIConn	= 	[];
+    this.TEConn = [];
+    this.TIConn = [];
+    this.EEConn = [];
+    this.EIConn = [];
+    this.IEConn = [];
+    this.IIConn = [];
 
-    this.AESe	= 	[];
-    this.AISe	= 	[];
+    this.AESe = [];
+    this.AISe = [];
 
-    this.gNeurons		=	[];
-    this.gNeuronsRep	=	[];
-    this.gConnectivity	= 	[];
+    this.gNeurons = [];
+    this.gNeuronsRep = [];
+    this.gConnectivity = [];
 
     this.drawEEConn = true;
     this.drawEIConn = true;
@@ -55,52 +54,53 @@ MSP.SimulationData = function()
     this.drawIIConn = true;
 
     /* Global Vars */
-    this.DefaultLocalNeuronInformationFile	="LocalNeuronInformation.json";
-    this.DefaultGlobalSimulationParamsFile	="GlobalSimulationParams.json";
-    this.DefaultConnectivityFile			="Connectivity.json";
+    this.DefaultLocalNeuronInformationFile = "LocalNeuronInformation.json";
+    this.DefaultGlobalSimulationParamsFile = "GlobalSimulationParams.json";
+    this.DefaultConnectivityFile = "Connectivity.json";
 
     this.stdSimulationFileNames = ["_SimulationFiles.json.scf"
-        ,"LocalNeuronCommonInfo.json"
-        ,"LocalNeuronInfo_0.json"
-        ,"GlobalSimulationParamsV2.json"
-        ,"GlobalParams_0.json"
-        ,"Connectivity_0.json"];
+        , "LocalNeuronCommonInfo.json"
+        , "LocalNeuronInfo_0.json"
+        , "GlobalSimulationParamsV2.json"
+        , "GlobalParams_0.json"
+        , "Connectivity_0.json"];
 
     this.stdSimulationFileIds = ["LocalNeuronCommonInfo"
-        ,"LocalNeuronInfo"
-        ,"GlobalSimulationParams"
-        ,"GlobalParams"
-        ,"Connectivity"];
+        , "LocalNeuronInfo"
+        , "GlobalSimulationParams"
+        , "GlobalParams"
+        , "Connectivity"];
 
 
-    this.gLocalNeuronInformationFile	="";
-    this.gGlobalSimulationParamsFile	="";
-    this.gConnectivityFile				="";
+    this.gLocalNeuronInformationFile = "";
+    this.gGlobalSimulationParamsFile = "";
+    this.gConnectivityFile = "";
 
-    this.CaIScale=null;
-    this.CaEScale=null;
+    this.CaIScale = null;
+    this.CaEScale = null;
 
-    this.requester=null;
+    this.requester = null;
 
-    this.gNeurons=null;
-    this.gNeuronsDetails=null;
+    this.gNeurons = null;
+    this.gNeuronsDetails = null;
 
     //Info par ala recarga de datos
-    this.totalSimulationSteps	=null;
-    this.numSimStepsPerFile		=null;
-    this.bufferSimulationSteps	=null;
-    this.actFile				=0;
+    this.totalSimulationSteps = null;
+    this.numSimStepsPerFile = null;
+    this.bufferSimulationSteps = null;
+    this.actFile = 0;
 
-    this.neuronsDetailsBuffer	=null;
-    this.connectivityBuffer		=null;
-    this.SEContainerBuffer		=null;
+    this.neuronsDetailsBuffer = null;
+    this.connectivityBuffer = null;
+    this.SEContainerBuffer = null;
 
-    this.SimulationId			=null;
-    this.ServerPath				="./content/Simulations/";
+    this.SimulationId = null;
+    this.ServerPath = "./content/Simulations/";
 
-    this.SimulationLoadType			=["Local", "Server", "WebDav"];
-    this.actualSimulationLoadType 	=null;
-    this.WebDavCascadeLoad			=false;
+    this.SimulationLoadType = ["Local", "Server", "WebDav"];
+    this.actualSimulationLoadType = null;
+    this.WebDavCascadeLoad = false;
+    this.numFilesLoaded = 0;
 };
 
 //Methods
@@ -108,118 +108,114 @@ MSP.SimulationData.prototype =
     {
         constructor: MSP.SimulationData
 
-        ,calculateMaxMinValues: function ()
-    {
-        this.maxTEConn=Math.max.apply(Math, this.TEConn);
-        this.minTEConn=Math.min.apply(Math, this.TEConn);
+        , calculateMaxMinValues: function () {
+        this.maxTEConn = Math.max.apply(Math, this.TEConn);
+        this.minTEConn = Math.min.apply(Math, this.TEConn);
 
-        this.maxTIConn=Math.max.apply(Math, this.TIConn);
-        this.minTIConn=Math.min.apply(Math, this.TIConn);
+        this.maxTIConn = Math.max.apply(Math, this.TIConn);
+        this.minTIConn = Math.min.apply(Math, this.TIConn);
 
-        this.maxEEConn=Math.max.apply(Math, this.EEConn);
-        this.minEEConn=Math.min.apply(Math, this.EEConn);
+        this.maxEEConn = Math.max.apply(Math, this.EEConn);
+        this.minEEConn = Math.min.apply(Math, this.EEConn);
 
-        this.maxEIConn=Math.max.apply(Math, this.EIConn);
-        this.minEIConn=Math.min.apply(Math, this.EIConn);
+        this.maxEIConn = Math.max.apply(Math, this.EIConn);
+        this.minEIConn = Math.min.apply(Math, this.EIConn);
 
-        this.maxIEConn=Math.max.apply(Math, this.IEConn);
-        this.minIEConn=Math.min.apply(Math, this.IEConn);
+        this.maxIEConn = Math.max.apply(Math, this.IEConn);
+        this.minIEConn = Math.min.apply(Math, this.IEConn);
 
-        this.maxIIConn=Math.max.apply(Math, this.IIConn);
-        this.minIIConn=Math.min.apply(Math, this.IIConn);
+        this.maxIIConn = Math.max.apply(Math, this.IIConn);
+        this.minIIConn = Math.min.apply(Math, this.IIConn);
     },
 
-        calculateAllSynapticElements: function ()
-        {
+        calculateAllSynapticElements: function () {
             var self = this;
-            var lAESeTmp=0;
-            var lAISeTmp=0;
+            var lAESeTmp = 0;
+            var lAISeTmp = 0;
 
             //All the sim steps
-            for(var j=0;j<self.numSimStepsPerFile;++j)
-            {
+            for (var j = 0; j < self.numSimStepsPerFile; ++j) {
                 //All the neurons
-                lAESeTmp=0;
-                lAISeTmp=0;
-                for(var i=0;i<self.gNeuronsDetails.length;++i)
-                {
-                    lAESeTmp+=self.gNeuronsDetails[i].DeSeEA[j];
-                    lAISeTmp+=self.gNeuronsDetails[i].DeSeIA[j];
+                lAESeTmp = 0;
+                lAISeTmp = 0;
+                for (var i = 0; i < self.gNeuronsDetails.length; ++i) {
+                    lAESeTmp += self.gNeuronsDetails[i].DeSeEA[j];
+                    lAISeTmp += self.gNeuronsDetails[i].DeSeIA[j];
 
-                    if (self.gNeurons[i].NAct == "E")
-                    {
-                        lAESeTmp+=self.gNeuronsDetails[i].AxSeA[j];
+                    if (self.gNeurons[i].NAct == "E") {
+                        lAESeTmp += self.gNeuronsDetails[i].AxSeA[j];
                     }
-                    else
-                    {
-                        lAISeTmp+=self.gNeuronsDetails[i].AxSeA[j];
+                    else {
+                        lAISeTmp += self.gNeuronsDetails[i].AxSeA[j];
                     }
                 }
                 this.AESe.push(lAESeTmp);
                 this.AISe.push(lAISeTmp);
             }
+
+            this.maxAESe = 0;
+            this.maxAISe = 0;
+            for (var i = 0; i < this.AESe.length; i++) {
+                if (this.maxAESe < this.AESe[i]) this.maxAESe = this.AESe[i];
+                if (this.maxAISe < this.AISe[i]) this.maxAISe = this.AISe[i];
+            }
         },
 
-        LoadLocalSimulation: function (pFiles)
-        {
+        LoadLocalSimulation: function (pFiles) {
             var self = this;
 
             self.actualSimulationLoadType = self.SimulationLoadType[0];
 
             var pathToFiles = ["_SimulationFiles.json.scf"
-                ,"LocalNeuronCommonInfo.json"
-                ,"LocalNeuronInfo_0.json"
-                ,"GlobalSimulationParamsV2.json"
-                ,"GlobalParams_0.json"
-                ,"Connectivity_0.json"];
+                , "LocalNeuronCommonInfo.json"
+                , "LocalNeuronInfo_0.json"
+                , "GlobalSimulationParamsV2.json"
+                , "GlobalParams_0.json"
+                , "Connectivity_0.json"];
 
-            var lProgres=1;
-            $("#jqxBottomControls_ProgressBar").jqxProgressBar({ value: lProgres });
+            var lProgres = 1;
+            $("#jqxBottomControls_ProgressBar").jqxProgressBar({value: lProgres});
 
             _gVisualizatorUI.disableUI(true);
 
             //.cfg simulation file
-            var readerSimulationFiles 		= new FileReader();
-            readerSimulationFiles.onloadend 	= function(evt)
-            {
-                lProgres+=9;
-                $("#jqxBottomControls_ProgressBar").jqxProgressBar({ value: lProgres });
+            var readerSimulationFiles = new FileReader();
+            readerSimulationFiles.onloadend = function (evt) {
+                lProgres += 9;
+                $("#jqxBottomControls_ProgressBar").jqxProgressBar({value: lProgres});
 
-                self.cfgSimulationFiles = JSON.parse( readerSimulationFiles.result );
-                self.actFile=0;
+                self.cfgSimulationFiles = JSON.parse(readerSimulationFiles.result);
+                self.actFile = 0;
 
                 //LocalInfo
-                var readerLocalNeuronCommonInfo 		= new FileReader();
-                readerLocalNeuronCommonInfo.onloadend 	= function(evt)
-                {
-                    lProgres+=20;
-                    $("#jqxBottomControls_ProgressBar").jqxProgressBar({ value: lProgres });
+                var readerLocalNeuronCommonInfo = new FileReader();
+                readerLocalNeuronCommonInfo.onloadend = function (evt) {
+                    lProgres += 20;
+                    $("#jqxBottomControls_ProgressBar").jqxProgressBar({value: lProgres});
 
-                    self.gNeurons = JSON.parse( readerLocalNeuronCommonInfo.result );
+                    self.gNeurons = JSON.parse(readerLocalNeuronCommonInfo.result);
 
                     //Global info file 0
-                    var readerLocalNeuronInfo 		= new FileReader();
-                    readerLocalNeuronInfo.onloadend 	= function(evt)
-                    {
-                        lProgres+=20;
-                        $("#jqxBottomControls_ProgressBar").jqxProgressBar({ value: lProgres });
+                    var readerLocalNeuronInfo = new FileReader();
+                    readerLocalNeuronInfo.onloadend = function (evt) {
+                        lProgres += 20;
+                        $("#jqxBottomControls_ProgressBar").jqxProgressBar({value: lProgres});
 
-                        self.gNeuronsDetails = JSON.parse( readerLocalNeuronInfo.result );
+                        self.gNeuronsDetails = JSON.parse(readerLocalNeuronInfo.result);
                     };
                     var blobLocalNeuronInfo = pFiles[pathToFiles[2]];
-                    readerLocalNeuronInfo.readAsText(blobLocalNeuronInfo,"utf-8");
+                    readerLocalNeuronInfo.readAsText(blobLocalNeuronInfo, "utf-8");
 
                     //GlobalInfo
-                    var readerGlobalSimulationParams 		= new FileReader();
-                    readerGlobalSimulationParams.onloadend 	= function(evt)
-                    {
-                        lProgres+=20;
-                        $("#jqxBottomControls_ProgressBar").jqxProgressBar({ value: lProgres });
+                    var readerGlobalSimulationParams = new FileReader();
+                    readerGlobalSimulationParams.onloadend = function (evt) {
+                        lProgres += 20;
+                        $("#jqxBottomControls_ProgressBar").jqxProgressBar({value: lProgres});
 
-                        var jsonGSP = JSON.parse( readerGlobalSimulationParams.result );
+                        var jsonGSP = JSON.parse(readerGlobalSimulationParams.result);
 
                         //Load global params
-                        self.steps  = jsonGSP.simSteps;
+                        self.steps = jsonGSP.simSteps;
 
                         //###Calculated from file, but no setpoint file
                         self.maxFileECalciumValue = jsonGSP.maxECalciumValue;
@@ -231,18 +227,17 @@ MSP.SimulationData.prototype =
                         self.minCalciumValue = jsonGSP.minCalciumValue;
                         self.maxCalciumValue = jsonGSP.maxCalciumValue;
 
-                        self.totalSimulationSteps	=jsonGSP.totalSimulationSteps;
-                        self.numSimStepsPerFile		=jsonGSP.numSimStepsPerFile;
-                        self.bufferSimulationSteps	=jsonGSP.bufferSimulationSteps;
+                        self.totalSimulationSteps = jsonGSP.totalSimulationSteps;
+                        self.numSimStepsPerFile = jsonGSP.numSimStepsPerFile;
+                        self.bufferSimulationSteps = jsonGSP.bufferSimulationSteps;
 
                         //Global info file 0
-                        var readerGlobalParams 		= new FileReader();
-                        readerGlobalParams.onloadend 	= function(evt)
-                        {
-                            lProgres+=10;
-                            $("#jqxBottomControls_ProgressBar").jqxProgressBar({ value: lProgres });
+                        var readerGlobalParams = new FileReader();
+                        readerGlobalParams.onloadend = function (evt) {
+                            lProgres += 10;
+                            $("#jqxBottomControls_ProgressBar").jqxProgressBar({value: lProgres});
 
-                            var jsonGP = JSON.parse( readerGlobalParams.result );
+                            var jsonGP = JSON.parse(readerGlobalParams.result);
 
                             _SimulationData.TEConn = jsonGP['TEConn'];
                             _SimulationData.TIConn = jsonGP['TIConn'];
@@ -256,48 +251,46 @@ MSP.SimulationData.prototype =
 
                             //Calculate the scales
                             self.recalculateScales(_SigletonConfig.minCaColor
-                                ,_SigletonConfig.maxCaColor
-                                ,_SigletonConfig.ColorInerpolMethod);
+                                , _SigletonConfig.maxCaColor
+                                , _SigletonConfig.ColorInerpolMethod);
 
                             //Recalculate positions
                             self.recalculatePositions();
-                            while(self.gNeuronsDetails.length < 999){}
+                            while (self.gNeuronsDetails.length < self.gNeurons.length) {
+                            }
                             self.calculateAllSynapticElements();
                         };
                         var blobreaderGlobalParams = pFiles[pathToFiles[4]];
-                        readerGlobalParams.readAsText(blobreaderGlobalParams,"utf-8");
+                        readerGlobalParams.readAsText(blobreaderGlobalParams, "utf-8");
 
                     };
                     var blobGlobalSimulationParams = pFiles[pathToFiles[3]];
-                    readerGlobalSimulationParams.readAsText(blobGlobalSimulationParams,"utf-8");
+                    readerGlobalSimulationParams.readAsText(blobGlobalSimulationParams, "utf-8");
 
                     //Conectivity
-                    var readerConnectivity 		= new FileReader();
-                    readerConnectivity.onloadend 	= function(evt)
-                    {
+                    var readerConnectivity = new FileReader();
+                    readerConnectivity.onloadend = function (evt) {
                         //self.gConnectivity = jsonC;
-                        self.gConnectivity = JSON.parse( readerConnectivity.result );
+                        self.gConnectivity = JSON.parse(readerConnectivity.result);
 
-                        lProgres+=20;
-                        $("#jqxBottomControls_ProgressBar").jqxProgressBar({ value: lProgres });
+                        lProgres += 20;
+                        $("#jqxBottomControls_ProgressBar").jqxProgressBar({value: lProgres});
 
-                        //Reactivate the UI
-                        _gVisualizatorUI.disableUI(false);
+                        self.loadSimulationEnd();
                     };
                     var blobConnectivity = pFiles[pathToFiles[5]];
-                    readerConnectivity.readAsText(blobConnectivity,"utf-8");
+                    readerConnectivity.readAsText(blobConnectivity, "utf-8");
                 };
                 var blobLocalNeuronCommonInfo = pFiles[pathToFiles[1]];
-                readerLocalNeuronCommonInfo.readAsText(blobLocalNeuronCommonInfo,"utf-8");
+                readerLocalNeuronCommonInfo.readAsText(blobLocalNeuronCommonInfo, "utf-8");
             };
             var blobSimulationFiles = pFiles["_SimulationFiles.json.scf"];
-            console.log("Fichero a importar: "+pFiles["_SimulationFiles.json.scf"]);
-            readerSimulationFiles.readAsText(blobSimulationFiles,"utf-8");
+            console.log("Fichero a importar: " + pFiles["_SimulationFiles.json.scf"]);
+            readerSimulationFiles.readAsText(blobSimulationFiles, "utf-8");
         },
 
         //############################################
-        loadRemoteSimulationFromServer: function (pSimulationId)
-        {
+        loadRemoteSimulationFromServer: function (pSimulationId) {
             //console.log("Intentando calcular el total de SE");
             $("#jqxBottomControls_ProgressBar").show();
             _SigletonConfig.auxTmpThis = this;
@@ -306,150 +299,142 @@ MSP.SimulationData.prototype =
             self.actualSimulationLoadType = self.SimulationLoadType[1];
 
             this.SimulationId = pSimulationId;
-            var lpathToFiles = this.ServerPath+pSimulationId+"/";
+            var lpathToFiles = this.ServerPath + pSimulationId + "/";
 
-            var lProgres=1;
-            $("#jqxBottomControls_ProgressBar").jqxProgressBar({ value: lProgres });
-
-            _gVisualizatorUI.disableUI(true);
+            self.updateProgressBar();
 
             //.cfg simulation file
-            d3.json(lpathToFiles+"_SimulationFiles.json.scf", function(error, jsonCFG)
-            {
+            d3.json(lpathToFiles + "_SimulationFiles.json.scf", function (error, jsonCFG) {
                 if (error) return alarm("Impossible to load _SimulationFiles.json.scf file");
-                lProgres+=9;
-                $("#jqxBottomControls_ProgressBar").jqxProgressBar({ value: lProgres });
-
                 self.cfgSimulationFiles = jsonCFG;
-                self.actFile=0;
+                self.numFilesLoaded++;
+                self.updateProgressBar();
+                self.actFile = 0;
 
                 //LocalInfo
-                d3.json(lpathToFiles+self.cfgSimulationFiles["LocalNeuronCommonInfo"], function(error, jsonLNCI)
-                {
+                d3.json(lpathToFiles + self.cfgSimulationFiles["LocalNeuronCommonInfo"], function (error, jsonLNCI) {
                     if (error) return alarm("Impossible to load LocalNeuronCommonInfo file");
 
-                    lProgres+=20;
-                    $("#jqxBottomControls_ProgressBar").jqxProgressBar({ value: lProgres });
+                    self.gNeurons = jsonLNCI;
+                    self.numFilesLoaded++;
+                    self.updateProgressBar();
+                    self.loadSimulationEnd();
+                });
 
-                    self.gNeurons  = jsonLNCI;
+                //Global info file 0
+                d3.json(lpathToFiles + self.cfgSimulationFiles["LocalNeuronInfo"][0], function (error, jsonLNI0) {
+                    if (error) return alarm("Impossible to load LocalNeuronInfo file");
 
-                    //Global info file 0
-                    d3.json(lpathToFiles+self.cfgSimulationFiles["LocalNeuronInfo"][0], function(error, jsonLNI0)
-                    {
-                        if (error) return alarm("Impossible to load LocalNeuronInfo file");
+                    self.gNeuronsDetails = jsonLNI0;
 
-                        lProgres+=20;
-                        $("#jqxBottomControls_ProgressBar").jqxProgressBar({ value: lProgres });
+                    //console.log("Intentando calcular el total de SE");
+                    self.calculateAllSynapticElements();
+                    self.numFilesLoaded++;
+                    self.updateProgressBar();
+                    self.loadSimulationEnd();
+                });
 
-                        self.gNeuronsDetails = jsonLNI0;
+                //GlobalInfo
+                d3.json(lpathToFiles + self.cfgSimulationFiles["GlobalSimulationParams"], function (error, jsonGSP) {
+                    if (error) return alarm("Impossible to load GlobalSimulationParams file");
 
-                        //console.log("Intentando calcular el total de SE");
-                        self.calculateAllSynapticElements();
-                        $("#jqxBottomControls_ProgressBar").hide();
-                    });
+                    //Load global params
+                    self.steps = jsonGSP.simSteps;
 
+                    //###Calculated from file, but no setpoint file
+                    self.maxFileECalciumValue = jsonGSP.maxECalciumValue;
+                    self.minFileECalciumValue = jsonGSP.minECalciumValue;
+                    self.maxFileICalciumValue = jsonGSP.maxICalciumValue;
+                    self.minFileICalciumValue = jsonGSP.minICalciumValue;
 
-                    //GlobalInfo
-                    d3.json(lpathToFiles+self.cfgSimulationFiles["GlobalSimulationParams"], function(error, jsonGSP)
-                    {
-                        if (error) return alarm("Impossible to load GlobalSimulationParams file");
+                    //Global calcium values
+                    self.minCalciumValue = jsonGSP.minCalciumValue;
+                    self.maxCalciumValue = jsonGSP.maxCalciumValue;
 
-                        lProgres+=20;
-                        $("#jqxBottomControls_ProgressBar").jqxProgressBar({ value: lProgres });
+                    self.totalSimulationSteps = jsonGSP.totalSimulationSteps;
+                    self.numSimStepsPerFile = jsonGSP.numSimStepsPerFile;
+                    self.bufferSimulationSteps = jsonGSP.bufferSimulationSteps;
+                    self.numFilesLoaded++;
+                    self.updateProgressBar();
+                    self.loadSimulationEnd();
+                });
 
-                        //Load global params
-                        self.steps  = jsonGSP.simSteps;
+                //Global info file 0
+                d3.json(lpathToFiles + self.cfgSimulationFiles["GlobalParams"][0], function (error, jsonGP) {
+                    if (error) return alarm("Impossible to load GlobalParams file");
 
-                        //###Calculated from file, but no setpoint file
-                        self.maxFileECalciumValue = jsonGSP.maxECalciumValue;
-                        self.minFileECalciumValue = jsonGSP.minECalciumValue;
-                        self.maxFileICalciumValue = jsonGSP.maxICalciumValue;
-                        self.minFileICalciumValue = jsonGSP.minICalciumValue;
+                    _SimulationData.TEConn = jsonGP['TEConn'];
+                    _SimulationData.TIConn = jsonGP['TIConn'];
+                    _SimulationData.EEConn = jsonGP['EEConn'];
+                    _SimulationData.EIConn = jsonGP['EIConn'];
+                    _SimulationData.IEConn = jsonGP['IEConn'];
+                    _SimulationData.IIConn = jsonGP['IIConn'];
 
-                        //Global calcium values
-                        self.minCalciumValue = jsonGSP.minCalciumValue;
-                        self.maxCalciumValue = jsonGSP.maxCalciumValue;
+                    //Calculate max and min values
+                    self.calculateMaxMinValues();
 
-                        self.totalSimulationSteps	=jsonGSP.totalSimulationSteps;
-                        self.numSimStepsPerFile		=jsonGSP.numSimStepsPerFile;
-                        self.bufferSimulationSteps	=jsonGSP.bufferSimulationSteps;
+                    //Calculate the scales
+                    self.recalculateScales(_SigletonConfig.minCaColor
+                        , _SigletonConfig.maxCaColor
+                        , _SigletonConfig.ColorInerpolMethod);
 
-                        //Global info file 0
-                        d3.json(lpathToFiles+self.cfgSimulationFiles["GlobalParams"][0], function(error, jsonGP)
-                        {
-                            if (error) return alarm("Impossible to load GlobalParams file");
+                    //Recalculate positions
+                    self.recalculatePositions();
+                    self.numFilesLoaded++;
+                    self.updateProgressBar();
+                    self.loadSimulationEnd();
+                });
 
-                            lProgres+=10;
-                            $("#jqxBottomControls_ProgressBar").jqxProgressBar({ value: lProgres });
+                //Conectivity
+                d3.json(lpathToFiles + self.cfgSimulationFiles['Connectivity'][0], function (error, jsonC) {
+                    if (error) return alarm("Impossible to load Connectivity file");
 
-                            _SimulationData.TEConn = jsonGP['TEConn'];
-                            _SimulationData.TIConn = jsonGP['TIConn'];
-                            _SimulationData.EEConn = jsonGP['EEConn'];
-                            _SimulationData.EIConn = jsonGP['EIConn'];
-                            _SimulationData.IEConn = jsonGP['IEConn'];
-                            _SimulationData.IIConn = jsonGP['IIConn'];
-
-                            //Calculate max and min values
-                            self.calculateMaxMinValues();
-
-                            //Calculate the scales
-                            self.recalculateScales(_SigletonConfig.minCaColor
-                                ,_SigletonConfig.maxCaColor
-                                ,_SigletonConfig.ColorInerpolMethod);
-
-                            //Recalculate positions
-                            self.recalculatePositions();
-
-                        });
-                    });
-
-                    //Conectivity
-                    d3.json(lpathToFiles+self.cfgSimulationFiles['Connectivity'][0], function(error, jsonC)
-                    {
-                        if (error) return alarm("Impossible to load Connectivity file");
-
-                        self.gConnectivity = jsonC;
-                        lProgres+=20;
-                        $("#jqxBottomControls_ProgressBar").jqxProgressBar({ value: lProgres });
-
-                        //Reactivate the UI
-                        _gVisualizatorUI.disableUI(false);
-
-                    });
+                    self.gConnectivity = jsonC;
+                    self.numFilesLoaded++;
+                    self.updateProgressBar();
+                    self.loadSimulationEnd();
 
                 });
-            });
-        },
 
-        loadRemoteSimulationFromServerInmediatly: function (pFileId)
-        {
+            });
+
+        },
+        updateProgressBar: function () {
+            $("#jqxBottomControls_ProgressBar").jqxProgressBar({value: this.numFilesLoaded*(100/this.stdSimulationFileNames.length)});
+        },
+        loadSimulationEnd: function () {
+            if (this.numFilesLoaded === this.stdSimulationFileNames.length) {
+                _gVisualizatorUI.generateView(0);
+                _gVisualizatorUI.disableUI(false);
+                $("#jqxBottomControls_ProgressBar").hide();
+            }
+        },
+        loadRemoteSimulationFromServerInmediatly: function (pFileId) {
             _SigletonConfig.auxTmpThis = this;
             var self = _SigletonConfig.auxTmpThis;
 
-            var lpathToFiles = this.ServerPath+this.SimulationId+"/";
+            var lpathToFiles = this.ServerPath + this.SimulationId + "/";
 
-            var lProgres=1;
-            $("#jqxBottomControls_ProgressBar").jqxProgressBar({ value: lProgres });
+            var lProgres = 1;
+            $("#jqxBottomControls_ProgressBar").jqxProgressBar({value: lProgres});
 
-            self.actFile=pFileId;
+            self.actFile = pFileId;
 
             //LocalInfo
-            d3.json(lpathToFiles+self.cfgSimulationFiles["LocalNeuronInfo"][pFileId], function(error, jsonLNI0)
-            {
+            d3.json(lpathToFiles + self.cfgSimulationFiles["LocalNeuronInfo"][pFileId], function (error, jsonLNI0) {
                 if (error) return alarm("Impossible to load LocalNeuronInfo file");
 
-                lProgres+=33;
-                $("#jqxBottomControls_ProgressBar").jqxProgressBar({ value: lProgres });
+                lProgres += 33;
+                $("#jqxBottomControls_ProgressBar").jqxProgressBar({value: lProgres});
 
                 self.gNeuronsDetails = jsonLNI0;
 
                 //Global info file 0
-                d3.json(lpathToFiles+self.cfgSimulationFiles["GlobalParams"][pFileId], function(error, jsonGP)
-                {
+                d3.json(lpathToFiles + self.cfgSimulationFiles["GlobalParams"][pFileId], function (error, jsonGP) {
                     if (error) return alarm("Impossible to load GlobalParams file");
 
-                    lProgres+=33;
-                    $("#jqxBottomControls_ProgressBar").jqxProgressBar({ value: lProgres });
+                    lProgres += 33;
+                    $("#jqxBottomControls_ProgressBar").jqxProgressBar({value: lProgres});
 
                     _SimulationData.TEConn = jsonGP['TEConn'];
                     _SimulationData.TIConn = jsonGP['TIConn'];
@@ -470,13 +455,12 @@ MSP.SimulationData.prototype =
 //				self.recalculatePositions();
 
                     //Conectivity
-                    d3.json(lpathToFiles+self.cfgSimulationFiles['Connectivity'][pFileId], function(error, jsonC)
-                    {
+                    d3.json(lpathToFiles + self.cfgSimulationFiles['Connectivity'][pFileId], function (error, jsonC) {
                         if (error) return alarm("Impossible to load Connectivity file");
 
                         self.gConnectivity = jsonC;
-                        lProgres+=33;
-                        $("#jqxBottomControls_ProgressBar").jqxProgressBar({ value: lProgres });
+                        lProgres += 33;
+                        $("#jqxBottomControls_ProgressBar").jqxProgressBar({value: lProgres});
 
                         //Reactivate the UI
                         //_gVisualizatorUI.disableUI(false);
@@ -487,50 +471,45 @@ MSP.SimulationData.prototype =
             });
 
 
-
         },
 
-        LoadServerSimulationDataFiles: function (pFileId, pForceSwap)
-        {
+        LoadServerSimulationDataFiles: function (pFileId, pForceSwap) {
             _SigletonConfig.auxTmpThis = this;
             var self = _SigletonConfig.auxTmpThis;
 
-            var lProgres=1;
-            $("#jqxBottomControls_ProgressBar").jqxProgressBar({ value: lProgres });
+            var lProgres = 1;
+            $("#jqxBottomControls_ProgressBar").jqxProgressBar({value: lProgres});
 
-            var pathToFiles=this.ServerPath + this.SimulationId+"/";
+            var pathToFiles = this.ServerPath + this.SimulationId + "/";
 
-            var lNextFile=pFileId;
+            var lNextFile = pFileId;
 
             //Global info file 0
-            d3.json(pathToFiles+self.cfgSimulationFiles["LocalNeuronInfo"][lNextFile], function(error, jsonLNI0)
-            {
+            d3.json(pathToFiles + self.cfgSimulationFiles["LocalNeuronInfo"][lNextFile], function (error, jsonLNI0) {
                 if (error) return alarm("Impossible to load LocalNeuronInfo file");
 
-                lProgres+=33;
-                $("#jqxBottomControls_ProgressBar").jqxProgressBar({ value: lProgres });
+                lProgres += 33;
+                $("#jqxBottomControls_ProgressBar").jqxProgressBar({value: lProgres});
 
-                self.neuronsDetailsBuffer	=jsonLNI0;
+                self.neuronsDetailsBuffer = jsonLNI0;
 
                 //Global info file 0
-                d3.json(pathToFiles+self.cfgSimulationFiles["GlobalParams"][lNextFile], function(error, jsonGP)
-                {
+                d3.json(pathToFiles + self.cfgSimulationFiles["GlobalParams"][lNextFile], function (error, jsonGP) {
                     if (error) return alarm("Impossible to load GlobalParams file");
 
-                    lProgres+=33;
-                    $("#jqxBottomControls_ProgressBar").jqxProgressBar({ value: lProgres });
+                    lProgres += 33;
+                    $("#jqxBottomControls_ProgressBar").jqxProgressBar({value: lProgres});
 
                     self.SEContainerBuffer = jsonGP;
 
                     //Conectivity
-                    d3.json(pathToFiles+self.cfgSimulationFiles['Connectivity'][lNextFile], function(error, jsonC)
-                    {
+                    d3.json(pathToFiles + self.cfgSimulationFiles['Connectivity'][lNextFile], function (error, jsonC) {
                         if (error) return alarm("Impossible to load Connectivity file");
 
-                        self.connectivityBuffer		=jsonC;
+                        self.connectivityBuffer = jsonC;
 
-                        lProgres+=33;
-                        $("#jqxBottomControls_ProgressBar").jqxProgressBar({ value: lProgres });
+                        lProgres += 33;
+                        $("#jqxBottomControls_ProgressBar").jqxProgressBar({value: lProgres});
 
                         if (pForceSwap) _SimulationData.swapSimulationInfo();
                     });
@@ -541,80 +520,75 @@ MSP.SimulationData.prototype =
             });
         },
 
-        loadRemoteSimulationFromDCache: function (pathToFiles, simId, pUser, pPass)
-        {
+        loadRemoteSimulationFromDCache: function (pathToFiles, simId, pUser, pPass) {
             var self = this;
-            _SigletonConfig.auxTmpThis=this;
+            _SigletonConfig.auxTmpThis = this;
 
             self.actualSimulationLoadType = self.SimulationLoadType[2];
-            self.WebDavCascadeLoad=true;
+            self.WebDavCascadeLoad = true;
 
-            var lPathToFile = pathToFiles +"/"+simId;
+            var lPathToFile = pathToFiles + "/" + simId;
 
-            var lProgres=1;
-            $("#jqxBottomControls_ProgressBar").jqxProgressBar({ value: lProgres });
+            var lProgres = 1;
+            $("#jqxBottomControls_ProgressBar").jqxProgressBar({value: lProgres});
 
             _gVisualizatorUI.disableUI(true);
 
             //self.requester 	= new YAAWebDavLib(lPathToFile, '2880', 'http', pUser, pPass);
-            self.requester 	= new JAWDL(lPathToFile, '2880', 'http', pUser, pPass);
+            self.requester = new JAWDL(lPathToFile, '2880', 'http', pUser, pPass);
 
             //Due to asyncronous requests, we need to perform the request in cascade.
             self.requester.getFile(self.stdSimulationFileNames[0], "json", self.callBackLoadWebDavSimulationConfigFile);
         },
 
 
-        callBackLoadWebDavSimulationConfigFile: function(data)
-        {
+        callBackLoadWebDavSimulationConfigFile: function (data) {
             //var self = this;
             var self = _SigletonConfig.auxTmpThis;
 
             self.cfgSimulationFiles = data;
-            self.actFile=0;
+            self.actFile = 0;
 
             //console.log("Object: "+self.cfgSimulationFiles);
 
-            console.log("Object: "+self.stdSimulationFileNames[1]);
+            console.log("Object: " + self.stdSimulationFileNames[1]);
 
-            var lProgres= $("#jqxBottomControls_ProgressBar").jqxProgressBar('val') + 10;
-            $("#jqxBottomControls_ProgressBar").jqxProgressBar({ value: lProgres });
+            var lProgres = $("#jqxBottomControls_ProgressBar").jqxProgressBar('val') + 10;
+            $("#jqxBottomControls_ProgressBar").jqxProgressBar({value: lProgres});
 
             if (self.WebDavCascadeLoad) self.requester.getFile(self.cfgSimulationFiles[String(self.stdSimulationFileIds[0])], "json", self.callBackLoadWebDavLocalNeuronCommonInfo);
         },
 
-        callBackLoadWebDavLocalNeuronCommonInfo: function(data)
-        {
+        callBackLoadWebDavLocalNeuronCommonInfo: function (data) {
             var self = _SigletonConfig.auxTmpThis;
 
             self.gNeurons = data;
 
-            var lProgres= $("#jqxBottomControls_ProgressBar").jqxProgressBar('val') + 33;
-            $("#jqxBottomControls_ProgressBar").jqxProgressBar({ value: lProgres });
+            var lProgres = $("#jqxBottomControls_ProgressBar").jqxProgressBar('val') + 33;
+            $("#jqxBottomControls_ProgressBar").jqxProgressBar({value: lProgres});
 
             if (self.WebDavCascadeLoad) self.requester.getFile(self.cfgSimulationFiles[String(self.stdSimulationFileIds[1])][self.actFile], "json", self.callBackLoadWebDavLocalNeuronInformation);
         },
 
-        callBackLoadWebDavLocalNeuronInformation: function(data)
-        {
+        callBackLoadWebDavLocalNeuronInformation: function (data) {
             var self = _SigletonConfig.auxTmpThis;
 
             self.gNeuronsDetails = data;
 
-            var lProgres= $("#jqxBottomControls_ProgressBar").jqxProgressBar('val') + 33;
-            $("#jqxBottomControls_ProgressBar").jqxProgressBar({ value: lProgres });
+            var lProgres = $("#jqxBottomControls_ProgressBar").jqxProgressBar('val') + 33;
+            $("#jqxBottomControls_ProgressBar").jqxProgressBar({value: lProgres});
 
             if (self.WebDavCascadeLoad) self.requester.getFile(self.cfgSimulationFiles[String(self.stdSimulationFileIds[2])], "json", self.callBackLoadWebDavGlobalSimulationParams);
         },
 
-        callBackLoadWebDavGlobalSimulationParams: function(data)
-        {
+        callBackLoadWebDavGlobalSimulationParams: function (data) {
             //var self = this;
             var self = _SigletonConfig.auxTmpThis;
 
             var jsonGlobalNData = data;
 
-            var lProgres= $("#jqxBottomControls_ProgressBar").jqxProgressBar('val') + 33;
-            $("#jqxBottomControls_ProgressBar").jqxProgressBar({ value: lProgres });
+            var lProgres = $("#jqxBottomControls_ProgressBar").jqxProgressBar('val') + 33;
+            $("#jqxBottomControls_ProgressBar").jqxProgressBar({value: lProgres});
 
             //Load global params
             self.steps = jsonGlobalNData.simSteps;
@@ -629,23 +603,22 @@ MSP.SimulationData.prototype =
             self.minCalciumValue = jsonGlobalNData.minCalciumValue;
             self.maxCalciumValue = jsonGlobalNData.maxCalciumValue;
 
-            self.totalSimulationSteps	=jsonGlobalNData.totalSimulationSteps;
-            self.numSimStepsPerFile		=jsonGlobalNData.numSimStepsPerFile;
-            self.bufferSimulationSteps	=jsonGlobalNData.bufferSimulationSteps;
+            self.totalSimulationSteps = jsonGlobalNData.totalSimulationSteps;
+            self.numSimStepsPerFile = jsonGlobalNData.numSimStepsPerFile;
+            self.bufferSimulationSteps = jsonGlobalNData.bufferSimulationSteps;
 
 
             if (self.WebDavCascadeLoad) self.requester.getFile(self.cfgSimulationFiles[String(self.stdSimulationFileIds[3])][self.actFile], "json", self.callBackLoadWebDavGlobalParams);
         },
 
-        callBackLoadWebDavGlobalParams: function(data)
-        {
+        callBackLoadWebDavGlobalParams: function (data) {
             //var self = this;
             var self = _SigletonConfig.auxTmpThis;
 
             var jsonGlobalNData = data;
 
-            var lProgres= $("#jqxBottomControls_ProgressBar").jqxProgressBar('val') + 33;
-            $("#jqxBottomControls_ProgressBar").jqxProgressBar({ value: lProgres });
+            var lProgres = $("#jqxBottomControls_ProgressBar").jqxProgressBar('val') + 33;
+            $("#jqxBottomControls_ProgressBar").jqxProgressBar({value: lProgres});
 
             self.TEConn = jsonGlobalNData.TEConn;
             self.TIConn = jsonGlobalNData.TIConn;
@@ -657,22 +630,21 @@ MSP.SimulationData.prototype =
             if (self.WebDavCascadeLoad) self.requester.getFile(self.cfgSimulationFiles[String(self.stdSimulationFileIds[4])][self.actFile], "json", self.callBackLoadWebDavConnectivity);
         },
 
-        callBackLoadWebDavConnectivity: function(data)
-        {
+        callBackLoadWebDavConnectivity: function (data) {
             //var self = this;
             var self = _SigletonConfig.auxTmpThis;
 
             self.gConnectivity = data;
-            var lProgres= $("#jqxBottomControls_ProgressBar").jqxProgressBar('val') + 33;
-            $("#jqxBottomControls_ProgressBar").jqxProgressBar({ value: lProgres });
+            var lProgres = $("#jqxBottomControls_ProgressBar").jqxProgressBar('val') + 33;
+            $("#jqxBottomControls_ProgressBar").jqxProgressBar({value: lProgres});
 
             //Calculate max and min values
             self.calculateMaxMinValues();
 
             //Calculate the scales
             self.recalculateScales(_SigletonConfig.minCaColor
-                ,_SigletonConfig.maxCaColor
-                ,_SigletonConfig.ColorInerpolMethod);
+                , _SigletonConfig.maxCaColor
+                , _SigletonConfig.ColorInerpolMethod);
 
             //Recalculate positions
             self.recalculatePositions();
@@ -684,30 +656,28 @@ MSP.SimulationData.prototype =
 
         },
 
-        callBackLoadWebDavConnectivitySimple: function(data)
-        {
+        callBackLoadWebDavConnectivitySimple: function (data) {
             //var self = this;
             var self = _SigletonConfig.auxTmpThis;
 
             self.gConnectivity = data;
-            var lProgres= $("#jqxBottomControls_ProgressBar").jqxProgressBar('val') + 33;
-            $("#jqxBottomControls_ProgressBar").jqxProgressBar({ value: lProgres });
+            var lProgres = $("#jqxBottomControls_ProgressBar").jqxProgressBar('val') + 33;
+            $("#jqxBottomControls_ProgressBar").jqxProgressBar({value: lProgres});
 
             //##########
             _SimulationController.view.updateVisualization();
         },
 
 
-        loadSimulationFromWebDavInmediatly: function (pFileId)
-        {
+        loadSimulationFromWebDavInmediatly: function (pFileId) {
             _SigletonConfig.auxTmpThis = this;
             var self = _SigletonConfig.auxTmpThis;
 
-            var lProgres=1;
-            $("#jqxBottomControls_ProgressBar").jqxProgressBar({ value: lProgres });
+            var lProgres = 1;
+            $("#jqxBottomControls_ProgressBar").jqxProgressBar({value: lProgres});
 
             //Autodecide files
-            self.actFile=pFileId;
+            self.actFile = pFileId;
             self.WebDavCascadeLoad = false;
 
             self.requester.getFile(self.cfgSimulationFiles[String(self.stdSimulationFileIds[1])][pFileId], "json", self.callBackLoadWebDavLocalNeuronInformation);
@@ -718,44 +688,40 @@ MSP.SimulationData.prototype =
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    callBackLoadWebDavLocalNeuronInformationBuffered: function(data)
-    {
+    callBackLoadWebDavLocalNeuronInformationBuffered: function (data) {
         var self = _SigletonConfig.auxTmpThis;
 
         self.neuronsDetailsBuffer = data;
 
-        var lProgres= $("#jqxBottomControls_ProgressBar").jqxProgressBar('val') + 34;
-        $("#jqxBottomControls_ProgressBar").jqxProgressBar({ value: lProgres });
+        var lProgres = $("#jqxBottomControls_ProgressBar").jqxProgressBar('val') + 34;
+        $("#jqxBottomControls_ProgressBar").jqxProgressBar({value: lProgres});
     },
 
-    callBackLoadWebDavGlobalParamsBuffered: function(data)
-    {
+    callBackLoadWebDavGlobalParamsBuffered: function (data) {
         //var self = this;
         var self = _SigletonConfig.auxTmpThis;
 
         self.SEContainerBuffer = data;
-        var lProgres= $("#jqxBottomControls_ProgressBar").jqxProgressBar('val') + 33;
-        $("#jqxBottomControls_ProgressBar").jqxProgressBar({ value: lProgres });
+        var lProgres = $("#jqxBottomControls_ProgressBar").jqxProgressBar('val') + 33;
+        $("#jqxBottomControls_ProgressBar").jqxProgressBar({value: lProgres});
     },
 
-    callBackLoadWebDavConnectivityBuffered: function(data)
-    {
+    callBackLoadWebDavConnectivityBuffered: function (data) {
         //var self = this;
         var self = _SigletonConfig.auxTmpThis;
 
         self.connectivityBuffer = data;
-        var lProgres= $("#jqxBottomControls_ProgressBar").jqxProgressBar('val') + 33;
-        $("#jqxBottomControls_ProgressBar").jqxProgressBar({ value: lProgres });
+        var lProgres = $("#jqxBottomControls_ProgressBar").jqxProgressBar('val') + 33;
+        $("#jqxBottomControls_ProgressBar").jqxProgressBar({value: lProgres});
     },
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    LoadWebDavSimulationDataFiles: function (pFileId)
-    {
+    LoadWebDavSimulationDataFiles: function (pFileId) {
         _SigletonConfig.auxTmpThis = this;
         var self = _SigletonConfig.auxTmpThis;
 
-        var lProgres=1;
-        $("#jqxBottomControls_ProgressBar").jqxProgressBar({ value: lProgres });
+        var lProgres = 1;
+        $("#jqxBottomControls_ProgressBar").jqxProgressBar({value: lProgres});
 
         //Autodecide files
         self.requester.getFile(self.cfgSimulationFiles[String(self.stdSimulationFileIds[1])][pFileId], "json", self.callBackLoadWebDavLocalNeuronInformationBuffered);
@@ -764,12 +730,11 @@ MSP.SimulationData.prototype =
     },
 
 
-    swapSimulationInfo: function ()
-    {
+    swapSimulationInfo: function () {
         console.log("-->>>Swapping buffer");
 
-        this.gNeuronsDetails 	= this.neuronsDetailsBuffer;
-        this.gConnectivity 		= this.connectivityBuffer;
+        this.gNeuronsDetails = this.neuronsDetailsBuffer;
+        this.gConnectivity = this.connectivityBuffer;
 
         _SimulationData.TEConn = this.SEContainerBuffer['TEConn'];
         _SimulationData.TIConn = this.SEContainerBuffer['TIConn'];
@@ -783,18 +748,16 @@ MSP.SimulationData.prototype =
             = this.SEContainerBuffer['EEConn']
             = this.SEContainerBuffer['EIConn']
             = this.SEContainerBuffer['IEConn']
-            = this.SEContainerBuffer['IIConn']=[];
+            = this.SEContainerBuffer['IIConn'] = [];
 
-        this.actFile = Math.floor(_SimulationController.actSimStep/this.numSimStepsPerFile);
+        this.actFile = Math.floor(_SimulationController.actSimStep / this.numSimStepsPerFile);
     },
 
-    recalculateScales: function (pColorMin, pColorMax, pColorType)
-    {
+    recalculateScales: function (pColorMin, pColorMax, pColorType) {
         var self = this;
 
-        //Max-Min Ca values from file
-        if (_SigletonConfig.CaMaxMinValueTypes==0)
-        {
+        //TODO: Add another minMax function, SetPoints dont make sense (always the same)
+        if (_SigletonConfig.CaMaxMinValueTypes == 0) {
             console.log("Ca. from set points");
 
             self.minECalciumValue = 0;
@@ -802,38 +765,31 @@ MSP.SimulationData.prototype =
             self.maxECalciumValue = 0;
             self.maxICalciumValue = 0;
 
-            for(var i=0;i<self.gNeurons.length;++i)
-            {
-                if (self.gNeurons[i].NAct=="E")
-                {
-                    if (self.maxECalciumValue<self.gNeurons[i].SetPoint)
-                        self.maxECalciumValue=self.gNeurons[i].SetPoint;
+            for (var i = 0; i < self.gNeurons.length; ++i) {
+                if (self.gNeurons[i].NAct == "E") {
+                    if (self.maxECalciumValue < self.gNeurons[i].SetPoint)
+                        self.maxECalciumValue = self.gNeurons[i].SetPoint;
                 }
-                else
-                {
-                    if (self.maxICalciumValue<self.gNeurons[i].SetPoint)
-                        self.maxICalciumValue=self.gNeurons[i].SetPoint;
+                else {
+                    if (self.maxICalciumValue < self.gNeurons[i].SetPoint)
+                        self.maxICalciumValue = self.gNeurons[i].SetPoint;
                 }
             }
 
             //#### Nyapa!!! Se pued ehacer en el bucle anterior, but theri is no time
-            for(var i=0;i<self.gNeurons.length;++i)
-            {
-                if (self.gNeurons[i].NAct=="E")
-                {
+            for (var i = 0; i < self.gNeurons.length; ++i) {
+                if (self.gNeurons[i].NAct == "E") {
                     if (self.maxECalciumValue!=self.gNeurons[i].SetPoint)
                         window.alert("Different setPoint Ca values in setPoint files for E Neuron");
                 }
-                else
-                {
-                    if (self.maxICalciumValue!=self.gNeurons[i].SetPoint)
+                else {
+                    if (self.maxICalciumValue != self.gNeurons[i].SetPoint)
                         window.alert("Different setPoint Ca values in setPoint files for I Neuron");
                 }
             }
 
         }
-        else
-        {
+        else {
 //			console.log("Ca. from Neuron values");
             self.maxECalciumValue = self.maxFileECalciumValue;
             self.minECalciumValue = self.minFileECalciumValue;
@@ -841,105 +797,16 @@ MSP.SimulationData.prototype =
             self.minICalciumValue = self.minFileICalciumValue;
         }
 
-//		console.log("self.maxECalciumValue: "+self.maxECalciumValue);
-//		console.log("self.minECalciumValue: "+self.minECalciumValue);
-//		console.log("self.maxICalciumValue: "+self.maxICalciumValue);
-//		console.log("self.minICalciumValue: "+self.minICalciumValue);
-
-        // if (pColorType	==	"HSL")
-        // {
-        //     //Calculate range
-        //     var lActColor;
-        //     var lHSLColorRange = [];
-        //
-        //     var lIncrements = [];
-        //     var lNumIncs 	= 5.0;
-        //
-        //     var lColorMin = new KolorWheel(pColorMin);
-        //     var lColorMax = new KolorWheel(pColorMax);
-        //
-        //     var lhInc = (lColorMax.h - lColorMin.h)/lNumIncs;
-        //     var lsInc = (lColorMax.s - lColorMin.s)/lNumIncs;
-        //     var llInc = (lColorMax.l - lColorMin.l)/lNumIncs;
-        //
-        //     //Inhibitory
-        //     var lIInc = (this.maxICalciumValue - this.minICalciumValue)/lNumIncs;
-        //     for (var i=0;i<lNumIncs;++i)	lIncrements.push(this.minICalciumValue + i*lIInc);
-        //     for (var n = 0; n < lNumIncs; n++)
-        //     {
-        //         lActColor = new KolorWheel([lColorMin.h
-        //             ,lColorMin.s
-        //             ,lColorMin.l + n*(llInc)
-        //         ]);
-        //         lHSLColorRange.push(lActColor.getHex());
-        //     }
-        //
-        //
-        //     this.CaIScale = d3.scale
-        //         .linear()
-        //         .domain(lIncrements)
-        //         .range(lHSLColorRange)
-        //         .interpolate(d3.interpolateRgb)
-        //     ;
-        //     this.CaIScale = d4.scaleSequential(d4.interpolateViridis).domain([this.minICalciumValue,this.maxICalciumValue]);;
-        //     //Excitatory
-        //     var lEInc = (this.maxECalciumValue - this.minECalciumValue)/lNumIncs;
-        //     lIncrements = [];
-        //     lHSLColorRange = [];
-        //     for (var i=0;i<lNumIncs;++i)	lIncrements.push(this.minECalciumValue + i*lEInc);
-        //     for (var n = 0; n < lNumIncs; n++)
-        //     {
-        //         lActColor = new KolorWheel([lColorMin.h
-        //             ,lColorMin.s
-        //             ,lColorMin.l + n*(llInc)
-        //         ]);
-        //         lHSLColorRange.push(lActColor.getHex());
-        //     }
-        //
-        //     this.CaEScale = d3.scale
-        //         .linear()
-        //         .domain(lIncrements)
-        //         .range(lHSLColorRange)
-        //         .interpolate(d3.interpolateRgb)
-        //     ;
-        //     this.CaEScale = d4.scaleSequential(d4.interpolateViridis).domain([this.minECalciumValue,this.maxECalciumValue]);
-        //     delete lColorMin;
-        //     delete lColorMax;
-        // }
-        // //lineal
-        // if (pColorType	==	"RGB")
-        // {
-        //     this.CaIScale =	d3.scale
-        //         .linear()
-        //         .domain([ this.minICalciumValue,this.maxICalciumValue ])
-        //         .range([pColorMin, pColorMax])
-        //         .interpolate(d3.interpolateRgb)
-        //     ;
-        //
-        //     this.CaEScale =	d3.scale
-        //         .linear()
-        //         .domain([ this.minECalciumValue,this.maxECalciumValue ])
-        //         .range([pColorMin, pColorMax])
-        //         .interpolate(d3.interpolateRgb)
-        //     ;
-        // }
-        this.CaIScale = d4.scaleSequential(d4["interpolate"+_SigletonConfig.calciumScheme]).domain([this.minICalciumValue,this.maxICalciumValue]);
-        this.CaEScale = d4.scaleSequential(d4["interpolate"+_SigletonConfig.calciumScheme]).domain([this.minECalciumValue,this.maxECalciumValue]);
-    },
-    recalculateScales2: function (start,end)
-    {
-        this.CaIScale = d4.scaleSequential(d4["interpolate"+_SigletonConfig.calciumScheme]).domain([start,end]);
-        this.CaEScale = d4.scaleSequential(d4["interpolate"+_SigletonConfig.calciumScheme]).domain([start,end]);
+        this.CaIScale = d4.scaleSequential(d4["interpolate" + _SigletonConfig.calciumScheme]).domain([this.minICalciumValue, this.maxICalciumValue]);
+        this.CaEScale = d4.scaleSequential(d4["interpolate" + _SigletonConfig.calciumScheme]).domain([this.minECalciumValue, this.maxECalciumValue]);
     }
-    ,recalculatePositions: function()
-{
+    , recalculatePositions: function () {
     //Recalculate positions
     var lNewXPos = 0;
     var lNewYPos = 0;
     var self = this;
 
-    for (var i=0;i<_SimulationData.gNeurons.length;++i)
-    {
+    for (var i = 0; i < _SimulationData.gNeurons.length; ++i) {
         lNewXPos = _SigletonConfig.xScale(self.gNeurons[i].PosX);
         lNewYPos = _SigletonConfig.yScale(self.gNeurons[i].PosY);
 
@@ -947,10 +814,9 @@ MSP.SimulationData.prototype =
         self.gNeurons[i].PosY = lNewYPos;
     }
 }
-    ,updateSchema: function(interpolator)
-{
-    this.CaIScale = d4.scaleSequential(d4["interpolate"+interpolator]).domain([this.minICalciumValue,this.maxICalciumValue]);
-    this.CaEScale = d4.scaleSequential(d4["interpolate"+interpolator]).domain([this.minECalciumValue,this.maxECalciumValue]);
+    , updateSchema: function (interpolator) {
+    this.CaIScale = d4.scaleSequential(d4["interpolate" + interpolator]).domain([this.minICalciumValue, this.maxICalciumValue]);
+    this.CaEScale = d4.scaleSequential(d4["interpolate" + interpolator]).domain([this.minECalciumValue, this.maxECalciumValue]);
 }
 };
 

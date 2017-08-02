@@ -61,7 +61,7 @@ function saveAsImage() {
         downloadCanvas(canvasdata, "snapshot")
     } else {
 
-        var html = d3.select("#renderArea").selectAll("svg")
+        d3.select("#renderArea").selectAll("svg")
             .attr("version", 1.1)
             .attr("xmlns", "http://www.w3.org/2000/svg")
             .each(function (d,i) {

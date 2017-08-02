@@ -47,6 +47,33 @@ MSP.GraphMicroscopicView = function () {
     this.MSPViewType = "GlobalCV";
     this.colorScale;
     this.tooltipMarginRatio = 0.005;
+
+    this.marginRatios = {
+        top: 0.01,
+        bottom: 0.04,
+        left: 0.04,
+        right: 0.06
+    };
+
+    this.minLeftMargin = 60;
+    this.minRightMargin = 90;
+
+    this.graphRatio = 0.5;
+
+    this.tooltipMarginRatio = 0.005;
+
+    this.circleRatio = 0.01;
+
+    this.firstGraphMargin;
+    this.scndGraphMargin;
+    this.firstGraphDim;
+    this.scndGraphDim;
+    this.svg;
+
+    this.legendRatios = {margin: 0.01, fontSize: 1.3, lineHeight: 1.5, circleWidth: 0.005};
+    this.graphTitleFontSizeRatio = 1.3;
+    this.fontSizeRatio = 0.012;
+    this.minFontSize = 10;
 };
 
 MSP.GraphMicroscopicView.prototype =
@@ -144,7 +171,7 @@ MSP.GraphMicroscopicView.prototype =
                 data: [],
                 selected: d === selectedID
             };
-            var startStep = _SimulationData.actFile*_SimulationData.numSimStepsPerFile;
+            var startStep = _SimulationData.actFile * _SimulationData.numSimStepsPerFile;
             for (var i = 0; i < lIndex + 1; i++) {
                 data.data.push({value: startStep, data: _SimulationData.gNeuronsDetails[d].Calcium[i]});
                 startStep++;
@@ -163,7 +190,7 @@ MSP.GraphMicroscopicView.prototype =
                     color = _SigletonConfig.EColor;
             }
             var data = {text: "Excitatory", id: d, textShort: d, color: color, data: [], selected: d === selectedID};
-            var startStep = _SimulationData.actFile*_SimulationData.numSimStepsPerFile;
+            var startStep = _SimulationData.actFile * _SimulationData.numSimStepsPerFile;
             for (var i = 0; i < lIndex + 1; i++) {
                 data.data.push({value: startStep, data: _SimulationData.gNeuronsDetails[d].DeSeEA[i]});
                 startStep++;
@@ -183,7 +210,7 @@ MSP.GraphMicroscopicView.prototype =
             }
 
             var data = {text: "Inhibitory", id: d, textShort: d, color: color, data: [], selected: d === selectedID};
-            var startStep = _SimulationData.actFile*_SimulationData.numSimStepsPerFile;
+            var startStep = _SimulationData.actFile * _SimulationData.numSimStepsPerFile;
             for (var i = 0; i < lIndex + 1; i++) {
                 data.data.push({value: startStep, data: _SimulationData.gNeuronsDetails[d].DeSeIA[i]});
                 startStep++;
@@ -203,7 +230,7 @@ MSP.GraphMicroscopicView.prototype =
             }
 
             var data = {text: "Axonal", id: d, textShort: d, color: color, data: [], selected: d === selectedID};
-            var startStep = _SimulationData.actFile*_SimulationData.numSimStepsPerFile;
+            var startStep = _SimulationData.actFile * _SimulationData.numSimStepsPerFile;
             for (var i = 0; i < lIndex + 1; i++) {
                 data.data.push({value: startStep, data: _SimulationData.gNeuronsDetails[d].AxSeA[i]});
                 startStep++;
@@ -218,55 +245,23 @@ MSP.GraphMicroscopicView.prototype =
         this.graph(4, this.svg, this.width, this.margin4.left, this.margin4.top, this.height4, dataA, false, 4, selectedID);
 
 
-    }, graph: function (i, svg, widthTotal, marginLeft, marginTop, height, data, hasLegend, steps, selectedID) {
-        svg.selectAll(".graph" + i).remove();
-        var gGraph = svg.append("g").attr("class", "graph" + i);
+    }, graph: function (graphID, svg, widthTotal, marginLeft, marginTop, height, data, hasLegend, steps, selectedID) {
+        var renderWidth = _SigletonConfig.width;
+        var renderHeight = _SigletonConfig.height;
+        var defaultFontSize = Math.max(Math.min(renderHeight, renderWidth) * this.fontSizeRatio, this.minFontSize);
+        var axisFontSize = defaultFontSize + "px";
+        var titleFontSize = defaultFontSize * this.graphTitleFontSizeRatio + "px";
+        var circleIndicatorRadius = renderHeight * this.circleRatio;
+
+        svg.selectAll(".graph" + graphID).remove();
+        var gGraph = svg.append("g").attr("class", "graph" + graphID);
         var self = this;
         var width = widthTotal;
-        var scales = [];
-        var scalesX = [];
         var xx = d3.scale.linear().range([0, width]);
-
-        gGraph
-            .append("text")
-            .attr("transform", "rotate(-90)")
-            .attr("y", 0 - (marginLeft - 10))
-            .attr("x", 0 - ((height / 2) + marginTop))
-            .attr("dy", ".71em")
-            .attr("class", "textoL")
-            .style("text-anchor", "middle")
-            .text(data[0].text); //TODO: fallo, no declarar el texto por elemento modificar
-
-        gGraph.append("rect")
-            .attr("class", "overlay_graph a" + i)
-            .attr("width", width)
-            .attr("y", marginTop)
-            .attr("height", height);
-
-        if (hasLegend) {
-
-            var gLegend = gGraph.append("g").attr("class", "legend a" + i).attr("transform", "translate(0," + marginTop + ")");
-
-            data.forEach(function (d, z) {
-                gLegend.append("circle")
-                    .attr("class", "circleL")
-                    .attr("cx", width + marginLeft - 20)
-                    .attr("cy", ((height / 2) - ((22 * data.length) / 2)) + 10 + (z * 20))
-                    .style("stroke", d.color)
-                    .style("fill", d.color)
-                    .attr("r", 4);
-
-                gLegend.append("text")
-                    .attr("x", width + marginLeft - 10)
-                    .attr("y", ((height / 2) - ((22 * data.length) / 2)) + 16 + (z * 20))
-                    .attr("class", "textoL")
-                    .text(d.text);
-            });
-        }
 
 
         gGraph.append("line")
-            .attr("class", "line_over" + i)
+            .attr("class", "line_over" + graphID)
             .attr("stroke-width", 1)
             .attr("stroke", "#000")
             .attr("x1", 0)
@@ -302,7 +297,7 @@ MSP.GraphMicroscopicView.prototype =
         });
 
         var x2 = d3.scale.linear().range([0, width], 1);
-        x2.domain([_SimulationData.actFile*_SimulationData.numSimStepsPerFile, _SimulationController.actSimStep]);
+        x2.domain([_SimulationData.actFile * _SimulationData.numSimStepsPerFile, _SimulationController.actSimStep]);
         var xAxis2 = d3.svg.axis().scale(x2).tickValues(x2.ticks().concat(x2.domain())).orient("bottom").innerTickSize(-height);
 
         var y = d3.scale.linear().range([height, 0]).domain([0, max]).nice(steps);
@@ -310,7 +305,7 @@ MSP.GraphMicroscopicView.prototype =
         var yAxis = d3.svg.axis().scale(y).orient("left").ticks(steps).innerTickSize(-width);
 
         gGraph.append("g")
-            .attr("class", "x axis p" + i)
+            .attr("class", "x axis p" + graphID)
             .attr("transform", "translate(0," + (marginTop + height) + ")")
             .call(xAxis2)
         ;
@@ -318,39 +313,43 @@ MSP.GraphMicroscopicView.prototype =
 
         gGraph.append("g")
             .attr("transform", "translate(0," + (marginTop) + ")")
-            .attr("class", "y axis p" + i)
+            .attr("class", "y axis p" + graphID)
             .call(yAxis);
 
 
-        xx.domain([_SimulationData.actFile*_SimulationData.numSimStepsPerFile, _SimulationController.actSimStep]);
-        var x = d3.scale.linear().range([_SimulationData.actFile*_SimulationData.numSimStepsPerFile, _SimulationController.actSimStep]);
-        x.domain([0, width]);
-        var gBurbujas = gGraph.append("g").attr("class", "history c" + i).attr("transform", "translate(0," + marginTop + ")");
-        var glineas = gGraph.append("g").attr("class", "history b" + i).attr("transform", "translate(0," + marginTop + ")");
-        var g = gGraph.append("g").attr("class", "history a" + i).attr("transform", "translate(0," + marginTop + ")");
+        var yAxisTextWidth = 0;
+        if (typeof $(".graph" + graphID + " .y.axis.p" + graphID + " text").last()[0] !== "undefined")
+            yAxisTextWidth = $(".graph" + graphID + " .y.axis.p" + graphID + " text").last()[0].getBoundingClientRect().width;
+        var graphTitlePos = {
+            x: -((marginLeft - yAxisTextWidth) * 0.5) - yAxisTextWidth,
+            y: -(height * 0.5)
+        };
 
-        g.append("rect")
-            .attr("class", "rect_over")
-            .attr("fill-opacity", "1")
-            .attr("fill", "#ffffff")
-            .attr("x", 0)
-            .attr("rx", 5)
-            .attr("ry", 5)
-            .attr("height", 20 * data.length + 8)
-            .attr("width", 80)
-            .attr("y", 400)
-            .attr("style", "display:none;");
-        var selecD = undefined;
+        gGraph
+            .append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", graphTitlePos.x)
+            .attr("x", graphTitlePos.y-marginTop)
+            .style("text-anchor", "middle")
+            .attr("font-family", "sans-serif")
+            .attr("font-size", titleFontSize)
+            .text(data[0].text); //TODO: fallo, no declarar el texto por elemento modificar
+
+        xx.domain([_SimulationData.actFile * _SimulationData.numSimStepsPerFile, _SimulationController.actSimStep]);
+        var x = d3.scale.linear().range([_SimulationData.actFile * _SimulationData.numSimStepsPerFile, _SimulationController.actSimStep]);
+        x.domain([0, width]);
+        var gBurbujas = gGraph.append("g").attr("class", "history c" + graphID).attr("transform", "translate(0," + marginTop + ")");
+        var glineas = gGraph.append("g").attr("class", "history b" + graphID).attr("transform", "translate(0," + marginTop + ")");
+        var g = gGraph.append("g").attr("class", "history a" + graphID).attr("transform", "translate(0," + marginTop + ")");
+
+
         //TODO: Limipar el codigo agrupar en funciones mejorar parametros
         data.forEach(function (d, z) {
             if (!_SimulationData.gNeurons[d.id].selectedM) {
-                area.y0(y(0));
-                scales.push(y);
-                scalesX.push(xx);
                 if (data.length === 1) {
                     glineas.append("path")
                         .datum(d.data)
-                        .attr("class", "graphArea a" + i)
+                        .attr("class", "graphArea a" + graphID)
                         .attr("d", area);
                 }
 
@@ -359,6 +358,7 @@ MSP.GraphMicroscopicView.prototype =
                     .attr("id", d.id)
                     .attr("color", d.color)
                     .style("stroke", d.color)
+                    .attr("fill", "none")
                     .style("stroke-opacity", function () {
                         if (d.color === "#ababab")
                             return 0.4;
@@ -379,6 +379,7 @@ MSP.GraphMicroscopicView.prototype =
                     .style("display", "none")
                     .style("stroke", d.color)
                     .style("fill", "none")
+                    .style("stroke-width", "0.15vmin")
                     .attr("r", 6);
             }
         });
@@ -388,16 +389,12 @@ MSP.GraphMicroscopicView.prototype =
 
         data.forEach(function (d, z) {
             if (_SimulationData.gNeurons[d.id].selectedM) {
-                area.y0(y(0));
-                scales.push(y);
-                scalesX.push(xx);
                 if (data.length === 1) {
                     glineas.append("path")
                         .datum(d.data)
-                        .attr("class", "graphArea a" + i)
+                        .attr("class", "graphArea a" + graphID)
                         .attr("d", area);
                 }
-
 
                 glineas.append("path")
                     .attr("class", "graphLine")
@@ -406,6 +403,7 @@ MSP.GraphMicroscopicView.prototype =
                     .style("stroke", colorRange[z % numColors])
                     .style("stroke-width", 2.5)
                     .style("stroke-opacity", 1)
+                    .style("fill", "none")
                     .attr("d", valueline(d.data));
 
                 gBurbujas.append("circle")
@@ -426,12 +424,11 @@ MSP.GraphMicroscopicView.prototype =
         });
 
 
-        d3.selectAll(".overlay.a" + i).remove();
+        d3.selectAll(".overlay.a" + graphID).remove();
         gGraph.append("rect")
-            .attr("class", "overlay a" + i)
-
+            .attr("class", "overlay a" + graphID)
             .attr("width", width)
-            .attr("fill", "")
+            .attr("fill", "none")
             .attr("y", marginTop)
             .attr("height", height)
             .on("mousemove", function () {
@@ -440,11 +437,11 @@ MSP.GraphMicroscopicView.prototype =
                 var tooltipY = d3.mouse(d3.select('body').node())[1] + self.tooltipMarginRatio * _SigletonConfig.height;
                 var tooltipWidth = $("#tooltip").outerWidth();
                 var tooltipHeight = $("#tooltip").outerHeight();
-                var dataIndex = Math.round(x(mousePos[0]))%_SimulationData.numSimStepsPerFile;
+                var dataIndex = Math.round(x(mousePos[0])) % _SimulationData.numSimStepsPerFile;
                 var simulationStep = Math.round(x(mousePos[0]));
-                var linePosX = (parseInt(x(mousePos[0]))-_SimulationData.numSimStepsPerFile*_SimulationData.actFile)
-                    * (width / (_SimulationController.actSimStep-_SimulationData.numSimStepsPerFile
-                        *_SimulationData.actFile));
+                var linePosX = (parseInt(x(mousePos[0])) - _SimulationData.numSimStepsPerFile * _SimulationData.actFile)
+                    * (width / (_SimulationController.actSimStep - _SimulationData.numSimStepsPerFile
+                    * _SimulationData.actFile));
 
                 if ((tooltipX + tooltipWidth) > $(window).width())
                     tooltipX -= tooltipWidth;
@@ -467,13 +464,7 @@ MSP.GraphMicroscopicView.prototype =
                     .style("top", tooltipY + "px")
                     .classed("hidden", false);
 
-                var ys = [];
-                g.selectAll('.circlePos')[0].forEach(function (d, i) {
-                    ys.push(y(data[i].data[dataIndex].data));
-                });
-                var ini = 0;
-                if ((data.length * 20) > height && i > 1) ini = height - (data.length * 20);
-                d3.selectAll('.line_over' + i)
+                d3.selectAll('.line_over' + graphID)
                     .style("display", "inline")
                     .style("z-index", 1000)
                     .attr("x1", linePosX)
@@ -494,15 +485,25 @@ MSP.GraphMicroscopicView.prototype =
                     .attr("cx", linePosX);
             })
             .on("mouseout", function () {
-                d3.selectAll('.line_over' + i).style("display", "none");
+                d3.selectAll('.line_over' + graphID).style("display", "none");
                 d3.select("#tooltip").classed("hidden", true);
                 d3.selectAll('.circlePos').style("display", "none");
                 d3.selectAll('.circleBck').style("display", "none");
             });
 
-        this.svg.selectAll(".y.axis.p" + i + " text").attr("transform", "translate(" + -4 + ",0)");
-        this.svg.selectAll(".x.axis.p" + i + " text").attr("transform", "translate(0," + 4 + ")");
+        d3.selectAll(".axis.p" + graphID + " .tick").selectAll("line")
+            .attr("stroke-width", 1)
+            .attr("stroke", "#000")
+            .style("opacity", "0.1");
 
+        d3.select(d3.selectAll(".x.axis.p" + graphID + " .tick").select("line")[0][0]).style("opacity", "1");
+        d3.select(d3.selectAll(".y.axis.p" + graphID + " .tick").select("line")[0][0]).style("opacity", "1");
+
+        d3.selectAll(".tick").selectAll("text")
+            .attr("font-family", "sans-serif")
+            .attr("font-size", axisFontSize);
+
+        d3.selectAll(".axis").selectAll("path").remove();
 
     }, zoom: function () {
         this.svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
