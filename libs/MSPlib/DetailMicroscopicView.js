@@ -15,29 +15,34 @@ MSP.DetailMicroscopicView = function () {
     this.nodes;
     this.nodesRep;
     this.links;
-    this.linksRep;
-
     this.transition;
-    this.usedIds = 0;
-    ;
 
+    this.usedIds = 0;
     this.soma = 0;
-    margin = {top: 0, right: 0, bottom: 600, left: 1600};
-    margin2 = {top: 400, right: 0, bottom: 200, left: 1600};
+
     this.MSPViewType = "DMicroV";
     this.graph;
-    this.width;
-    this.height;
+
+    this.radialLayoutWidth;
+    this.minDimension;
+    this.radialLayoutMarginRatio = 0.02;
+    this.figureSizeRatio = 0.18;
+    this.figureSize;
+    this.triangleRatio = 1; // 2:1 ratio between circle:triangle, to ensure same visual size
+    this.circleRatio = 2;
+    this.somaSizeRatio = 8;
+    this.connParentSizeRatio = 5;
 };
 
 
-MSP.DetailMicroscopicView.prototype =
-    {
-        constructor: MSP.DetailMicroscopicView
+MSP.DetailMicroscopicView.prototype = {
+    constructor: MSP.DetailMicroscopicView,
 
-        , resize: function () {
+    resize: function () {
         this.generateDetailMicroscopicView();
-    }, generateDetailMicroscopicView: function (rootID) {
+    },
+
+    generateDetailMicroscopicView: function (rootID) {
         _SigletonConfig.navBar = [];
         generateNav();
 
@@ -49,8 +54,14 @@ MSP.DetailMicroscopicView.prototype =
             return !this.classList.contains('imgCanvas')
         }).remove();
 
-        this.width = _SigletonConfig.width * 50 / 100;
         var self = this;
+        this.radialLayoutWidth = _SigletonConfig.width * 0.5;
+        this.minDimension = Math.min(_SigletonConfig.height, this.radialLayoutWidth);
+        this.figureSize = this.minDimension * this.figureSizeRatio;
+        var radialLayoutDegree = 360;
+        var radialLayoutRadius = (this.minDimension * 0.5) - this.minDimension * this.radialLayoutMarginRatio;
+
+
         this.zoombehavior = d3.behavior.zoom()
             .x(_SigletonConfig.xScale)
             .y(_SigletonConfig.yScale)
@@ -60,25 +71,27 @@ MSP.DetailMicroscopicView.prototype =
 
         this.graph = new MSP.GraphDetailMicroscopicView();
         this.graph.generateGraph();
-        _SigletonConfig.svg = d3.select("#renderArea")
+        var svg = d3.select("#renderArea")
             .append("svg")
             .style("width", "50%")
             .attr("height", _SigletonConfig.height)
             .append("g")
-            .attr("transform", "translate(" + this.width / 2 + "," + _SigletonConfig.height / 2 + ")"
+            .attr("transform", "translate(" + this.radialLayoutWidth * 0.5 + "," + _SigletonConfig.height * 0.5 + ")"
             )
-            .call(self.zoombehavior)
-            .append("g");
+            .call(self.zoombehavior);
 
 
         //For zooming
-        _SigletonConfig.svg
+        svg
             .append("rect")
             .attr("class", "overlay")
-            .attr("width", this.width)
+            .attr("width", this.radialLayoutWidth)
             .attr("height", _SigletonConfig.height)
-            .attr("transform", "translate(" + -this.width / 2 + "," + (-_SigletonConfig.height / 2) + ")")
+            .attr("transform", "translate(" + -this.radialLayoutWidth * 0.5 + "," + (-_SigletonConfig.height * 0.5) + ")")
             .style("opacity", "0.0");
+
+        _SigletonConfig.svg = svg.append("g")
+            .attr("id", "contentViz");
 
 
         //Soma
@@ -96,19 +109,15 @@ MSP.DetailMicroscopicView.prototype =
                         else                return "circle";
                     }
                 ).size(function (d) {
-                    if (d.NAct == "E")    return 100;
-                    else                return 136;
+                    if (d.NAct == "E")    return self.figureSize * self.somaSizeRatio;
+                    else                return self.figureSize * self.somaSizeRatio;
                 })
-            )
-            .attr("transform", function (d) {
-                    return "scale(2,2)";
-                }
             )
             .style("fill", "rgb(255,255,255)")
             .style("stroke-width", 2)
             .attr("stroke", "#000000")
             .on("mouseover", function () {
-                var xPos = (_SigletonConfig.width / 2) + 50;
+                var xPos = (_SigletonConfig.width * 0.5) + 50;
                 var yPos = 50;
 
                 var ENode = 0;
@@ -158,7 +167,7 @@ MSP.DetailMicroscopicView.prototype =
             );
 
         this.tree = d3.layout.cluster()
-            .size([360, 340]);
+            .size([radialLayoutDegree, radialLayoutRadius]);
 
         this.diagonal = d3.svg.diagonal
             .radial()
@@ -192,9 +201,9 @@ MSP.DetailMicroscopicView.prototype =
 
 
         this.updateVisualization();
-    }
+    },
 
-        , updateTree: function (source) {
+    updateTree: function (source) {
         var self = this;
         var duration = _SimulationController.UpdateVelocity;
 
@@ -235,14 +244,18 @@ MSP.DetailMicroscopicView.prototype =
                 .type(function (d) {
                         if (d.id === "Excitatory" || d.id === "Inhibitory" || d.id === "Axonal")
                             return "circle";
-                        else if (_SimulationData.gNeurons[d.id].NAct == "E")    return "triangle-up";
-                        else                return "circle";
+                        else if (_SimulationData.gNeurons[d.id].NAct == "E")
+                            return "triangle-up";
+                        else
+                            return "circle";
                     }
                 ).size(function (d) {
                     if (d.id === "Excitatory" || d.id === "Inhibitory" || d.id === "Axonal")
-                        return 300;
-                    else if (_SimulationData.gNeurons[d.id].NAct == "E")    return 100;
-                    else                return 136;
+                        return self.figureSize * self.connParentSizeRatio;
+                    else if (_SimulationData.gNeurons[d.id].NAct == "E")
+                        return self.figureSize * self.triangleRatio;
+                    else
+                        return self.figureSize * self.circleRatio;
                 })
             )
             .style("fill-opacity", function (d) {
@@ -314,7 +327,7 @@ MSP.DetailMicroscopicView.prototype =
                 return lColor;
             })
             .on("mouseover", function (d) {
-                var xPos = (_SigletonConfig.width / 2) + 50;
+                var xPos = (_SigletonConfig.width * 0.5) + 50;
                 var yPos = 50;
 
                 if (d.id === "Excitatory" || d.id === "Inhibitory" || d.id === "Axonal") {
@@ -507,9 +520,9 @@ MSP.DetailMicroscopicView.prototype =
                 d.y0 = d.y;
             }
         );
-    }
+    },
 
-        , updateVisualization: function () {
+    updateVisualization: function () {
 
         var lId = _SigletonConfig.neuronSelected;
 
@@ -546,9 +559,9 @@ MSP.DetailMicroscopicView.prototype =
         _SigletonConfig.svg.select(".rect").moveToFront();
 
 
-    }
+    },
 
-        , recalculateChilds: function (pParentId, pActNumChilds) {
+    recalculateChilds: function (pParentId, pActNumChilds) {
         var lId = parseInt(_SigletonConfig.neuronSelected);
         var p = undefined;
         var k = 0;
@@ -634,22 +647,21 @@ MSP.DetailMicroscopicView.prototype =
         }
 
         this.updateTree(this.nodes[k]);
-    }
+    },
 
-
-        , zoom: function () {
+    zoom: function () {
         _SigletonConfig.svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
-    }
+    },
 
-        , collapse: function (d) {
+    collapse: function (d) {
         if (d.children) {
             d._children = d.children;
             d._children.forEach(collapse);
             d.children = null;
         }
-    }
+    },
 
-        , updateCalcium: function () {
+    updateCalcium: function () {
         var lIndex = _SimulationController.actSimStep % _SimulationData.numSimStepsPerFile;
         this.soma.style("fill", function () {
             if (!_SimulationFilter.gNeuronsFilterB[_SigletonConfig.neuronSelected]) {
@@ -666,11 +678,13 @@ MSP.DetailMicroscopicView.prototype =
         });
 
         this.soma.moveToFront();
-    }, updateID: function (id) {
+    },
+
+    updateID: function (id) {
         this.nodes[0].id = id;
         _SigletonConfig.neuronSelected = id;
         this.graph.generateGraph();
         this.generateDetailMicroscopicView(id);
         //   this.updateVisualization();
     }
-    };
+};

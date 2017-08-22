@@ -50,6 +50,24 @@ function downloadCanvas(imgData, name) {
     document.body.removeChild(tempDownloadLink);
 }
 
+function toColor(num) {
+    num >>>= 0;
+    var b = num & 0xFF,
+        g = (num & 0xFF00) >>> 8,
+        r = (num & 0xFF0000) >>> 16;
+    return "rgb(" + [r, g, b].join(",") + ")";
+}
+
+function cleanRenderArea() {
+    d3.selectAll("svg").filter(function () {
+        return !this.classList.contains('color')
+    }).remove();
+
+    d3.selectAll("canvas").filter(function () {
+        return !this.classList.contains('imgCanvas')
+    }).remove();
+}
+
 function saveAsImage() {
     if ($("#renderArea").has("svg").size() === 0) {
         var canvas = $("#renderArea canvas")[0];

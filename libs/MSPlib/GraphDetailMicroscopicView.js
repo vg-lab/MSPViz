@@ -699,28 +699,29 @@ MSP.GraphDetailMicroscopicView.prototype = {
             });
 
 
-        d3.selectAll(".axis.p" + graphID + " .tick").selectAll("line")
+        this.svg.selectAll(".axis.p" + graphID + " .tick").selectAll("line")
             .attr("stroke-width", 1)
             .attr("stroke", "#000")
             .style("opacity", "0.1");
 
-        var verticalAxisBars = d3.selectAll(".x.axis.p" + graphID + " .tick").select("line")[0];
+        var verticalAxisBars = this.svg.selectAll(".x.axis.p" + graphID + " .tick").select("line")[0];
 
         var leftMostVerticalBar = verticalAxisBars[0];
-        var minVBarPosX = $((d3.selectAll(".x.axis.p" + graphID + " .tick")[0][0]))[0].getBoundingClientRect().left;
+        var minVBarPosX = $((this.svg.selectAll(".x.axis.p" + graphID + " .tick")[0][0]))[0].getBoundingClientRect().left;
         for (var i = 0; i < verticalAxisBars.length; i++) {
-            if (minVBarPosX > $((d3.selectAll(".x.axis.p" + graphID + " .tick")[0][i]))[0].getBoundingClientRect().left)
+            if (minVBarPosX > $((this.svg.selectAll(".x.axis.p" + graphID + " .tick")[0][i]))[0].getBoundingClientRect().left)
                 leftMostVerticalBar = verticalAxisBars[i];
         }
+
         d3.select(leftMostVerticalBar).style("opacity", "1");
 
-        d3.select(d3.selectAll(".y.axis.p" + graphID + " .tick").select("line")[0][0]).style("opacity", "1");
+        d3.select(this.svg.selectAll(".y.axis.p" + graphID + " .tick").select("line")[0][0]).style("opacity", "1");
 
-        d3.selectAll(".tick").selectAll("text")
+        this.svg.selectAll(".tick").selectAll("text")
             .attr("font-family", "sans-serif")
             .attr("font-size", axisFontSize);
 
-        d3.selectAll(".axis").selectAll("path").remove();
+        this.svg.selectAll(".axis").selectAll("path").remove();
 
     },
     updateLineGraph: function (graphID, margins, dimensions, dataTypes, histogramData, maxDataValue, numChar, hasXAxis, hasTextOver) {

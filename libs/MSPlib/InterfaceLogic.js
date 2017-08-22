@@ -1004,8 +1004,8 @@ UI.Visualizator.prototype = {
                 case 8:
                     if (this.activeView != null) delete this.activeView;
                     this.activeView = null;
-                    this.activeView = new MSP.MacroscopicViewGrid();
-                    this.activeView.generateMacroscopicViewGrid();
+                    this.activeView = new MSP.ConnectivityMatrixView();
+                    this.activeView.generateConnectivityMatrixView();
                     break;
                 case 2:
                     //Constraint
@@ -1021,8 +1021,8 @@ UI.Visualizator.prototype = {
                     }
                     break;
                 case 3:
-                    if (_SigletonConfig.neuronSelected != -1) {
-                        if (this.activeView != null) delete this.activeView;
+                    if (_SigletonConfig.neuronSelected !== -1) {
+                        if (this.activeView !== null) delete this.activeView;
                         this.activeView = null;
                         this.activeView = new MSP.DetailMicroscopicView();
                         this.activeView.generateDetailMicroscopicView();
@@ -1031,11 +1031,11 @@ UI.Visualizator.prototype = {
                     else {
                         var neuronID = prompt("Please, enter a neuron ID", "1");
 
-                        if (neuronID == null || neuronID == "") {
+                        if (neuronID === null || neuronID === "") {
                             return false
                         } else {
                             _SigletonConfig.neuronSelected = neuronID;
-                            if (this.activeView != null) delete this.activeView;
+                            if (this.activeView !== null) delete this.activeView;
                             this.activeView = null;
                             this.activeView = new MSP.DetailMicroscopicView();
                             this.activeView.generateDetailMicroscopicView();
@@ -1067,7 +1067,7 @@ UI.Visualizator.prototype = {
     resize: function () {
         var self = this;
         $('#jqxBottomControls_SliderTimeline').jqxSlider('width', 0);
-        if (_SimulationController !== null && _SimulationController.activeViewID !== 0 && _SimulationController.activeViewID !== 5)
+        if (_SimulationController !== null && _SimulationController.activeViewID !== 0 && _SimulationController.activeViewID !== 5 && _SimulationController.activeViewID !== 8)
             self.createSampleBandColor();
         _SigletonConfig.height = $(window).height() - $("#jqxBottomControls").outerHeight() - $("#colorSampleBand").outerHeight();
         _SigletonConfig.width = $(window).width() - $("#icon-bar").outerWidth();
@@ -1157,6 +1157,7 @@ UI.Visualizator.prototype = {
             _SimulationController = new MSP.SimulationController();
 
             _SigletonConfig.recalculatePosScales();
+            _SimulationFilter.init();
         }
         else {
             alert("Please, select the 6 minimal simulation files");
@@ -1198,7 +1199,7 @@ UI.Visualizator.prototype = {
             _SimulationController = new MSP.SimulationController();
 
             _SigletonConfig.recalculatePosScales();
-
+            _SimulationFilter.init();
         }
         else {
             alert("Please, select valid simulation id.");
@@ -1218,6 +1219,7 @@ UI.Visualizator.prototype = {
         _SimulationController = new MSP.SimulationController();
 
         _SigletonConfig.recalculatePosScales();
+        _SimulationFilter.init();
     },
     resetSimulation: function () {
         this.generateCanvas("MSPViz");

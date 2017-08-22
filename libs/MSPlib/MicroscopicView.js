@@ -12,7 +12,7 @@ MSP.MicroscopicView = function ()
     this.data			=	[];
 
     //Standart sizes of pies
-    this.outerRadius 	= 80;
+    this.outerRadius 	= 160;
     this.innerRadius 	= 10;
     this.minInnerRadius = 10;
     this.scale=null;
@@ -38,6 +38,10 @@ MSP.MicroscopicView = function ()
 
     this.MSPViewType="MicroV";
     this.tooltipMarginRatio = 0.005;
+    this.shapeRatio = 0.2;
+    this.shapeSize;
+    this.innerRadiusRadio = 0.02;
+    this.outerRadiusRatio = 0.08;
 };
 
 
@@ -63,6 +67,12 @@ MSP.MicroscopicView.prototype =
         }
         this.recalculatePos();
         this.reclculateSEScales();
+
+        this.size =  Math.min(_SigletonConfig.width,_SigletonConfig.height);
+        this.shapeSize = this.size * this.shapeRatio;
+        this.innerRadius = this.size * this.innerRadiusRadio;
+        this.minInnerRadius = this.innerRadius;
+        this.outerRadius = this.size * this.outerRadiusRatio;
 
         var lMinPosX=Infinity, lMinPosY=Infinity, lMaxPosX=-Infinity, lMaxPosY=-Infinity;
 
@@ -113,7 +123,8 @@ MSP.MicroscopicView.prototype =
             .on("keydown.brush", this.keyDown)
             .on("keyup.brush", this.keyUp)
             .style("outline","none")
-            .attr("width", "50%")
+            .attr("width", _SigletonConfig.width * 0.50)
+            .style("width", "50%")
             .attr("height", _SigletonConfig.height)
             .call(self.zoombehavior)
             .append("g")
@@ -208,9 +219,9 @@ MSP.MicroscopicView.prototype =
                         if (_SimulationData.gNeurons[d].NAct == "E")	return "triangle-up";
                         else											return "circle";
                     }
-                )
+                ).size(this.shapeSize)
             )
-            .attr("transform", self.transformShapes)
+
             .style("fill", "rgb(255,255,255)")
             .style("stroke", "black")
             .on("mousedown", function(d)

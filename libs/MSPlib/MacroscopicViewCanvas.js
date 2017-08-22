@@ -186,15 +186,6 @@ MSP.MacroscopicViewCanvas.prototype = {
             d3.select("#tooltip").classed("hidden", true);
         }
     },
-    toColor: function (num) {
-
-        num >>>= 0;
-        var b = num & 0xFF,
-            g = (num & 0xFF00) >>> 8,
-            r = (num & 0xFF0000) >>> 16;
-        return "rgb(" + [r, g, b].join(",") + ")";
-
-    },
     draw: function () {
 
         var self = this;
@@ -328,7 +319,7 @@ MSP.MacroscopicViewCanvas.prototype = {
         var self = this;
         var sizeRatio = this.sizeRatio;
         _SimulationData.gNeurons.forEach(function (d, i) {
-            hiddenCanvasContext.fillStyle = self.toColor(i);
+            hiddenCanvasContext.fillStyle = toColor(i);
             hiddenCanvasContext.fillRect(d.PosX - sizeRatio, d.PosY - sizeRatio, sizeRatio * 2, sizeRatio * 2);
         });
 

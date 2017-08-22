@@ -130,7 +130,7 @@ MSP.GraphMicroscopicView.prototype =
                 .style("width", "49%")
                 .style("border-right", "1px solid #ebebeb")
                 .attr("id", "caGraph")
-                .attr("width", self.width)
+                .attr("width", _SigletonConfig.width * 0.49)
                 .attr("height", _SigletonConfig.height)
                 .append("g")
                 .call(d3.behavior.zoom().scaleExtent([1, 10]).on("zoom", self.zoom))
@@ -491,19 +491,20 @@ MSP.GraphMicroscopicView.prototype =
                 d3.selectAll('.circleBck').style("display", "none");
             });
 
-        d3.selectAll(".axis.p" + graphID + " .tick").selectAll("line")
+
+        svg.selectAll(".axis.p" + graphID + " .tick").selectAll("line")
             .attr("stroke-width", 1)
             .attr("stroke", "#000")
             .style("opacity", "0.1");
 
-        d3.select(d3.selectAll(".x.axis.p" + graphID + " .tick").select("line")[0][0]).style("opacity", "1");
-        d3.select(d3.selectAll(".y.axis.p" + graphID + " .tick").select("line")[0][0]).style("opacity", "1");
+        d3.select(svg.selectAll(".x.axis.p" + graphID + " .tick").select("line")[0][0]).style("opacity", "1");
+        d3.select(svg.selectAll(".y.axis.p" + graphID + " .tick").select("line")[0][0]).style("opacity", "1");
 
-        d3.selectAll(".tick").selectAll("text")
+        svg.selectAll(".tick").selectAll("text")
             .attr("font-family", "sans-serif")
             .attr("font-size", axisFontSize);
 
-        d3.selectAll(".axis").selectAll("path").remove();
+        svg.selectAll(".axis").selectAll("path").remove();
 
     }, zoom: function () {
         this.svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");

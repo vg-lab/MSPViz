@@ -68,7 +68,7 @@ MSP.SimulationController.prototype =
 			{				
 				_SimulationData.swapSimulationInfo();
 			}
-			_SimulationFilter.createDummy();
+			_SimulationFilter.filter();
 			this.view.updateVisualization();
 			this.updateUI();
 		}
@@ -207,7 +207,7 @@ MSP.SimulationController.prototype =
 			}								
 		}
 
-        _SimulationFilter.createDummy();
+        _SimulationFilter.filter();
 
 		if (!lDataReloaded) this.view.updateVisualization();
 		this.updateUI();

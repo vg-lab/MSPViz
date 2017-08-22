@@ -332,6 +332,32 @@ MSP.SimulationData.prototype =
                     self.numFilesLoaded++;
                     self.updateProgressBar();
                     self.loadSimulationEnd();
+
+                    //Global info file 0
+                    d3.json(lpathToFiles + self.cfgSimulationFiles["GlobalParams"][0], function (error, jsonGP) {
+                        if (error) return alarm("Impossible to load GlobalParams file");
+
+                        _SimulationData.TEConn = jsonGP['TEConn'];
+                        _SimulationData.TIConn = jsonGP['TIConn'];
+                        _SimulationData.EEConn = jsonGP['EEConn'];
+                        _SimulationData.EIConn = jsonGP['EIConn'];
+                        _SimulationData.IEConn = jsonGP['IEConn'];
+                        _SimulationData.IIConn = jsonGP['IIConn'];
+
+                        //Calculate max and min values
+                        self.calculateMaxMinValues();
+
+                        //Calculate the scales
+                        self.recalculateScales(_SigletonConfig.minCaColor
+                            , _SigletonConfig.maxCaColor
+                            , _SigletonConfig.ColorInerpolMethod);
+
+                        //Recalculate positions
+                        self.recalculatePositions();
+                        self.numFilesLoaded++;
+                        self.updateProgressBar();
+                        self.loadSimulationEnd();
+                    });
                 });
 
                 //GlobalInfo
@@ -354,32 +380,6 @@ MSP.SimulationData.prototype =
                     self.totalSimulationSteps = jsonGSP.totalSimulationSteps;
                     self.numSimStepsPerFile = jsonGSP.numSimStepsPerFile;
                     self.bufferSimulationSteps = jsonGSP.bufferSimulationSteps;
-                    self.numFilesLoaded++;
-                    self.updateProgressBar();
-                    self.loadSimulationEnd();
-                });
-
-                //Global info file 0
-                d3.json(lpathToFiles + self.cfgSimulationFiles["GlobalParams"][0], function (error, jsonGP) {
-                    if (error) return alarm("Impossible to load GlobalParams file");
-
-                    _SimulationData.TEConn = jsonGP['TEConn'];
-                    _SimulationData.TIConn = jsonGP['TIConn'];
-                    _SimulationData.EEConn = jsonGP['EEConn'];
-                    _SimulationData.EIConn = jsonGP['EIConn'];
-                    _SimulationData.IEConn = jsonGP['IEConn'];
-                    _SimulationData.IIConn = jsonGP['IIConn'];
-
-                    //Calculate max and min values
-                    self.calculateMaxMinValues();
-
-                    //Calculate the scales
-                    self.recalculateScales(_SigletonConfig.minCaColor
-                        , _SigletonConfig.maxCaColor
-                        , _SigletonConfig.ColorInerpolMethod);
-
-                    //Recalculate positions
-                    self.recalculatePositions();
                     self.numFilesLoaded++;
                     self.updateProgressBar();
                     self.loadSimulationEnd();
