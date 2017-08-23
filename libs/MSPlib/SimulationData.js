@@ -407,6 +407,10 @@ MSP.SimulationData.prototype =
                 _gVisualizatorUI.generateView(0);
                 _gVisualizatorUI.disableUI(false);
                 $("#jqxBottomControls_ProgressBar").hide();
+                $("#jqxBottomControls_SliderTimeline").jqxSlider('max',_SimulationData.steps.length-1);
+                $("#jqxBottomControls_SliderTimeline").jqxSlider('val',0);
+                $("#jqxBottomControls_NumericInputStep").jqxNumberInput('max',_SimulationData.steps.length-1);
+                $("#numericImputID").jqxNumberInput('max',_SimulationData.gNeurons.length-1);
             }
         },
         loadRemoteSimulationFromServerInmediatly: function (pFileId) {

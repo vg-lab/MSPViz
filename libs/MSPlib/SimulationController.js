@@ -115,8 +115,7 @@ MSP.SimulationController.prototype =
 	
 	,concreteSimulationStep: function (pKey) 
 	{
-		this.pause = true;
-		clearTimeout(this.myTimer);
+        this.stopVisualization();
 
 		console.log("Entrando en slider change");
 

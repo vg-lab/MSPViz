@@ -439,7 +439,7 @@ MSP.GraphMicroscopicView.prototype =
                 var tooltipHeight = $("#tooltip").outerHeight();
                 var dataIndex = Math.round(x(mousePos[0])) % _SimulationData.numSimStepsPerFile;
                 var simulationStep = Math.round(x(mousePos[0]));
-                var linePosX = (parseInt(x(mousePos[0])) - _SimulationData.numSimStepsPerFile * _SimulationData.actFile)
+                var linePosX = (Math.round(x(mousePos[0])) - _SimulationData.numSimStepsPerFile * _SimulationData.actFile)
                     * (width / (_SimulationController.actSimStep - _SimulationData.numSimStepsPerFile
                     * _SimulationData.actFile));
 

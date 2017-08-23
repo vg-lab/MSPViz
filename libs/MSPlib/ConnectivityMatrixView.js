@@ -30,7 +30,10 @@ MSP.ConnectivityMatrixView.prototype = {
     constructor: MSP.ConnectivityMatrixView,
 
     resize: function () {
-        this.generateConnectivityMatrixView();
+        _SigletonConfig.svg = d3.select("#renderArea")
+            .select("#canvas")
+            .attr("width", _SigletonConfig.width)
+            .attr("height", _SigletonConfig.height);
     },
 
     init: function () {

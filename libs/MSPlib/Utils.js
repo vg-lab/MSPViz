@@ -89,8 +89,8 @@ function saveAsImage() {
                 var img = '<img src="' + imgsrc + '">';
                 d3.select("#svgdataurl").html(img);
                 d3.select("#canvas")
-                    .attr("height", _SigletonConfig.height)
-                    .attr("width", _SigletonConfig.width);
+                    .attr("height",  $(this).height())
+                    .attr("width",  $(this).width());
 
                 var canvas = document.querySelector("canvas"),
                     context = canvas.getContext("2d");

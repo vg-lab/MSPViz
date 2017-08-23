@@ -387,9 +387,11 @@ MSP.DetailMicroscopicView.prototype = {
             .on("mouseout", function () {
                     d3.select("#tooltip").classed("hidden", true);
                 }
-            ).on("mousedown", function (d) {
-            self.updateID(d.id)
-        });
+            )
+            .on("mousedown", function (d) {
+                if (d.id !== "Excitatory" && d.id !== "Inhibitory" && d.id !== "Axonal")
+                    self.updateID(d.id)
+            });
 
         var nodeUpdate = this.nodesRep
             .transition()

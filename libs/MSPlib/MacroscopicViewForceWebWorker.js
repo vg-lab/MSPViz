@@ -41,7 +41,10 @@ MSP.MacroscopicViewForce = function () {
 MSP.MacroscopicViewForce.prototype = {
     constructor: MSP.MacroscopicViewForce,
     resize: function () {
-        this.generateMacroscopicViewForce();
+        _SigletonConfig.svg = d3.select("#renderArea")
+            .select("#canvas")
+            .attr("width", _SigletonConfig.width)
+            .attr("height", _SigletonConfig.height);
     },
     init: function () {
         _SigletonConfig.shiftKey = false;

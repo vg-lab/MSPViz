@@ -16,8 +16,9 @@ UI.Visualizator = function () {
     this.simulationFiles = null;
     this.simulationFilesConfig = null;
     this.colorScaleTypes = ['Categorical', 'Diverging', 'Sequential'];
-    this.colorScales = [
-        [
+    this.colorScaleTypesCalcium = ['Diverging', 'Sequential'];
+    this.colorScales = {
+        'Categorical': [
             {labelInternal: "schemeAccent", label: "schemeAccent", group: "Categorical"},
             {labelInternal: "schemeDark2", label: "Dark2", group: "Categorical"},
             {labelInternal: "schemePaired", label: "Paired", group: "Categorical"},
@@ -27,8 +28,7 @@ UI.Visualizator = function () {
             {labelInternal: "schemeSet2", label: "Set2", group: "Categorical"},
             {labelInternal: "schemeSet3", label: "Set3", group: "Categorical"}
         ],
-
-        [
+        'Diverging': [
             {labelInternal: "Viridis", label: "Viridis", group: "Diverging"},
             {labelInternal: "Inferno", label: "Inferno", group: "Diverging"},
             {labelInternal: "Magma", label: "Magma", group: "Diverging"},
@@ -46,8 +46,7 @@ UI.Visualizator = function () {
             {labelInternal: "RdYlGn", label: "RdYlGn", group: "Diverging"},
             {labelInternal: "Spectral", label: "Spectral", group: "Diverging"}
         ],
-
-        [
+        'Sequential': [
             {labelInternal: "Greens", label: "Greens", group: "Sequential"},
             {labelInternal: "Greys", label: "Greys", group: "Sequential"},
             {labelInternal: "Oranges", label: "Oranges", group: "Sequential"},
@@ -65,8 +64,9 @@ UI.Visualizator = function () {
             {labelInternal: "YlGn", label: "YlGn", group: "Sequential"},
             {labelInternal: "YlOrBr", label: "YlOrBr", group: "Sequential"},
             {labelInternal: "YlOrRd", label: "YlOrRd", group: "Sequential"}
+
         ]
-    ];
+    };
 
     this.generateUI();
 
@@ -512,12 +512,12 @@ UI.Visualizator.prototype = {
                 });
                 /* Sort */
 
-                self.createColorCombos("#comboScaleTypeNeuron", "#comboScaleNeuron");
+                self.createColorCombos("#comboScaleTypeNeuron", self.colorScaleTypes, "#comboScaleNeuron", self.colorScales);
 
                 $("#comboScaleNeuron").on('change', function () {
                     var colorDOMObject = [$("#dropDownExcitatoryButton"), $("#dropDownInhibitoryButton"), $("#dropDownAxonalButton")];
                     var colorConfig = [_SigletonConfig.EColor, _SigletonConfig.IColor, _SigletonConfig.AColor];
-                    var idxSaleType = $("#comboScaleTypeNeuron").prop('selectedIndex');
+                    var idxSaleType = $("#comboScaleTypeNeuron").prop('value');
                     var idxColorSale = $("#comboScaleNeuron").prop('selectedIndex');
                     var colorScale = self.colorScales[idxSaleType][idxColorSale].labelInternal;
                     var colorScaleType = $("#comboScaleTypeNeuron option:selected").text();
@@ -536,7 +536,7 @@ UI.Visualizator.prototype = {
 
                 $('#comboScaleTypeNeuron').on('change', function () {
                     $("#comboScaleNeuron").empty();
-                    self.colorScales[$("#comboScaleTypeNeuron").prop('selectedIndex')].forEach(function (elem, i) {
+                    self.colorScales[$("#comboScaleTypeNeuron").prop('value')].forEach(function (elem, i) {
                         $('#comboScaleNeuron').append($('<option>', {
                             value: i,
                             text: elem.label
@@ -546,12 +546,12 @@ UI.Visualizator.prototype = {
                 });
 
 
-                self.createColorCombos("#comboScaleTypeConnection", "#comboScaleConnection");
+                self.createColorCombos("#comboScaleTypeConnection", self.colorScaleTypes, "#comboScaleConnection", self.colorScales);
 
                 $("#comboScaleConnection").on('change', function () {
                     var colorDOMObject = [$("#dropDownEEButton"), $("#dropDownEIButton"), $("#dropDownIEButton"), $("#dropDownIIButton")];
                     var colorConfig = [_SigletonConfig.EEColor, _SigletonConfig.EIColor, _SigletonConfig.IEColor, _SigletonConfig.IIColor];
-                    var idxSaleType = $("#comboScaleTypeConnection").prop('selectedIndex');
+                    var idxSaleType = $("#comboScaleTypeConnection").prop('value');
                     var idxColorSale = $("#comboScaleConnection").prop('selectedIndex');
                     var colorScale = self.colorScales[idxSaleType][idxColorSale].labelInternal;
                     var colorScaleType = $("#comboScaleTypeConnection option:selected").text();
@@ -572,7 +572,7 @@ UI.Visualizator.prototype = {
 
                 $('#comboScaleTypeConnection').on('change', function () {
                     $("#comboScaleConnection").empty();
-                    self.colorScales[$("#comboScaleTypeConnection").prop('selectedIndex')].forEach(function (elem, i) {
+                    self.colorScales[$("#comboScaleTypeConnection").prop('value')].forEach(function (elem, i) {
                         $('#comboScaleConnection').append($('<option>', {
                             value: i,
                             text: elem.label
@@ -584,12 +584,12 @@ UI.Visualizator.prototype = {
                 self.generateScaleCalcium();
 
 
-                self.createColorCombos("#comboScaleTypeCalcium", "#comboScaleCalcium");
+                self.createColorCombos("#comboScaleTypeCalcium", self.colorScaleTypesCalcium, "#comboScaleCalcium", self.colorScales);
 
                 $("#comboScaleCalcium").on('change', function () {
                     var colorDOMObject = [$("#dropDownCaMaxValueColorButton"), $("#dropDownCaMinValueColorButton")];
                     var colorConfig = [_SigletonConfig.EColor, _SigletonConfig.IColor];
-                    var idxSaleType = $("#comboScaleTypeCalcium").prop('selectedIndex');
+                    var idxSaleType = $("#comboScaleTypeCalcium").prop('value');
                     var idxColorSale = $("#comboScaleCalcium").prop('selectedIndex');
                     var colorScale = self.colorScales[idxSaleType][idxColorSale].labelInternal;
                     var colorScaleType = $("#comboScaleTypeCalcium option:selected").text();
@@ -612,7 +612,7 @@ UI.Visualizator.prototype = {
 
                 $('#comboScaleTypeCalcium').on('change', function () {
                     $("#comboScaleCalcium").empty();
-                    self.colorScales[$("#comboScaleTypeCalcium").prop('selectedIndex')].forEach(function (elem, i) {
+                    self.colorScales[$("#comboScaleTypeCalcium").prop('value')].forEach(function (elem, i) {
                         $('#comboScaleCalcium').append($('<option>', {
                             value: i,
                             text: elem.label
@@ -922,7 +922,7 @@ UI.Visualizator.prototype = {
         //$(".navViewButton img").eq(z).attr("src",$(".navViewButton img").eq(z).attr("src").match(/[^\.]+/) + "B.png");
     },
     getTextElementByColor: function (color) {
-        if (color == 'transparent' || color.hex == "") {
+        if (color === 'transparent' || color.hex === "") {
             return $("<div style='text-shadow: none; position: relative; padding-bottom: 2px; margin-top: 2px;'>transparent</div>");
         }
         var element = $("<div style='text-shadow: none; position: relative; padding-bottom: 2px; margin-top: 2px;'>#" + color.hex + "</div>");
@@ -944,7 +944,7 @@ UI.Visualizator.prototype = {
         var lScale = 5;
         var lText = "MSPViz";
 
-        if (pMssg != undefined) lText = pMssg;
+        if (pMssg !== undefined) lText = pMssg;
 
         _SigletonConfig.svg.append("text")         			// append text
             .style("fill", "black")   			// fill the text with the colour black
@@ -956,7 +956,7 @@ UI.Visualizator.prototype = {
             .text(lText);          				// define the text to display
     },
     generateView: function (pViewId) {
-        if (_SimulationController != null) {
+        if (_SimulationController !== null) {
 
 
             $("#idSelector").css('display', 'none');
@@ -964,45 +964,46 @@ UI.Visualizator.prototype = {
             switch (pViewId) {
                 case 0:
                     $("#colorSampleBand").empty();
-                    if (this.activeView != null) delete this.activeView;
+                    if (this.activeView !== null) delete this.activeView;
                     this.activeView = null;
                     this.activeView = new MSP.GlobalConnectionsView();
                     this.activeView.generateGlobalConnectionsView();
 
                     break;
                 case 1:
-                    if (this.activeView != null) delete this.activeView;
+                    if (this.activeView !== null) delete this.activeView;
                     this.activeView = null;
                     this.activeView = new MSP.MacroscopicViewGrid();
                     this.activeView.generateMacroscopicViewGrid();
                     break;
                 case 4:
-                    if (this.activeView != null) delete this.activeView;
+                    if (this.activeView !== null) delete this.activeView;
                     this.activeView = null;
                     this.activeView = new MSP.MacroscopicViewElipse();
                     this.activeView.generateMacroscopicViewElipse();
                     break;
                 case 5:
-                    if (this.activeView != null) delete this.activeView;
+                    if (this.activeView !== null) delete this.activeView;
                     this.activeView = null;
                     this.activeView = new MSP.GlobalConnectionsViewGraph();
                     this.activeView.generateGlobalConnectionsViewGraph();
                     break;
 
                 case 6:
-                    if (this.activeView != null) delete this.activeView;
+                    if (this.activeView !== null) delete this.activeView;
                     this.activeView = null;
                     this.activeView = new MSP.MacroscopicViewForce();
                     this.activeView.generateMacroscopicViewForce();
                     break;
                 case 7:
-                    if (this.activeView != null) delete this.activeView;
+                    if (this.activeView !== null) delete this.activeView;
                     this.activeView = null;
                     this.activeView = new MSP.MacroscopicViewCanvas();
                     this.activeView.generateMacroscopicViewCanvas();
                     break;
                 case 8:
-                    if (this.activeView != null) delete this.activeView;
+                    $("#colorSampleBand").empty();
+                    if (this.activeView !== null) delete this.activeView;
                     this.activeView = null;
                     this.activeView = new MSP.ConnectivityMatrixView();
                     this.activeView.generateConnectivityMatrixView();
@@ -1010,7 +1011,7 @@ UI.Visualizator.prototype = {
                 case 2:
                     //Constraint
                     if (_SigletonConfig.gSelectionIds.length > 0) {
-                        if (this.activeView != null) delete this.activeView;
+                        if (this.activeView !== null) delete this.activeView;
                         this.activeView = null;
                         this.activeView = new MSP.MicroscopicView();
                         this.activeView.generateMicroscopicView();
@@ -1067,53 +1068,44 @@ UI.Visualizator.prototype = {
     resize: function () {
         var self = this;
         $('#jqxBottomControls_SliderTimeline').jqxSlider('width', 0);
-        if (_SimulationController !== null && _SimulationController.activeViewID !== 0 && _SimulationController.activeViewID !== 5 && _SimulationController.activeViewID !== 8)
-            self.createSampleBandColor();
         _SigletonConfig.height = $(window).height() - $("#jqxBottomControls").outerHeight() - $("#colorSampleBand").outerHeight();
         _SigletonConfig.width = $(window).width() - $("#icon-bar").outerWidth();
         if (_SimulationController !== null) {
             _SimulationController.view.resize();
             _SimulationController.view.updateVisualization();
+            if (_SimulationController.activeViewID !== 0 && _SimulationController.activeViewID !== 5 && _SimulationController.activeViewID !== 8)
+                self.createSampleBandColor();
         }
         else {
             this.generateCanvas("MSPViz");
         }
+
+
         var width = ($('#control1').outerWidth() + $('#control2').outerWidth() + $('#control4').outerWidth() + $('#control5').outerWidth()) * 1.1;
         $('#jqxBottomControls_SliderTimeline').jqxSlider('width', $('#controles').outerWidth() - width);
         _ColorPicker.resize();
-    }, createColorCombos: function (idComboType, idComboScheme) {
+    }, createColorCombos: function (idComboType, colorScaleTypes, idComboScheme, colorScales) {
 
-        this.colorScaleTypes.forEach(function (elem, i) {
+        colorScaleTypes.forEach(function (elem, i) {
             $(idComboType).append($('<option>', {
-                value: i,
+                value: elem,
                 text: elem
             }));
         });
 
-        this.colorScales[0].forEach(function (elem, i) {
+        colorScales[colorScaleTypes[0]].forEach(function (elem, i) {
             $(idComboScheme).append($('<option>', {
-                value: i,
+                value: elem,
                 text: elem.label
             }));
         });
 
-    }
-    ,
-    showPreferences: function () {
-
     },
+
     showInfo: function () {
         $('#jqxWindow_Info').jqxWindow('open');
     },
-    showLoadSimulation: function () {
 
-    },
-    showLoadRemoteSimulationFromServer: function () {
-
-    },
-    showLoadRemoteSimulationFromDCache: function () {
-
-    },
     updateSimulationFromTimeline: function () {
         var lValue = $('#jqxBottomControls_SliderTimeline').jqxSlider('val');
         $('#jqxBottomControls_NumericInputStep').val(lValue);
@@ -1121,6 +1113,7 @@ UI.Visualizator.prototype = {
         _SimulationController.actSimStep = lValue;
         _SimulationController.concreteSimulationStep(_SimulationController.actSimStep);
     },
+
     updateSimulationFromStep: function () {
         var lValue = $('#jqxBottomControls_NumericInputStep').jqxNumberInput('val');
         $('#jqxBottomControls_SliderTimeline').val(lValue);
@@ -1128,45 +1121,43 @@ UI.Visualizator.prototype = {
         _SimulationController.actSimStep = lValue;
         _SimulationController.concreteSimulationStep(_SimulationController.actSimStep);
     },
-    changeTheme: function () {
-        _SigletonConfig.theme = "custom";
 
-
-    },
     loadLocalSimulation: function () {
         $("#fileDialog").click();
         //this.loadLocalFiles();
     },
+
     loadLocalConfiguration: function () {
         $("#fileDialogConfig").click();
         //this.loadLocalFiles();
     },
+
     loadLocalFiles: function () {
         var self = this;
 
-        if (Object.keys(self.simulationFiles).length == 6) {
+        if (Object.keys(self.simulationFiles).length === 6) {
             this.generateCanvas("Loading simulation ...");
 
-            if (_SimulationData != null) delete _SimulationData;
+            if (_SimulationData !== null) delete _SimulationData;
             _SimulationData = new MSP.SimulationData();
             _SimulationFilter = new MSP.SimulationFilter();
 
             _SimulationData.LoadLocalSimulation(self.simulationFiles);
 
-            if (_SimulationController != null) delete _SimulationController;
+            if (_SimulationController !== null) delete _SimulationController;
             _SimulationController = new MSP.SimulationController();
 
             _SigletonConfig.recalculatePosScales();
-            _SimulationFilter.init();
         }
         else {
             alert("Please, select the 6 minimal simulation files");
         }
     },
+
     loadLocalConfigurationFiles: function () {
         var self = this;
         var config = null;
-        if (Object.keys(self.simulationFilesConfig).length == 1) {
+        if (Object.keys(self.simulationFilesConfig).length === 1) {
             this.generateCanvas("Loading configuration ...");
             var readerSimulationFiles = new FileReader();
             readerSimulationFiles.onloadend = function (evt) {
@@ -1186,20 +1177,20 @@ UI.Visualizator.prototype = {
     loadRemoteSimulationFromServer: function (pSimulationId) {
         var self = this;
 
-        if (pSimulationId.length != 0) {
+        if (pSimulationId.length !== 0) {
             this.generateCanvas("Loading simulation from server");
 
-            if (_SimulationData != null) delete _SimulationData;
+            if (_SimulationData !== null) delete _SimulationData;
             _SimulationData = new MSP.SimulationData();
             _SimulationFilter = new MSP.SimulationFilter();
 
             _SimulationData.loadRemoteSimulationFromServer(pSimulationId);
 
-            if (_SimulationController != null) delete _SimulationController;
+            if (_SimulationController !== null) delete _SimulationController;
             _SimulationController = new MSP.SimulationController();
 
             _SigletonConfig.recalculatePosScales();
-            _SimulationFilter.init();
+
         }
         else {
             alert("Please, select valid simulation id.");
@@ -1209,13 +1200,13 @@ UI.Visualizator.prototype = {
     loadRemoteSimulationFromDCache: function (address, simId, user, pass) {
         this.generateCanvas("Loading simulation from DCache");
 
-        if (_SimulationData != null) delete _SimulationData;
+        if (_SimulationData !== null) delete _SimulationData;
         _SimulationData = new MSP.SimulationData();
         _SimulationFilter = new MSP.SimulationFilter();
 
         _SimulationData.loadRemoteSimulationFromDCache(address, simId, user, pass);
 
-        if (_SimulationController != null) delete _SimulationController;
+        if (_SimulationController !== null) delete _SimulationController;
         _SimulationController = new MSP.SimulationController();
 
         _SigletonConfig.recalculatePosScales();
@@ -1224,9 +1215,9 @@ UI.Visualizator.prototype = {
     resetSimulation: function () {
         this.generateCanvas("MSPViz");
 
-        if (_SimulationData != null) delete _SimulationData;
-        if (_SimulationController != null) delete _SimulationController;
-        if (this.activeView != null) delete this.activeView;
+        if (_SimulationData !== null) delete _SimulationData;
+        if (_SimulationController !== null) delete _SimulationController;
+        if (this.activeView !== null) delete this.activeView;
 
         _SimulationData = null;
         _SimulationController = null;
@@ -1238,14 +1229,14 @@ UI.Visualizator.prototype = {
         $("#jqxBottomControls_NumericInputStep").jqxNumberInput({disabled: true});
     },
     simulate: function (value) {
-        if (_SimulationController != null)
+        if (_SimulationController !== null)
             if (!value)
                 _SimulationController.startVisualization();
             else
                 _SimulationController.stopVisualization();
     },
     stopSimulation: function () {
-        if (_SimulationController != null)
+        if (_SimulationController !== null)
             _SimulationController.stopVisualization();
     },
     disableUI: function (pVal) {
