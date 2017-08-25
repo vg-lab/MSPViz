@@ -828,6 +828,10 @@ hr {
     margin-bottom: 1vh
 }
 
+.border-1{
+    border: 0.1vmin solid #d0d0d0;
+}
+
 @media screen and (max-width: 1919px) {
     #jqxWidgets {
         height: 100vh;

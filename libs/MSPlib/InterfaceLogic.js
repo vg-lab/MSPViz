@@ -11,8 +11,10 @@ _SimulationController = null;
 _SimulationData = null;
 _SimulationFilter = null;
 _ColorPicker = null;
+
 UI.Visualizator = function () {
     this.activeView = null;
+    this.activeTab = "none";
     this.simulationFiles = null;
     this.simulationFilesConfig = null;
     this.colorScaleTypes = ['Categorical', 'Diverging', 'Sequential'];
@@ -68,15 +70,275 @@ UI.Visualizator = function () {
         ]
     };
 
+    this.viewsID = {
+        GlobalConnectionsView: 0, MacroscopicViewGrid: 1, MacroscopicViewElipse: 4,
+        GlobalConnectionsViewGraph: 5, MacroscopicViewForce: 6, MacroscopicViewCanvas: 7, ConnectivityMatrixView: 8,
+        MicroscopicView: 2, DetailMicroscopicView: 3
+    };
+
     this.generateUI();
 
 };
-
 
 UI.Visualizator.prototype = {
     constructor: UI.Visualizator,
     generateUI: function () {
         var self = this;
+        $(document).ready(function () {
+                self.createUIElements(self);
+                self.generateCanvas("MSPViz");
+                self.bindUIActions(self);
+                self.resize();
+                loadCookieColor();
+            }
+        );
+    },
+    createUIElements: function (self) {
+
+        _ColorPicker.generateColorPicker();
+
+        $('#jqxBottomControls_SliderTimeline').jqxSlider({
+            tooltip: true,
+            mode: 'fixed',
+            width: '700px',
+            showTicks: false,
+            max: 1000,
+            showButtons: false,
+            disabled: true
+        });
+
+
+        $("#jqxBottomControls_NumericInputStep").jqxNumberInput({
+            width: '100px', height: '25px', inputMode: 'simple'
+            , spinButtons: true, decimalDigits: 0, min: 0, disabled: true
+        });
+
+
+        $("#numericImputID").jqxNumberInput({
+            width: '100px', height: '25px', inputMode: 'simple',
+            spinButtons: true, decimalDigits: 0, min: 0
+        });
+
+
+        $("#numericBarElements").jqxNumberInput({
+            width: '160px', height: '25px', inputMode: 'simple'
+            , spinButtons: true, decimalDigits: 0, min: 1, max: 20, value: 15
+        });
+
+
+        $("#numericImputElipse").jqxNumberInput({
+            width: '100px', height: '25px', inputMode: 'simple'
+            , spinButtons: true, decimalDigits: 0, min: 0
+        });
+
+
+        $("#jqxBottomControls_ProgressBar").jqxProgressBar({width: 375, height: 50, value: 0, showText: true});
+        $("#jqxBottomControls_ProgressBar").hide();
+
+
+        $("#chkOutgoingConn").jqxCheckBox({width: 80, height: 25, checked: true});
+
+
+        $("#chkIncomingConn").jqxCheckBox({width: 80, height: 25, checked: true});
+
+
+        /* Filter */
+        $("#chkNeuronType1").jqxCheckBox({width: 80, height: 25, checked: true});
+        $("#chkNeuronType2").jqxCheckBox({width: 80, height: 25, checked: true});
+
+        var sourceFilter = [{label: "Calcium Concentration", cat: "decimal", type: "Ca", color: "#de9425"},
+            {label: "Excitatory Connections", cat: "real", type: "IConn", color: _SigletonConfig.IColor},
+            {label: "Inhibitory Connections", cat: "real", type: "EConn", color: _SigletonConfig.EColor},
+            {label: "Axonal Connections", cat: "real", type: "AConn", color: _SigletonConfig.AColor}];
+
+        sourceFilter.forEach(function (elem, i) {
+            $("#comboBoxTypeFilter").append($('<option>', {
+                value: i,
+                text: elem.label
+            }));
+        });
+
+
+        $("#caMinRangeFilter").jqxNumberInput({
+            width: '130px',
+            height: '25px',
+            inputMode: 'simple',
+            spinButtons: true,
+            decimalDigits: 10,
+            min: 0
+        });
+
+        $("#caMaxRangeFilter").jqxNumberInput({
+            width: '130px',
+            height: '25px',
+            inputMode: 'simple',
+            spinButtons: true,
+            decimalDigits: 10,
+            min: 0
+        });
+
+
+        /* Filter */
+
+        /* Sort */
+        $("#jqxCheckBoxMixNeurons").jqxCheckBox({width: 140, height: 25, checked: true}).css("margin-top", "10px");
+
+
+        $("#jqxCheckBoxInverseSort").jqxCheckBox({width: 140, height: 25, checked: false})
+
+        $("#jqxRadioNoSort").jqxRadioButton({width: 140, height: 25, groupName: "sort", checked: true});
+
+
+        $("#jqxRadioSortByCa").jqxRadioButton({width: 140, height: 25, groupName: "sort"});
+
+
+        $("#jqxRadioSortEConn").jqxRadioButton({width: 140, height: 25, groupName: "sort"});
+
+
+        $("#jqxRadioSortIConn").jqxRadioButton({width: 140, height: 25, groupName: "sort"});
+
+
+        $("#jqxRadioSortAConn").jqxRadioButton({width: 140, height: 25, groupName: "sort"});
+
+        /* Sort */
+
+        self.createColorCombos("#comboScaleTypeNeuron", self.colorScaleTypes, "#comboScaleNeuron", self.colorScales);
+
+
+        self.createColorCombos("#comboScaleTypeConnection", self.colorScaleTypes, "#comboScaleConnection", self.colorScales);
+
+
+        self.generateScaleCalcium();
+
+
+        self.createColorCombos("#comboScaleTypeCalcium", self.colorScaleTypesCalcium, "#comboScaleCalcium", self.colorScales);
+
+
+        var colorElements = [
+            {id: "#dropDownInhibitoryButton", color: _SigletonConfig.IColor},
+            {id: "#dropDownExcitatoryButton", color: _SigletonConfig.EColor},
+            {id: "#dropDownAxonalButton", color: _SigletonConfig.AColor},
+            {id: "#dropDownEEButton", color: _SigletonConfig.EEColor},
+            {id: "#dropDownEIButton", color: _SigletonConfig.EIColor},
+            {id: "#dropDownIEButton", color: _SigletonConfig.IEColor},
+            {id: "#dropDownIIButton", color: _SigletonConfig.IIColor},
+            {id: "#dropDownCaMinValueColorButton", color: _SigletonConfig.minCaColor},
+            {id: "#dropDownCaMaxValueColorButton", color: _SigletonConfig.maxCaColor}
+        ];
+
+        colorElements.forEach(function (elem) {
+            var selector = $(elem.id);
+            selector.children("div").css("background", elem.color);
+            selector.children("span").text(elem.color);
+        });
+
+
+        $("#jqxMacroVControls_SliderApha").jqxNumberInput({
+            width: '100px', height: '25px', inputMode: 'simple'
+            , spinButtons: true, decimalDigits: 2, min: 0, max: 1
+        });
+        $('#jqxMacroVControls_SliderApha').val(_SigletonConfig.macroVAlpha);
+
+
+        $("#jqxRadioButtonCaSetPointFromFile").jqxRadioButton({
+            groupName: '1',
+            width: 190,
+            height: 25,
+            checked: true
+        });
+        $("#jqxRadioButtonCaSetPointFromNeuronValues").jqxRadioButton({groupName: '1', width: 190, height: 25});
+
+
+        $("#jqxRadioButtonCaSetPointFromFile").jqxRadioButton('check');
+
+
+        var lSEViewrSelector = [
+            "All",
+            "Vacants only",
+            "Connected only"
+        ];
+
+        lSEViewrSelector.forEach(function (elem, i) {
+            $('#dropDownSynapticElementsToViewButton').append($('<option>', {
+                value: i,
+                text: elem
+            }));
+        });
+
+
+        $("#jqxNumericInput_SimulationVelocity").jqxNumberInput({
+            width: '100px', height: '25px', inputMode: 'simple'
+            , spinButtons: true, decimalDigits: 0, min: 0
+        });
+        $('#jqxNumericInput_SimulationVelocity').val(200);
+
+
+        //-->>MacroView controls
+        $("#jqxCheckBox_EEConnect").jqxCheckBox({width: 140, height: 25, checked: true});
+
+
+        $("#jqxCheckBox_EIConnect").jqxCheckBox({width: 140, height: 25, checked: true});
+
+
+        $("#jqxCheckBox_IEConnect").jqxCheckBox({width: 140, height: 25, checked: true});
+
+
+        $("#jqxCheckBox_IIConnect").jqxCheckBox({width: 140, height: 25, checked: true});
+
+
+        /*                $("#jqxConfWindow_ButtonUpdateView").jqxButton({ width: '150'});
+         $("#jqxConfWindow_ButtonUpdateView").on('click', function (event) {
+
+         _SimulationData.recalculateScales(_SigletonConfig.minCaColor
+         ,_SigletonConfig.maxCaColor
+         ,_SigletonConfig.ColorInerpolMethod);
+         //Recalc scales for the cheeses, only in MicroView
+         if (_SimulationController.view.MSPViewType=="MicroV")
+         _SimulationController.view.reclculateSEScales();
+
+         self.updateSimulationFromTimeline();
+         });*/
+
+
+        $('#jqxWindow_ImgExporter').jqxWindow({
+            showCollapseButton: true,
+            maxHeight: 1280,
+            maxWidth: 1024,
+            minHeight: 200,
+            minWidth: 200,
+            height: 480,
+            width: 700
+            ,
+            'resizable': true,
+            'draggable': true,
+            autoOpen: false,
+            initContent: function () {
+            }
+        });
+
+        $('#jqxWindow_Info').jqxWindow({
+            showCollapseButton: true,
+            maxHeight: 1280,
+            maxWidth: 1024,
+            minHeight: 200,
+            minWidth: 200,
+            height: 480,
+            width: 700
+            ,
+            'resizable': true,
+            'draggable': true,
+            autoOpen: false,
+            initContent: function () {
+                $('#jqxAbout_TabsConfig').jqxTabs({height: '100%', width: '100%'});
+
+            }
+        });
+    },
+    bindUIActions: function (self) {
+
+        $(window).resize(function () {
+            self.resize();
+        });
 
         //Dont reload the files form the same place in Chrome
         document.getElementById('fileDialog').addEventListener('change',
@@ -90,7 +352,7 @@ UI.Visualizator.prototype = {
                     $("#jqxInputSimulationFilesLocalPath").val(" ");
                     $("#jqxConfWindow_ButtonLoadSimulationFiles").prop("disabled", true);
 
-                    alert('Please select the 6 simulation files!');
+                    alert('Please, select the 6 simulation files.');
                 }
                 else {
                     _SigletonConfig.localFilesPath = $('#jqxInputSimulationFilesLocalPath').val();
@@ -136,694 +398,395 @@ UI.Visualizator.prototype = {
             , false)
         ;
 
-        $(document).ready(function () {
-                var color = getCookie("color");
-
-
-                $("#jqxConfWindow_ButtonSelectConfig").on('click', function (event) {
-                    self.loadLocalConfiguration()
-                });
-
-
-                $("#jqxConfWindow_ButtonLoadConfig").on('click', function (event) {
-                    self.loadLocalConfigurationFiles();
-                });
-
-                $("#jqxConfWindow_ButtonSaveConfig").on('click', function (event) {
-                    saveConfig();
-                });
-
-
-                _ColorPicker = new MSP.ColorPicker();
-                _ColorPicker.generateColorPicker();
-                // Logic of the interface
-
-
-                //Navbar view buttons
-                $("#navViewGlobal").on('click', function () {
-                    if (self.generateView(0)) self.navBarSelectView(0);
-                });
-
-                $("#navViewMacro").on('click', function () {
-                    if (self.generateView(7)) self.navBarSelectView(1);
-                });
-
-                $("#navViewMap").on('click', function () {
-                    if (self.generateView(8)) self.navBarSelectView(2);
-                });
-
-                $("#navViewMicro").on('click', function () {
-                    if (self.generateView(2)) self.navBarSelectView(3);
-                });
-
-                $("#navViewMicroDetail").on('click', function () {
-                    if (self.generateView(3)) self.navBarSelectView(4);
-                });
-
-                $("#navInfoHelp").on('click', function () {
-                    self.showInfo();
-                });
-
-                $("#navScreenCapture").on('click', function () {
-                    saveAsImage();
-                });
-
-                $("#navOptionsFile").on('click', function () {
-                    self.openNav();
-                    self.openTab('fileTab', 0)
-                });
-
-                $("#navOptionsColor").on('click', function () {
-                    self.openNav();
-                    self.openTab('colorTab', 1)
-                });
-
-                $("#navOptionsGlobal").on('click', function () {
-                    self.openNav();
-                    self.openTab('globalConfTab', 2)
-                });
-
-                $("#navOptionsConfig").on('click', function () {
-                    self.openNav();
-                    self.openTab('config', 3)
-                });
-
-                $("#navOptionsFilter").on('click', function () {
-                    self.openNav();
-                    self.openTab('filterTab', 4)
-                });
-
-                $("#navOptionsSort").on('click', function () {
-                    self.openNav();
-                    self.openTab('sortTab', 5)
-                });
-
-                $("#navClose").on('click', function () {
-                    self.closeNav();
-                });
-
-                $("#jqxBottomControls_ButtonSimulate").on('click', function (event) {
-                    self.simulate(!_SimulationController.pause);
-                });
-
-
-                $('#jqxBottomControls_SliderTimeline').jqxSlider({
-                    tooltip: true,
-                    mode: 'fixed',
-                    width: '700px',
-                    showTicks: false,
-                    max: 1000,
-                    showButtons: false,
-                    disabled: true
-                });
-
-                $('#jqxBottomControls_SliderTimeline').on('slideStart', function (event) {
-                    _SimulationController.stopVisualization();
-                });
-                $('#jqxBottomControls_SliderTimeline').on('slideEnd', function (event) {
-                    self.updateSimulationFromTimeline();
-                });
-
-                $("#jqxBottomControls_NumericInputStep").jqxNumberInput({
-                    width: '100px', height: '25px', inputMode: 'simple'
-                    , spinButtons: true, decimalDigits: 0, min: 0, disabled: true
-                });
-                $('#jqxBottomControls_NumericInputStep').on('change', function (event) {
-                    self.updateSimulationFromStep();
-                });
-
-                $("#numericImputID").jqxNumberInput({
-                    width: '100px', height: '25px', inputMode: 'simple'
-                    , spinButtons: true, decimalDigits: 0, min: 0
-                });
-                $('#numericImputID').on('change', function (event) {
-                    _SimulationController.view.updateID($("#numericImputID").jqxNumberInput('val'));
-                });
-
-                $("#numericBarElements").jqxNumberInput({
-                    width: '160px', height: '25px', inputMode: 'simple'
-                    , spinButtons: true, decimalDigits: 0, min: 1, max: 20, value: 15
-                });
-                $('#numericBarElements').on('change', function (event) {
-                    _SimulationController.view.graph.numBars = $("#numericBarElements").jqxNumberInput('val');
-                    _SimulationController.view.graph.updateGraph();
-                });
-
-                $("#numericImputElipse").jqxNumberInput({
-                    width: '100px', height: '25px', inputMode: 'simple'
-                    , spinButtons: true, decimalDigits: 0, min: 0
-                });
-
-                $("#btnAddID").on('click', function (event) {
-                    var id = $("#numericImputElipse").jqxNumberInput('val');
-                    if (id >= 0 && id < _SimulationData.gNeurons.length)
-                        _SimulationData.gNeurons[$("#numericImputElipse").jqxNumberInput('val')].centerElipse = true;
-                    $("#listaCentroElipse").append('<button class="btnCentro" onclick="delCenter(' + id + ');">' + id + '</button>');
-                    _SimulationController.view.update();
-                });
-
-                $("#btnAddSelected").on('click', function (event) {
-                    _SimulationFilter.gNeuronsFilter.forEach(function (z) {
-                        var d = _SimulationData.gNeurons[z];
-                        if (d.selected) {
-                            d.centerElipse = true;
-                            $("#listaCentroElipse").append('<button class="btnCentro" onclick="delCenter(' + d.NId + ');">' + d.NId + '</button>');
-                        }
-                    });
-                    _SimulationController.view.update();
-                });
-
-
-                $("#btnRmSelected").on('click', function (event) {
-                    $("#listaCentroElipse").empty();
-                    _SimulationData.gNeurons.forEach(function (d) {
-                        d.centerElipse = false;
-                    });
-                    _SimulationController.view.update();
-                });
-
-
-                $("#rmSelected").on('click', function (event) {
-                    _SimulationFilter.gNeuronsFilter.forEach(function (z) {
-                        var d = _SimulationData.gNeurons[z];
-                        if (d.selected && d.centerElipse) {
-                            d.centerElipse = false;
-                            delCenter(z);
-                        }
-                    });
-                    _SimulationController.view.update();
-                });
-
-
-                $("#jqxBottomControls_ProgressBar").jqxProgressBar({width: 375, height: 50, value: 0, showText: true});
-                $("#jqxBottomControls_ProgressBar").hide();
-
-
-                $("#jqxConfWindow_ButtonSelectSimulationFiles").on('click', function (event) {
-                    self.loadLocalSimulation();
-                });
-
-                $("#jqxConfWindow_ButtonLoadSimulationFiles").on('click', function (event) {
-                    self.loadLocalFiles();
-                });
-
-//			             $("#jqxInputLocalFile").jqxInput({placeHolder: "Local neuron information file", height: 25, width: 250, minLength: 1, disabled: true});
-//			             $("#jqxInputGlobalFile").jqxInput({placeHolder: "Global scene information file", height: 25, width: 250, minLength: 1, disabled: true});
-//			             $("#jqxInputConnectivityFile").jqxInput({placeHolder: "Conectivity file", height: 25, width: 250, minLength: 1, disabled: true});
-//			             $("#jqxInputSimulationConfigFile").jqxInput({placeHolder: "Local simulation config file", height: 25, width: 250, minLength: 1, disabled: true});
-
-
-                $("#jqxWindow__ButtonLoadRemoteSimulationFromServer").on('click', function (event) {
-
-                    var lSimName = $("#jqxWindow_RemoteSimulationId").val();
-                    var lSimNameLength = lSimName.length;
-                    if (lSimNameLength > 0) {
-                        self.loadRemoteSimulationFromServer(lSimName);
-                        self.navBarSelectView(0);
-                    }
-                    else
-                        window.alert("Please, select a valid simulation id.");
-                });
-
-                //Boton de conectar (De momento además se traerá los datos)
-                $("#jqxWindow_ButtonLoadRemoteSimulationFromDCache").on('click', function (event) {
-
-                    var serversPath = ["Nop"
-                        , "www.mitestensimca1000.es:2880/data/world-writable/Simulations"
-                        , "Nop"
-                        , "Nop"];
-
-                    var lItem = $("#jqxWindow_LoadRemoteSimulation_ComboRemoteServers").selectedIndex;
-                    var lUserLenght = $("#jqxWindow_LoadRemoteSimulation_inputUser").val().length;
-                    var lPassLenght = $("#jqxWindow_LoadRemoteSimulation_inputPass").val().length;
-                    //console.log("--->>>>"+lItem +" "+lUserLenght+" "+lPassLenght);
-                    if (
-                        (lItem > 0)
-                        && (lUserLenght > 0)
-                        && (lPassLenght > 0)) {
-                        console.log("Cargando simulacion remota");
-                        self.loadRemoteSimulationFromDCache(serversPath[$("#jqxWindow_LoadRemoteSimulation_ComboRemoteServers").selectedIndex]
-                            , $("#jqxWindow_LoadRemoteSimulation_id").val()
-                            , $("#jqxWindow_LoadRemoteSimulation_inputUser").val()
-                            , $("#jqxWindow_LoadRemoteSimulation_inputPass").val()
-                        );
-                    }
-
-
-                });
-
-                /////////////////////////////////////////////////////////////////////////////////
-                /* Auto Resize */
-                self.resize();
-                $(window).resize(function () {
-                    self.resize();
-                });
-                /* Auto Resize */
-
-                $("#chkOutgoingConn").jqxCheckBox({width: 80, height: 25, checked: true});
-                $("#chkOutgoingConn").bind('change', function (event) {
-                    _SigletonConfig.outgoingConn = event.args.checked;
-                    _SimulationController.view.updateVisualization();
-                });
-
-                $("#chkIncomingConn").jqxCheckBox({width: 80, height: 25, checked: true});
-                $("#chkIncomingConn").bind('change', function (event) {
-                    _SigletonConfig.incomingConn = event.args.checked;
-                    _SimulationController.view.updateVisualization();
-                });
-
-                /* Filter */
-                $("#chkNeuronType1").jqxCheckBox({width: 80, height: 25, checked: true});
-                $("#chkNeuronType2").jqxCheckBox({width: 80, height: 25, checked: true});
-
-                var sourceFilter = [{label: "Calcium Concentration", cat: "decimal", type: "Ca", color: "#de9425"},
-                    {label: "Excitatory Connections", cat: "real", type: "IConn", color: _SigletonConfig.IColor},
-                    {label: "Inhibitory Connections", cat: "real", type: "EConn", color: _SigletonConfig.EColor},
-                    {label: "Axonal Connections", cat: "real", type: "AConn", color: _SigletonConfig.AColor}];
-
-                sourceFilter.forEach(function (elem, i) {
-                    $("#comboBoxTypeFilter").append($('<option>', {
-                        value: i,
-                        text: elem.label
-                    }));
-                });
-
-                $("#comboBoxTypeFilter").on('change', function () {
-                    var idx = $("#comboBoxTypeFilter").prop('selectedIndex');
-                    if (sourceFilter[idx].cat === "decimal") {
-                        $("#caMinRangeFilter").jqxNumberInput('decimalDigits', 10);
-                        $("#caMaxRangeFilter").jqxNumberInput('decimalDigits', 10);
-                    } else {
-                        $("#caMinRangeFilter").jqxNumberInput('decimalDigits', 0);
-                        $("#caMaxRangeFilter").jqxNumberInput('decimalDigits', 0);
-                    }
-                    $("#caMinRangeFilter").jqxNumberInput('val', 0);
-                    $("#caMaxRangeFilter").jqxNumberInput('val', 0);
-                });
-
-                $("#caMinRangeFilter").jqxNumberInput({
-                    width: '130px',
-                    height: '25px',
-                    inputMode: 'simple',
-                    spinButtons: true,
-                    decimalDigits: 10,
-                    min: 0
-                });
-
-                $("#caMaxRangeFilter").jqxNumberInput({
-                    width: '130px',
-                    height: '25px',
-                    inputMode: 'simple',
-                    spinButtons: true,
-                    decimalDigits: 10,
-                    min: 0
-                });
-
-                $("#btnApplyFilter").on('click', function () {
-                    var idx = $("#comboBoxTypeFilter").prop('selectedIndex');
-                    var tipo = sourceFilter[idx].type;
-                    var color = sourceFilter[idx].color;
-                    var tipoCompleto = sourceFilter[idx].label;
-                    var filtro = {
-                        type: tipo, min: $("#caMinRangeFilter").val(), max: $("#caMaxRangeFilter").val(),
-                        excitatory: $("#chkNeuronType1").val(), inhibitory: $("#chkNeuronType2").val()
-                    };
-                    idx = _SimulationFilter.filters.length;
-                    _SimulationFilter.filters.push(filtro);
-
-                    $("#listaFiltros").append('<div class="filtro"><div class="filterTitle" style="background-color:' + color + '"><span class="filterTitleText">' + tipoCompleto + '</span><button class="btnFiltro">X</button> </div>' +
-                        '<div><span class="filterTitleSecondary">Applies to:</span><div class="filterContent">' + (filtro.excitatory ? '<div class="filterE"></div>' : "") + (filtro.inhibitory ? '<div class="filterI"></div>' : "") + '</div></div>' +
-                        '<div><span class="filterTitleSecondary">Min:</span><span >' + (filtro.min) + '</span></div>' +
-                        '<div><span class="filterTitleSecondary">Max:</span><span>' + (filtro.max) + '</span></div></div>');
-                    $(".btnFiltro").last().on('click', function () {
-                        self.deleteFilter($(this.parentNode).parent());
-                    })
-                });
-
-                /* Filter */
-
-                /* Sort */
-                $("#jqxCheckBoxMixNeurons").jqxCheckBox({width: 140, height: 25, checked: true}).css("margin-top", "10px");
-                $("#jqxCheckBoxMixNeurons").on('change', function (event) {
-                    _SimulationFilter.orderMix = event.args.checked;
-                    self.updateSimulationFromTimeline();
-
-                });
-
-                $("#jqxCheckBoxInverseSort").jqxCheckBox({width: 140, height: 25, checked: false})
-                $("#jqxCheckBoxInverseSort").on('change', function (event) {
-                    _SimulationFilter.inverseOrder = event.args.checked;
-                    self.updateSimulationFromTimeline();
-                });
-
-                $("#jqxRadioNoSort").jqxRadioButton({width: 140, height: 25, groupName: "sort", checked: true});
-                $("#jqxRadioNoSort").on('change', function () {
-                    _SimulationFilter.order = "none";
-                    self.updateSimulationFromTimeline();
-
-                });
-
-                $("#jqxRadioSortByCa").jqxRadioButton({width: 140, height: 25, groupName: "sort"});
-                $("#jqxRadioSortByCa").on('change', function () {
-                    _SimulationFilter.order = "calcium";
-                    self.updateSimulationFromTimeline();
-
-                });
-
-                $("#jqxRadioSortEConn").jqxRadioButton({width: 140, height: 25, groupName: "sort"});
-                $("#jqxRadioSortEConn").on('change', function () {
-                    _SimulationFilter.order = "econn";
-                    self.updateSimulationFromTimeline();
-
-                });
-
-                $("#jqxRadioSortIConn").jqxRadioButton({width: 140, height: 25, groupName: "sort"});
-                $("#jqxRadioSortIConn").on('change', function () {
-                    _SimulationFilter.order = "iconn";
-                    self.updateSimulationFromTimeline();
-
-                });
-
-                $("#jqxRadioSortAConn").jqxRadioButton({width: 140, height: 25, groupName: "sort"});
-                $("#jqxRadioSortAConn").on('change', function () {
-                    _SimulationFilter.order = "aconn";
-                    self.updateSimulationFromTimeline();
-
-                });
-                /* Sort */
-
-                self.createColorCombos("#comboScaleTypeNeuron", self.colorScaleTypes, "#comboScaleNeuron", self.colorScales);
-
-                $("#comboScaleNeuron").on('change', function () {
-                    var colorDOMObject = [$("#dropDownExcitatoryButton"), $("#dropDownInhibitoryButton"), $("#dropDownAxonalButton")];
-                    var colorConfig = [_SigletonConfig.EColor, _SigletonConfig.IColor, _SigletonConfig.AColor];
-                    var idxSaleType = $("#comboScaleTypeNeuron").prop('value');
-                    var idxColorSale = $("#comboScaleNeuron").prop('selectedIndex');
-                    var colorScale = self.colorScales[idxSaleType][idxColorSale].labelInternal;
-                    var colorScaleType = $("#comboScaleTypeNeuron option:selected").text();
-                    var isCategorical = colorScaleType === "Categorical";
-
-                    colorConfig = _ColorPicker.generateColors(colorScale, colorDOMObject, colorConfig, isCategorical);
-                    _SigletonConfig.EColor = colorConfig[0];
-                    _SigletonConfig.IColor = colorConfig[1];
-                    _SigletonConfig.AColor = colorConfig[2];
-                    _SigletonConfig.neuronsScheme = colorScale;
-                    updateCookieColor();
-                    if (_SimulationController !== null)
-                        _SimulationController.view.updateVisualization()
-                });
-
-
-                $('#comboScaleTypeNeuron').on('change', function () {
-                    $("#comboScaleNeuron").empty();
-                    self.colorScales[$("#comboScaleTypeNeuron").prop('value')].forEach(function (elem, i) {
-                        $('#comboScaleNeuron').append($('<option>', {
-                            value: i,
-                            text: elem.label
-                        }));
-                    });
-                    $('#comboScaleNeuron').trigger("change");
-                });
-
-
-                self.createColorCombos("#comboScaleTypeConnection", self.colorScaleTypes, "#comboScaleConnection", self.colorScales);
-
-                $("#comboScaleConnection").on('change', function () {
-                    var colorDOMObject = [$("#dropDownEEButton"), $("#dropDownEIButton"), $("#dropDownIEButton"), $("#dropDownIIButton")];
-                    var colorConfig = [_SigletonConfig.EEColor, _SigletonConfig.EIColor, _SigletonConfig.IEColor, _SigletonConfig.IIColor];
-                    var idxSaleType = $("#comboScaleTypeConnection").prop('value');
-                    var idxColorSale = $("#comboScaleConnection").prop('selectedIndex');
-                    var colorScale = self.colorScales[idxSaleType][idxColorSale].labelInternal;
-                    var colorScaleType = $("#comboScaleTypeConnection option:selected").text();
-                    var isCategorical = colorScaleType === "Categorical";
-
-                    colorConfig = _ColorPicker.generateColors(colorScale, colorDOMObject, colorConfig, isCategorical);
-                    _SigletonConfig.EEColor = colorConfig[0];
-                    _SigletonConfig.EIColor = colorConfig[1];
-                    _SigletonConfig.IEColor = colorConfig[2];
-                    _SigletonConfig.IIColor = colorConfig[3];
-                    _SigletonConfig.connectionsScheme = colorScale;
-
-                    updateCookieColor();
-                    if (_SimulationController !== null)
-                        _SimulationController.view.updateVisualization();
-                });
-
-
-                $('#comboScaleTypeConnection').on('change', function () {
-                    $("#comboScaleConnection").empty();
-                    self.colorScales[$("#comboScaleTypeConnection").prop('value')].forEach(function (elem, i) {
-                        $('#comboScaleConnection').append($('<option>', {
-                            value: i,
-                            text: elem.label
-                        }));
-                    });
-                    $('#comboScaleConnection').trigger("change");
-                });
-
-                self.generateScaleCalcium();
-
-
-                self.createColorCombos("#comboScaleTypeCalcium", self.colorScaleTypesCalcium, "#comboScaleCalcium", self.colorScales);
-
-                $("#comboScaleCalcium").on('change', function () {
-                    var colorDOMObject = [$("#dropDownCaMaxValueColorButton"), $("#dropDownCaMinValueColorButton")];
-                    var colorConfig = [_SigletonConfig.EColor, _SigletonConfig.IColor];
-                    var idxSaleType = $("#comboScaleTypeCalcium").prop('value');
-                    var idxColorSale = $("#comboScaleCalcium").prop('selectedIndex');
-                    var colorScale = self.colorScales[idxSaleType][idxColorSale].labelInternal;
-                    var colorScaleType = $("#comboScaleTypeCalcium option:selected").text();
-                    var isCategorical = colorScaleType === "Categorical";
-
-                    colorConfig = _ColorPicker.generateColors(colorScale, colorDOMObject, colorConfig, isCategorical);
-                    _SigletonConfig.maxCaColor = colorConfig[0];
-                    _SigletonConfig.minCaColor = colorConfig[1];
-                    _SigletonConfig.calciumScheme = colorScale;
-                    updateCookieColor();
-                    self.generateScaleCalcium();
-                    if (_SimulationController !== null) {
-                        if (_SimulationController.activeViewID !== 0 && _SimulationController.activeViewID !== 5)
-                            self.createSampleBandColor();
-                        _SimulationData.recalculateScales();
-                        _SimulationController.view.updateVisualization();
-                    }
-                });
-
-
-                $('#comboScaleTypeCalcium').on('change', function () {
-                    $("#comboScaleCalcium").empty();
-                    self.colorScales[$("#comboScaleTypeCalcium").prop('value')].forEach(function (elem, i) {
-                        $('#comboScaleCalcium').append($('<option>', {
-                            value: i,
-                            text: elem.label
-                        }));
-                    });
-                    $('#comboScaleCalcium').trigger("change");
-                });
-
-
-                $("#dropDownInhibitoryButton").on('click', self.selectColor);
-                $("#dropDownExcitatoryButton").on('click', self.selectColor);
-                $("#dropDownAxonalButton").on('click', self.selectColor);
-                $("#dropDownEEButton").on('click', self.selectColor);
-                $("#dropDownEIButton").on('click', self.selectColor);
-                $("#dropDownIEButton").on('click', self.selectColor);
-                $("#dropDownIIButton").on('click', self.selectColor);
-                $("#dropDownCaMinValueColorButton").on('click', self.selectColor);
-                $("#dropDownCaMaxValueColorButton").on('click', self.selectColor);
-
-
-                $("#dropDownInhibitoryButton").children("div").css("background", _SigletonConfig.IColor);
-                $("#dropDownInhibitoryButton").children("span").text(_SigletonConfig.IColor);
-
-                $("#dropDownExcitatoryButton").children("div").css("background", _SigletonConfig.EColor);
-                $("#dropDownExcitatoryButton").children("span").text(_SigletonConfig.EColor);
-
-                $("#dropDownAxonalButton").children("div").css("background", _SigletonConfig.AColor);
-                $("#dropDownAxonalButton").children("span").text(_SigletonConfig.AColor);
-
-                $("#dropDownEEButton").children("div").css("background", _SigletonConfig.EEColor);
-                $("#dropDownEEButton").children("span").text(_SigletonConfig.EEColor);
-                //EI color picker
-                $("#dropDownEIButton").children("div").css("background", _SigletonConfig.EIColor);
-                $("#dropDownEIButton").children("span").text(_SigletonConfig.EIColor);
-                //IE color picker
-                $("#dropDownIEButton").children("div").css("background", _SigletonConfig.IEColor);
-                $("#dropDownIEButton").children("span").text(_SigletonConfig.IEColor);
-                //II color picker
-                $("#dropDownIIButton").children("div").css("background", _SigletonConfig.IIColor);
-                $("#dropDownIIButton").children("span").text(_SigletonConfig.IIColor);
-                //Ca min value color picker
-                $("#dropDownCaMinValueColorButton").children("div").css("background", _SigletonConfig.minCaColor);
-                $("#dropDownCaMinValueColorButton").children("span").text(_SigletonConfig.minCaColor);
-                //Ca max value color picker
-                $("#dropDownCaMaxValueColorButton").children("div").css("background", _SigletonConfig.maxCaColor);
-                $("#dropDownCaMaxValueColorButton").children("span").text(_SigletonConfig.maxCaColor);
-
-
-                $("#jqxMacroVControls_SliderApha").jqxNumberInput({
-                    width: '100px', height: '25px', inputMode: 'simple'
-                    , spinButtons: true, decimalDigits: 2, min: 0, max: 1
-                });
-                $('#jqxMacroVControls_SliderApha').val(_SigletonConfig.macroVAlpha);
-                $('#jqxMacroVControls_SliderApha').on('change', function (event) {
-                    _SigletonConfig.macroVAlpha = $('#jqxMacroVControls_SliderApha').val();
-                });
-
-
-                $("#jqxRadioButtonCaSetPointFromFile").jqxRadioButton({
-                    groupName: '1',
-                    width: 190,
-                    height: 25,
-                    checked: true
-                });
-                $("#jqxRadioButtonCaSetPointFromNeuronValues").jqxRadioButton({groupName: '1', width: 190, height: 25});
-
-
-                $("#jqxRadioButtonCaSetPointFromFile").on('change', function (event) {
-                    var checked = event.args.checked;
-                    if (checked) {
-                        _SigletonConfig.CaMaxMinValueTypes = 0;
-                    }
-                    _SimulationData.recalculateScales();
-                    _SimulationController.view.updateVisualization();
-                    self.createSampleBandColor();
-                });
-
-                $("#jqxRadioButtonCaSetPointFromNeuronValues").on('change', function (event) {
-                    var checked = event.args.checked;
-                    if (checked) {
-                        _SigletonConfig.CaMaxMinValueTypes = 1;
-                    }
-                    _SimulationData.recalculateScales();
-                    _SimulationController.view.updateVisualization();
-                    self.createSampleBandColor();
-                });
-
-
-                $("#jqxRadioButtonCaSetPointFromFile").jqxRadioButton('check');
-
-
-                var lSEViewrSelector = [
-                    "All",
-                    "Vacants only",
-                    "Connected only"
-                ];
-
-                lSEViewrSelector.forEach(function (elem, i) {
-                    $('#dropDownSynapticElementsToViewButton').append($('<option>', {
-                        value: i,
-                        text: elem
-                    }));
-                });
-
-                $("#dropDownSynapticElementsToViewButton").on("change", function (event) {
-                    _SigletonConfig.SEViewSelector = event.args.index;
-                });
-
-                $("#jqxNumericInput_SimulationVelocity").jqxNumberInput({
-                    width: '100px', height: '25px', inputMode: 'simple'
-                    , spinButtons: true, decimalDigits: 0, min: 0
-                });
-                $('#jqxNumericInput_SimulationVelocity').val(200);
-                $('#jqxNumericInput_SimulationVelocity').on('change', function (event) {
-                    _SimulationController.setVisualizationInterval($('#jqxNumericInput_SimulationVelocity').val());
-                });
-
-                //-->>MacroView controls
-                $("#jqxCheckBox_EEConnect").jqxCheckBox({width: 140, height: 25, checked: true}).css("margin-top", "10px");
-                $("#jqxCheckBox_EEConnect").on('change', function (event) {
-                    _SimulationData.drawEEConn = event.args.checked;
-                });
-
-                $("#jqxCheckBox_EIConnect").jqxCheckBox({width: 140, height: 25, checked: true});
-                $("#jqxCheckBox_EIConnect").on('change', function (event) {
-                    _SimulationData.drawEIConn = event.args.checked;
-                });
-
-                $("#jqxCheckBox_IEConnect").jqxCheckBox({width: 140, height: 25, checked: true});
-                $("#jqxCheckBox_IEConnect").on('change', function (event) {
-                    _SimulationData.drawIEConn = event.args.checked;
-                });
-
-                $("#jqxCheckBox_IIConnect").jqxCheckBox({width: 140, height: 25, checked: true});
-                $("#jqxCheckBox_IIConnect").on('change', function (event) {
-                    _SimulationData.drawIIConn = event.args.checked;
-                });
-
-
-                /*                $("#jqxConfWindow_ButtonUpdateView").jqxButton({ width: '150'});
-                 $("#jqxConfWindow_ButtonUpdateView").on('click', function (event) {
-
-                 _SimulationData.recalculateScales(_SigletonConfig.minCaColor
-                 ,_SigletonConfig.maxCaColor
-                 ,_SigletonConfig.ColorInerpolMethod);
-                 //Recalc scales for the cheeses, only in MicroView
-                 if (_SimulationController.view.MSPViewType=="MicroV")
-                 _SimulationController.view.reclculateSEScales();
-
-                 self.updateSimulationFromTimeline();
-                 });*/
-
-
-                $('#jqxWindow_ImgExporter').jqxWindow({
-                    showCollapseButton: true,
-                    maxHeight: 1280,
-                    maxWidth: 1024,
-                    minHeight: 200,
-                    minWidth: 200,
-                    height: 480,
-                    width: 700
-                    ,
-                    'resizable': true,
-                    'draggable': true,
-                    autoOpen: false,
-                    initContent: function () {
-                    }
-                });
-
-                $('#jqxWindow_Info').jqxWindow({
-                    showCollapseButton: true,
-                    maxHeight: 1280,
-                    maxWidth: 1024,
-                    minHeight: 200,
-                    minWidth: 200,
-                    height: 480,
-                    width: 700
-                    ,
-                    'resizable': true,
-                    'draggable': true,
-                    autoOpen: false,
-                    initContent: function () {
-
-
-                    }
-                });
-
-                //Generate the initial canvas
-                self.generateCanvas("MSPViz");
+        $("#jqxConfWindow_ButtonSelectConfig").on('click', self.loadLocalConfiguration);
+        $("#jqxConfWindow_ButtonLoadConfig").on('click', self.loadLocalConfigurationFiles);
+        $("#jqxConfWindow_ButtonSaveConfig").on('click', saveConfig);
+        //Navbar view buttons
+        $("#navClose").on('click', self.closeNav);
+
+        $("#navViewGlobal").on('click', self._openView(self.viewsID.GlobalConnectionsView, 0));
+        $("#navViewMacro").on('click', self._openView(self.viewsID.MacroscopicViewCanvas, 1));
+        $("#navViewMap").on('click', self._openView(self.viewsID.ConnectivityMatrixView, 2));
+        $("#navViewMicro").on('click', self._openView(self.viewsID.MicroscopicView, 3));
+        $("#navViewMicroDetail").on('click', self._openView(self.viewsID.DetailMicroscopicView, 4));
+
+        $("#navOptionsFile").on('click', self._openTab('fileTab', 0));
+        $("#navOptionsColor").on('click', self._openTab('colorTab', 1));
+        $("#navOptionsGlobal").on('click', self._openTab('globalConfTab', 2));
+        $("#navOptionsConfig").on('click', self._openTab('config', 3));
+        $("#navOptionsFilter").on('click', self._openTab('filterTab', 4));
+        $("#navOptionsSort").on('click', self._openTab('sortTab', 5));
+
+        $("#navScreenCapture").on('click', saveAsImage);
+        $("#navInfoHelp").on('click', self.showInfo);
+
+        $("#jqxBottomControls_ButtonSimulate").on('click', function () {
+            self.simulate(!_SimulationController.pause);
+        });
+        $('#jqxBottomControls_SliderTimeline').on('slideStart', function (event) {
+            _SimulationController.stopVisualization();
+        });
+        $('#jqxBottomControls_SliderTimeline').on('slideEnd', self.updateSimulationFromTimeline);
+
+        $('#jqxBottomControls_NumericInputStep').on('change', self.updateSimulationFromStep);
+        $('#numericImputID').on('change', function (event) {
+            _SimulationController.view.updateID($("#numericImputID").jqxNumberInput('val'));
+        });
+        $('#numericBarElements').on('change', function (event) {
+            _SimulationController.view.graph.numBars = $("#numericBarElements").jqxNumberInput('val');
+            _SimulationController.view.graph.updateGraph();
+        });
+        $("#btnAddID").on('click', function (event) {
+            var id = $("#numericImputElipse").jqxNumberInput('val');
+            if (id >= 0 && id < _SimulationData.gNeurons.length)
+                _SimulationData.gNeurons[$("#numericImputElipse").jqxNumberInput('val')].centerElipse = true;
+            $("#listaCentroElipse").append('<button class="btnCentro" onclick="delCenter(' + id + ');">' + id + '</button>');
+            _SimulationController.view.update();
+        });
+
+        $("#btnAddSelected").on('click', function (event) {
+            _SimulationFilter.gNeuronsFilter.forEach(function (z) {
+                var d = _SimulationData.gNeurons[z];
+                if (d.selected) {
+                    d.centerElipse = true;
+                    $("#listaCentroElipse").append('<button class="btnCentro" onclick="delCenter(' + d.NId + ');">' + d.NId + '</button>');
+                }
+            });
+            _SimulationController.view.update();
+        });
+
+
+        $("#btnRmSelected").on('click', function (event) {
+            $("#listaCentroElipse").empty();
+            _SimulationData.gNeurons.forEach(function (d) {
+                d.centerElipse = false;
+            });
+            _SimulationController.view.update();
+        });
+
+
+        $("#rmSelected").on('click', function (event) {
+            _SimulationFilter.gNeuronsFilter.forEach(function (z) {
+                var d = _SimulationData.gNeurons[z];
+                if (d.selected && d.centerElipse) {
+                    d.centerElipse = false;
+                    delCenter(z);
+                }
+            });
+            _SimulationController.view.update();
+        });
+        $("#jqxConfWindow_ButtonSelectSimulationFiles").on('click', function (event) {
+            self.loadLocalSimulation();
+        });
+
+        $("#jqxConfWindow_ButtonLoadSimulationFiles").on('click', function (event) {
+            self.loadLocalFiles();
+        });
+
+        $("#jqxWindow__ButtonLoadRemoteSimulationFromServer").on('click', function (event) {
+
+            var lSimName = $("#jqxWindow_RemoteSimulationId").val();
+            var lSimNameLength = lSimName.length;
+            if (lSimNameLength > 0) {
+                self.loadRemoteSimulationFromServer(lSimName);
+                self.navBarSelectView(0);
             }
-        );
-        //Borrar solo para testeo.
-        loadCookieColor();
+            else
+                window.alert("Please, select a valid simulation id.");
+        });
+
+        //Boton de conectar (De momento además se traerá los datos)
+        $("#jqxWindow_ButtonLoadRemoteSimulationFromDCache").on('click', function (event) {
+
+            var serversPath = ["Nop"
+                , "www.mitestensimca1000.es:2880/data/world-writable/Simulations"
+                , "Nop"
+                , "Nop"];
+
+            var lItem = $("#jqxWindow_LoadRemoteSimulation_ComboRemoteServers").selectedIndex;
+            var lUserLenght = $("#jqxWindow_LoadRemoteSimulation_inputUser").val().length;
+            var lPassLenght = $("#jqxWindow_LoadRemoteSimulation_inputPass").val().length;
+            //console.log("--->>>>"+lItem +" "+lUserLenght+" "+lPassLenght);
+            if (
+                (lItem > 0)
+                && (lUserLenght > 0)
+                && (lPassLenght > 0)) {
+                console.log("Cargando simulacion remota");
+                self.loadRemoteSimulationFromDCache(serversPath[$("#jqxWindow_LoadRemoteSimulation_ComboRemoteServers").selectedIndex]
+                    , $("#jqxWindow_LoadRemoteSimulation_id").val()
+                    , $("#jqxWindow_LoadRemoteSimulation_inputUser").val()
+                    , $("#jqxWindow_LoadRemoteSimulation_inputPass").val()
+                );
+            }
+
+
+        });
+
+        $("#comboBoxTypeFilter").on('change', function () {
+            var idx = $("#comboBoxTypeFilter").prop('selectedIndex');
+            if (sourceFilter[idx].cat === "decimal") {
+                $("#caMinRangeFilter").jqxNumberInput('decimalDigits', 10);
+                $("#caMaxRangeFilter").jqxNumberInput('decimalDigits', 10);
+            } else {
+                $("#caMinRangeFilter").jqxNumberInput('decimalDigits', 0);
+                $("#caMaxRangeFilter").jqxNumberInput('decimalDigits', 0);
+            }
+            $("#caMinRangeFilter").jqxNumberInput('val', 0);
+            $("#caMaxRangeFilter").jqxNumberInput('val', 0);
+        });
+
+
+        $("#btnApplyFilter").on('click', function () {
+            var idx = $("#comboBoxTypeFilter").prop('selectedIndex');
+            var tipo = sourceFilter[idx].type;
+            var color = sourceFilter[idx].color;
+            var tipoCompleto = sourceFilter[idx].label;
+            var filtro = {
+                type: tipo, min: $("#caMinRangeFilter").val(), max: $("#caMaxRangeFilter").val(),
+                excitatory: $("#chkNeuronType1").val(), inhibitory: $("#chkNeuronType2").val()
+            };
+            idx = _SimulationFilter.filters.length;
+            _SimulationFilter.filters.push(filtro);
+
+            $("#listaFiltros").append('<div class="filtro"><div class="filterTitle" style="background-color:' + color + '"><span class="filterTitleText">' + tipoCompleto + '</span><button class="btnFiltro">X</button> </div>' +
+                '<div><span class="filterTitleSecondary">Applies to:</span><div class="filterContent">' + (filtro.excitatory ? '<div class="filterE"></div>' : "") + (filtro.inhibitory ? '<div class="filterI"></div>' : "") + '</div></div>' +
+                '<div><span class="filterTitleSecondary">Min:</span><span >' + (filtro.min) + '</span></div>' +
+                '<div><span class="filterTitleSecondary">Max:</span><span>' + (filtro.max) + '</span></div></div>');
+            $(".btnFiltro").last().on('click', function () {
+                self.deleteFilter($(this.parentNode).parent());
+            })
+        });
+        $("#jqxCheckBoxMixNeurons").on('change', function (event) {
+            _SimulationFilter.orderMix = event.args.checked;
+            self.updateSimulationFromTimeline();
+
+        });
+        $("#jqxCheckBoxInverseSort").on('change', function (event) {
+            _SimulationFilter.inverseOrder = event.args.checked;
+            self.updateSimulationFromTimeline();
+        });
+        $("#jqxRadioNoSort").on('change', function () {
+            _SimulationFilter.order = "none";
+            self.updateSimulationFromTimeline();
+
+        });
+
+        $("#jqxRadioSortByCa").on('change', function () {
+            _SimulationFilter.order = "calcium";
+            self.updateSimulationFromTimeline();
+
+        });
+        $("#jqxRadioSortEConn").on('change', function () {
+            _SimulationFilter.order = "econn";
+            self.updateSimulationFromTimeline();
+
+        });
+        $("#jqxRadioSortIConn").on('change', function () {
+            _SimulationFilter.order = "iconn";
+            self.updateSimulationFromTimeline();
+
+        });
+        $("#jqxRadioSortAConn").on('change', function () {
+            _SimulationFilter.order = "aconn";
+            self.updateSimulationFromTimeline();
+
+        });
+
+        $("#comboScaleNeuron").on('change', function () {
+            var colorDOMObject = [$("#dropDownExcitatoryButton"), $("#dropDownInhibitoryButton"), $("#dropDownAxonalButton")];
+            var colorConfig = [_SigletonConfig.EColor, _SigletonConfig.IColor, _SigletonConfig.AColor];
+            var idxSaleType = $("#comboScaleTypeNeuron").prop('value');
+            var idxColorSale = $("#comboScaleNeuron").prop('selectedIndex');
+            var colorScale = self.colorScales[idxSaleType][idxColorSale].labelInternal;
+            var colorScaleType = $("#comboScaleTypeNeuron option:selected").text();
+            var isCategorical = colorScaleType === "Categorical";
+
+            colorConfig = _ColorPicker.generateColors(colorScale, colorDOMObject, colorConfig, isCategorical);
+            _SigletonConfig.EColor = colorConfig[0];
+            _SigletonConfig.IColor = colorConfig[1];
+            _SigletonConfig.AColor = colorConfig[2];
+            _SigletonConfig.neuronsScheme = colorScale;
+            updateCookieColor();
+            if (_SimulationController !== null)
+                _SimulationController.view.updateVisualization()
+        });
+
+
+        $('#comboScaleTypeNeuron').on('change', function () {
+            $("#comboScaleNeuron").empty();
+            self.colorScales[$("#comboScaleTypeNeuron").prop('value')].forEach(function (elem, i) {
+                $('#comboScaleNeuron').append($('<option>', {
+                    value: i,
+                    text: elem.label
+                }));
+            });
+            $('#comboScaleNeuron').trigger("change");
+        });
+
+        $("#comboScaleConnection").on('change', function () {
+            var colorDOMObject = [$("#dropDownEEButton"), $("#dropDownEIButton"), $("#dropDownIEButton"), $("#dropDownIIButton")];
+            var colorConfig = [_SigletonConfig.EEColor, _SigletonConfig.EIColor, _SigletonConfig.IEColor, _SigletonConfig.IIColor];
+            var idxSaleType = $("#comboScaleTypeConnection").prop('value');
+            var idxColorSale = $("#comboScaleConnection").prop('selectedIndex');
+            var colorScale = self.colorScales[idxSaleType][idxColorSale].labelInternal;
+            var colorScaleType = $("#comboScaleTypeConnection option:selected").text();
+            var isCategorical = colorScaleType === "Categorical";
+
+            colorConfig = _ColorPicker.generateColors(colorScale, colorDOMObject, colorConfig, isCategorical);
+            _SigletonConfig.EEColor = colorConfig[0];
+            _SigletonConfig.EIColor = colorConfig[1];
+            _SigletonConfig.IEColor = colorConfig[2];
+            _SigletonConfig.IIColor = colorConfig[3];
+            _SigletonConfig.connectionsScheme = colorScale;
+
+            updateCookieColor();
+            if (_SimulationController !== null)
+                _SimulationController.view.updateVisualization();
+        });
+
+
+        $('#comboScaleTypeConnection').on('change', function () {
+            $("#comboScaleConnection").empty();
+            self.colorScales[$("#comboScaleTypeConnection").prop('value')].forEach(function (elem, i) {
+                $('#comboScaleConnection').append($('<option>', {
+                    value: i,
+                    text: elem.label
+                }));
+            });
+            $('#comboScaleConnection').trigger("change");
+        });
+
+        $("#comboScaleCalcium").on('change', function () {
+            var colorDOMObject = [$("#dropDownCaMinValueColorButton"), $("#dropDownCaMaxValueColorButton")];
+            var colorConfig = [_SigletonConfig.EColor, _SigletonConfig.IColor];
+            var idxSaleType = $("#comboScaleTypeCalcium").prop('value');
+            var idxColorSale = $("#comboScaleCalcium").prop('selectedIndex');
+            var colorScale = self.colorScales[idxSaleType][idxColorSale].labelInternal;
+            var colorScaleType = $("#comboScaleTypeCalcium option:selected").text();
+            var isCategorical = colorScaleType === "Categorical";
+
+            colorConfig = _ColorPicker.generateColors(colorScale, colorDOMObject, colorConfig, isCategorical);
+            _SigletonConfig.minCaColor = colorConfig[0];
+            _SigletonConfig.maxCaColor = colorConfig[1];
+            _SigletonConfig.calciumScheme = colorScale;
+            updateCookieColor();
+            self.generateScaleCalcium();
+            if (_SimulationController !== null) {
+                if (_SimulationController.activeViewID !== 0 && _SimulationController.activeViewID !== 5)
+                    self.createSampleBandColor();
+                _SimulationData.recalculateScales();
+                _SimulationController.view.updateVisualization();
+            }
+        });
+
+
+        $('#comboScaleTypeCalcium').on('change', function () {
+            $("#comboScaleCalcium").empty();
+            self.colorScales[$("#comboScaleTypeCalcium").prop('value')].forEach(function (elem, i) {
+                $('#comboScaleCalcium').append($('<option>', {
+                    value: i,
+                    text: elem.label
+                }));
+            });
+            $('#comboScaleCalcium').trigger("change");
+        });
+
+        var colorElements = [
+            {id: "#dropDownInhibitoryButton", colorConfigID: "IColor"},
+            {id: "#dropDownExcitatoryButton", colorConfigID: "EColor"},
+            {id: "#dropDownAxonalButton", colorConfigID: "AColor"},
+            {id: "#dropDownEEButton", colorConfigID: "EEColor"},
+            {id: "#dropDownEIButton", colorConfigID: "EIColor"},
+            {id: "#dropDownIEButton", colorConfigID: "IEColor"},
+            {id: "#dropDownIIButton", colorConfigID: "IIColor"},
+            {id: "#dropDownCaMinValueColorButton", colorConfigID: "minCaColor"},
+            {id: "#dropDownCaMaxValueColorButton", colorConfigID: "maxCaColor"}
+        ];
+
+        colorElements.forEach(function (elem) {
+            var selector = $(elem.id);
+            selector.on('click', self.selectColor(self,elem.colorConfigID));
+        });
+
+        $('#jqxMacroVControls_SliderApha').on('change', function (event) {
+            _SigletonConfig.macroVAlpha = $('#jqxMacroVControls_SliderApha').val();
+        });
+        $("#jqxRadioButtonCaSetPointFromFile").on('change', function (event) {
+            var checked = event.args.checked;
+            if (checked) {
+                _SigletonConfig.CaMaxMinValueTypes = 0;
+            }
+            _SimulationData.recalculateScales();
+            _SimulationController.view.updateVisualization();
+            self.createSampleBandColor();
+        });
+
+        $("#jqxRadioButtonCaSetPointFromNeuronValues").on('change', function (event) {
+            var checked = event.args.checked;
+            if (checked) {
+                _SigletonConfig.CaMaxMinValueTypes = 1;
+            }
+            _SimulationData.recalculateScales();
+            _SimulationController.view.updateVisualization();
+            self.createSampleBandColor();
+        });
+        $("#dropDownSynapticElementsToViewButton").on("change", function (event) {
+            _SigletonConfig.SEViewSelector = event.args.index;
+        });
+        $('#jqxNumericInput_SimulationVelocity').on('change', function (event) {
+            _SimulationController.setVisualizationInterval($('#jqxNumericInput_SimulationVelocity').val());
+        });
+        $("#jqxCheckBox_EEConnect").on('change', function (event) {
+            _SimulationData.drawEEConn = event.args.checked;
+        });
+        $("#jqxCheckBox_EIConnect").on('change', function (event) {
+            _SimulationData.drawEIConn = event.args.checked;
+        });
+        $("#jqxCheckBox_IEConnect").on('change', function (event) {
+            _SimulationData.drawIEConn = event.args.checked;
+        });
+        $("#jqxCheckBox_IIConnect").on('change', function (event) {
+            _SimulationData.drawIIConn = event.args.checked;
+        });
+
+        $("#chkOutgoingConn").on('change', function (event) {
+            _SigletonConfig.outgoingConn = event.args.checked;
+            _SimulationController.view.updateVisualization();
+        });
+        $("#chkIncomingConn").on('change', function (event) {
+            _SigletonConfig.incomingConn = event.args.checked;
+            _SimulationController.view.updateVisualization();
+        });
     },
-    selectColor: function () {
-        caller = $(this);
-        $("#popup").css({"visibility": "visible"});
-    }
-    ,
+    selectColor: function (self, configPropID) {
+        return function () {
+            _ColorPicker.originDOMElement = $(this);
+            _ColorPicker.configPropID = configPropID;
+            _ColorPicker.callback = self._colorCallBack;
+            $("#popup").css({"visibility": "visible"});
+        };
+    },
+    _colorCallBack: function(originDOMElement,color,configPropID){
+        _SigletonConfig[configPropID] = color;
+        $("#" + (originDOMElement.attr("id")) + " div").css('background',color);
+        $("#" + (originDOMElement.attr("id")) + " span").text(color);
+        updateCookieColor();
+        if (_SimulationController !== null) {
+            _SimulationController.view.updateVisualization();
+        }
+    },
     generateScaleCalcium: function () {
 
         d4.select("#calciumColorScale").selectAll("svg").remove();
         var colorRange = d4["interpolate" + _SigletonConfig.calciumScheme];
         var svgContainer = d4.select("#calciumColorScale").append("svg")
             .attr("x", 0).attr("y", 0)
-            .attr("width", 150)
+            .attr("width", "100%")
             .attr("height", 25)
             .attr("class", "color");
 
         var lg = svgContainer.append("defs").append("linearGradient")
-            .attr("id", "gradient")
+            .attr("id", "calciumGradient")
             .attr("x1", "0%")
             .attr("x2", "100%")
             .attr("y1", "0%")
@@ -836,17 +799,13 @@ UI.Visualizator.prototype = {
                 .style("stop-opacity", 1);
         }
 
-        var rectangle = svgContainer.append("rect")
+        svgContainer.append("rect")
             .attr("id", "colorGradient")
             .attr("height", 25)
             .attr("y", 0)
             .attr("cursor", "pointer")
-            .attr("width", 150)
-            .attr("fill", "url(#gradient)");
-    },
-    openNav: function () {
-        var spacing = Math.max($(window).width() * 0.025, 48);
-        $("#sideNav").css("left", spacing);
+            .attr("width", "100%")
+            .attr("fill", "url(#calciumGradient)");
     },
     closeNav: function () {
         document.getElementById("sideNav").style.left = "-14%";
@@ -862,107 +821,75 @@ UI.Visualizator.prototype = {
             $(".navOptionsButton img").eq(i).attr("src", $(".navOptionsButton img").eq(i).attr("src").replace("B.png", ".png"));
         }
     },
-    openTab: function (tabName, z) {
-        var tabNames = ["File", "Color preferences", "Global Configuration", "View Configuration", "Filter data", "Sort Data"];
-        if ($(".navOptionsButton").eq(z).attr('class') === "navOptionsButton active") {
-            this.closeNav();
-            return false;
-        }
-
-        $("#optionsTitle").text(tabNames[z]);
-        var i;
-        var x = document.getElementsByClassName("tabs");
-        for (i = 0; i < x.length; i++)
-            x[i].style.display = "none";
-
-
-        var y = document.getElementsByClassName("navOptionsButton");
-        for (i = 0; i < y.length; i++) {
-            $(".navOptionsButton").eq(i).removeClass("active");
-            $(".navOptionsButton img").eq(i).attr("src", $(".navOptionsButton img").eq(i).attr("src").replace("B.png", ".png"));
-        }
-
-        $(".navOptionsButton").eq(z).addClass("active");
-        $(".navOptionsButton img").eq(z).attr("src", $(".navOptionsButton img").eq(z).attr("src").replace(".png", "") + "B.png");
-        if (tabName === 'config') {
+    updateConfigTabContent: function () {
+        if (this.activeTab === "config") {
             var id = _SimulationController.activeViewID;
-            if (id === 1 || id === 4 || id === 5 || id === 6 || id === 7) {
+            var x = document.getElementsByClassName("tabs");
+            for (var i = 0; i < x.length; i++)
+                x[i].style.display = "none";
+
+            document.getElementById("macroViewElipseTab").style.display = "none";
+
+            if (id === this.viewsID.MacroscopicViewElipse || id === this.viewsID.MacroscopicViewCanvas
+                || id === this.viewsID.MacroscopicViewForce) {
                 document.getElementById('macroViewTab').style.display = "flex";
 
-                if (id === 4)
+                if (id === this.viewsID.MacroscopicViewElipse)
                     document.getElementById('macroViewElipseTab').style.display = "flex";
 
             }
-            else if (id === 2) {
+            else if (id === this.viewsID.MicroscopicView) {
                 document.getElementById('microViewTab').style.display = "flex";
             }
-            else if (id === 3) {
+            else if (id === this.viewsID.DetailMicroscopicView) {
                 document.getElementById('detailedMicroViewTab').style.display = "flex";
             }
-            else if (id === 0) {
+            else if (id === this.viewsID.GlobalConnectionsView) {
                 document.getElementById('gloablViewTab').style.display = "flex";
             }
-            else {
+        }
+    },
+    navBarSelectView: function (buttonIndex) {
+        var viewButtons = $(".navViewButton");
+        viewButtons.each(function(){
+            $(this).removeClass("active");
+        });
+        viewButtons.eq(buttonIndex).addClass("active");
+    },
+    generateCanvas: function (pMsg) {
 
-            }
-        } else {
-            document.getElementById(tabName).style.display = "flex";
-        }
-        document.getElementById("closeTabs").src = "./content/images/close.png"
-    },
-    navBarSelectView: function (z) {
-        var i;
-        var y = document.getElementsByClassName("navViewButton");
-        for (i = 0; i < y.length; i++) {
-            $(".navViewButton").eq(i).removeClass("active");
-            //$(".navViewButton img").eq(i).attr("src",$(".navViewButton img").eq(i).attr("src").replace("B.png", ".png"));
-        }
-
-        $(".navViewButton").eq(z).addClass("active");
-        //$(".navViewButton img").eq(z).attr("src",$(".navViewButton img").eq(z).attr("src").match(/[^\.]+/) + "B.png");
-    },
-    getTextElementByColor: function (color) {
-        if (color === 'transparent' || color.hex === "") {
-            return $("<div style='text-shadow: none; position: relative; padding-bottom: 2px; margin-top: 2px;'>transparent</div>");
-        }
-        var element = $("<div style='text-shadow: none; position: relative; padding-bottom: 2px; margin-top: 2px;'>#" + color.hex + "</div>");
-        element.css('background', "#" + color.hex);
-        element.addClass('jqx-rc-all');
-        return element;
-    },
-    generateCanvas: function (pMssg) {
         d3.selectAll("svg").filter(function () {
             return !this.classList.contains('color')
+        }).remove();
+
+        d3.selectAll("canvas").filter(function () {
+            return !this.classList.contains('imgCanvas')
         }).remove();
 
         _SigletonConfig.svg = d3.select("#renderArea")
             .append("svg")
             .attr("width", _SigletonConfig.width)
-            .attr("height", _SigletonConfig.height)
-        ;
+            .attr("height", _SigletonConfig.height);
 
-        var lScale = 5;
         var lText = "MSPViz";
 
-        if (pMssg !== undefined) lText = pMssg;
+        if (pMsg !== undefined) lText = pMsg;
 
-        _SigletonConfig.svg.append("text")         			// append text
-            .style("fill", "black")   			// fill the text with the colour black
-            .attr("x", _SigletonConfig.width / 2) // set x position of left side of text
-            .attr("y", _SigletonConfig.height / 2)// set y position of bottom of text
-            .attr("dy", ".35em")           		// set offset y position
-            .attr("text-anchor", "middle") 		// set anchor y justification
-            .style("font-size", "68px")
-            .text(lText);          				// define the text to display
+        _SigletonConfig.svg.append("text")
+            .style("fill", "black")
+            .attr("x", _SigletonConfig.width / 2)
+            .attr("y", _SigletonConfig.height / 2)
+            .attr("text-anchor", "middle")
+            .attr("dominant-baseline","central")
+            .style("font-size", "8vmin")
+            .text(lText);
     },
     generateView: function (pViewId) {
         if (_SimulationController !== null) {
-
-
             $("#idSelector").css('display', 'none');
             _SimulationController.activeViewID = pViewId;
             switch (pViewId) {
-                case 0:
+                case this.viewsID.GlobalConnectionsView:
                     $("#colorSampleBand").empty();
                     if (this.activeView !== null) delete this.activeView;
                     this.activeView = null;
@@ -970,45 +897,45 @@ UI.Visualizator.prototype = {
                     this.activeView.generateGlobalConnectionsView();
 
                     break;
-                case 1:
+                case this.viewsID.MacroscopicViewGrid:
                     if (this.activeView !== null) delete this.activeView;
                     this.activeView = null;
                     this.activeView = new MSP.MacroscopicViewGrid();
                     this.activeView.generateMacroscopicViewGrid();
                     break;
-                case 4:
+                case this.viewsID.MacroscopicViewElipse:
                     if (this.activeView !== null) delete this.activeView;
                     this.activeView = null;
                     this.activeView = new MSP.MacroscopicViewElipse();
                     this.activeView.generateMacroscopicViewElipse();
                     break;
-                case 5:
+                case this.viewsID.GlobalConnectionsViewGraph:
                     if (this.activeView !== null) delete this.activeView;
                     this.activeView = null;
                     this.activeView = new MSP.GlobalConnectionsViewGraph();
                     this.activeView.generateGlobalConnectionsViewGraph();
                     break;
 
-                case 6:
+                case this.viewsID.MacroscopicViewForce:
                     if (this.activeView !== null) delete this.activeView;
                     this.activeView = null;
                     this.activeView = new MSP.MacroscopicViewForce();
                     this.activeView.generateMacroscopicViewForce();
                     break;
-                case 7:
+                case this.viewsID.MacroscopicViewCanvas:
                     if (this.activeView !== null) delete this.activeView;
                     this.activeView = null;
                     this.activeView = new MSP.MacroscopicViewCanvas();
                     this.activeView.generateMacroscopicViewCanvas();
                     break;
-                case 8:
+                case this.viewsID.ConnectivityMatrixView:
                     $("#colorSampleBand").empty();
                     if (this.activeView !== null) delete this.activeView;
                     this.activeView = null;
                     this.activeView = new MSP.ConnectivityMatrixView();
                     this.activeView.generateConnectivityMatrixView();
                     break;
-                case 2:
+                case this.viewsID.MicroscopicView:
                     //Constraint
                     if (_SigletonConfig.gSelectionIds.length > 0) {
                         if (this.activeView !== null) delete this.activeView;
@@ -1021,7 +948,7 @@ UI.Visualizator.prototype = {
                         return false
                     }
                     break;
-                case 3:
+                case this.viewsID.DetailMicroscopicView:
                     if (_SigletonConfig.neuronSelected !== -1) {
                         if (this.activeView !== null) delete this.activeView;
                         this.activeView = null;
@@ -1042,9 +969,7 @@ UI.Visualizator.prototype = {
                             this.activeView.generateDetailMicroscopicView();
                             $("#idSelector").css('display', 'inline');
                         }
-
                     }
-
                     break;
                 default:
                     break;
@@ -1054,7 +979,7 @@ UI.Visualizator.prototype = {
 
             console.log("********Generando vista y concreteSimulationStep");
             _SimulationController.concreteSimulationStep(_SimulationController.actSimStep);
-
+            this.updateConfigTabContent();
             this.resize();
             $("#jqxBottomControls").css("visibility", "visible");
             return true;
@@ -1065,26 +990,75 @@ UI.Visualizator.prototype = {
             return false;
         }
     },
+    _openView: function (viewID, buttonIndex) {
+        var self = this;
+        return function () {
+            if (self.generateView(viewID))
+                self.navBarSelectView(buttonIndex);
+        };
+    },
+    _openTab: function (tabName, buttonIndex) {
+        var self = this;
+        return function () {
+            var spacing = Math.max($(window).width() * 0.025, 48);
+            $("#sideNav").css("left", spacing);
+            self.activeTab = tabName;
+            var tabNames = ["File", "Color preferences", "Global Configuration", "View Configuration", "Filter data", "Sort Data"];
+            if ($(".navOptionsButton").eq(buttonIndex).attr('class') === "navOptionsButton active") {
+                self.closeNav();
+                return false;
+            }
+
+            $("#optionsTitle").text(tabNames[buttonIndex]);
+            var i;
+            var x = document.getElementsByClassName("tabs");
+            for (i = 0; i < x.length; i++)
+                x[i].style.display = "none";
+
+
+            var y = document.getElementsByClassName("navOptionsButton");
+            for (i = 0; i < y.length; i++) {
+                $(".navOptionsButton").eq(i).removeClass("active");
+                $(".navOptionsButton img").eq(i).attr("src", $(".navOptionsButton img").eq(i).attr("src").replace("B.png", ".png"));
+            }
+
+            $(".navOptionsButton").eq(buttonIndex).addClass("active");
+            $(".navOptionsButton img").eq(buttonIndex).attr("src", $(".navOptionsButton img").eq(buttonIndex).attr("src").replace(".png", "") + "B.png");
+            if (tabName === 'config') {
+
+                self.updateConfigTabContent();
+
+            } else {
+                document.getElementById(tabName).style.display = "flex";
+            }
+            document.getElementById("closeTabs").src = "./content/images/close.png"
+        };
+    },
     resize: function () {
         var self = this;
         $('#jqxBottomControls_SliderTimeline').jqxSlider('width', 0);
+
+        if (_SimulationController !== null && _SimulationController.activeViewID !== this.viewsID.GlobalConnectionsView
+            && _SimulationController.activeViewID !== this.viewsID.GlobalConnectionsViewGraph
+            && _SimulationController.activeViewID !== this.viewsID.ConnectivityMatrixView)
+            self.createSampleBandColor();
+
         _SigletonConfig.height = $(window).height() - $("#jqxBottomControls").outerHeight() - $("#colorSampleBand").outerHeight();
         _SigletonConfig.width = $(window).width() - $("#icon-bar").outerWidth();
+
         if (_SimulationController !== null) {
             _SimulationController.view.resize();
             _SimulationController.view.updateVisualization();
-            if (_SimulationController.activeViewID !== 0 && _SimulationController.activeViewID !== 5 && _SimulationController.activeViewID !== 8)
-                self.createSampleBandColor();
         }
         else {
             this.generateCanvas("MSPViz");
         }
 
-
         var width = ($('#control1').outerWidth() + $('#control2').outerWidth() + $('#control4').outerWidth() + $('#control5').outerWidth()) * 1.1;
         $('#jqxBottomControls_SliderTimeline').jqxSlider('width', $('#controles').outerWidth() - width);
         _ColorPicker.resize();
-    }, createColorCombos: function (idComboType, colorScaleTypes, idComboScheme, colorScales) {
+    },
+    createColorCombos: function (idComboType, colorScaleTypes, idComboScheme, colorScales) {
 
         colorScaleTypes.forEach(function (elem, i) {
             $(idComboType).append($('<option>', {
@@ -1101,11 +1075,9 @@ UI.Visualizator.prototype = {
         });
 
     },
-
     showInfo: function () {
         $('#jqxWindow_Info').jqxWindow('open');
     },
-
     updateSimulationFromTimeline: function () {
         var lValue = $('#jqxBottomControls_SliderTimeline').jqxSlider('val');
         $('#jqxBottomControls_NumericInputStep').val(lValue);
@@ -1113,7 +1085,6 @@ UI.Visualizator.prototype = {
         _SimulationController.actSimStep = lValue;
         _SimulationController.concreteSimulationStep(_SimulationController.actSimStep);
     },
-
     updateSimulationFromStep: function () {
         var lValue = $('#jqxBottomControls_NumericInputStep').jqxNumberInput('val');
         $('#jqxBottomControls_SliderTimeline').val(lValue);
@@ -1121,17 +1092,14 @@ UI.Visualizator.prototype = {
         _SimulationController.actSimStep = lValue;
         _SimulationController.concreteSimulationStep(_SimulationController.actSimStep);
     },
-
     loadLocalSimulation: function () {
         $("#fileDialog").click();
         //this.loadLocalFiles();
     },
-
     loadLocalConfiguration: function () {
         $("#fileDialogConfig").click();
         //this.loadLocalFiles();
     },
-
     loadLocalFiles: function () {
         var self = this;
 
@@ -1153,7 +1121,6 @@ UI.Visualizator.prototype = {
             alert("Please, select the 6 minimal simulation files");
         }
     },
-
     loadLocalConfigurationFiles: function () {
         var self = this;
         var config = null;
@@ -1235,10 +1202,6 @@ UI.Visualizator.prototype = {
             else
                 _SimulationController.stopVisualization();
     },
-    stopSimulation: function () {
-        if (_SimulationController !== null)
-            _SimulationController.stopVisualization();
-    },
     disableUI: function (pVal) {
 
         $("#jqxBottomControls_ButtonSimulate").prop('disabled', pVal);
@@ -1249,22 +1212,6 @@ UI.Visualizator.prototype = {
             this.generateView(0);
         }
 
-    },
-    updateSampleBandColor: function (interpolator) {
-
-        z = d4.scaleSequential(d4["interpolate" + interpolator]);
-        d4.select("#mygrad2")
-            .selectAll("stop")
-            .each(function (d, i) {
-                d4.select(this).style("stop-color", z(i / 20));
-
-            });
-        if (typeof _SimulationController !== "undefined")
-            _SimulationController.view.updateVisualization();
-    },
-    saveImageToSVG: function () {
-        $('#jqxWindow_ImgExporter').jqxWindow('open');
-        saveAsImage();
     },
     createSampleBandColor: function () {
 
@@ -1352,11 +1299,10 @@ UI.Visualizator.prototype = {
                 $("#listaFiltros").children()[i].remove();
             }
         }
-
-
     }
 };
 
+_ColorPicker = new MSP.ColorPicker();
 //Generate the interface
 _gVisualizatorUI = new UI.Visualizator();
 //# sourceURL=InterfaceLogic.js
