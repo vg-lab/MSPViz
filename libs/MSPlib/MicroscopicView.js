@@ -784,7 +784,10 @@ MSP.MicroscopicView.prototype =
             self.zoombehavior.translate(self.trans);
             self.zoombehavior.on("zoom", self.zoomManager);
             d3.select("svg").call(self.zoombehavior);
+            var neuronUnselected = _SigletonConfig.neuronSelected !== -1;
             if(d3.event.keyCode === 27) {
+                _SigletonConfig.neuronSelected = -1;
+                d3.selectAll("path").classed("selected", false);
                 self.selectedMicro.forEach(function (i) {
                     _SimulationData.gNeurons[i].previouslySelectedM = false;
                     _SimulationData.gNeurons[i].selectedM = false;
@@ -793,7 +796,7 @@ MSP.MicroscopicView.prototype =
                 self.selectedMicro = [];
                 self.updateVisualization(true);
             }
-            if( self.selectedMicro.length>0)
+            if( self.selectedMicro.length>0 || neuronUnselected)
             self.updateVisualization(true);
 
 
