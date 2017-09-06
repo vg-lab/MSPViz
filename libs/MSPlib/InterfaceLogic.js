@@ -730,10 +730,11 @@ UI.Visualizator.prototype = {
             _SimulationController.view.updateVisualization();
             self.createSampleBandColor();
         });
-        $("#dropDownSynapticElementsToViewButton").on("change", function (event) {
-            _SigletonConfig.SEViewSelector = event.args.index;
+        $("#dropDownSynapticElementsToViewButton").on("change", function () {
+            _SigletonConfig.SEViewSelector = $(this).prop("selectedIndex");
+            _SimulationController.view.updateVisualization();
         });
-        $('#jqxNumericInput_SimulationVelocity').on('change', function (event) {
+        $('#jqxNumericInput_SimulationVelocity').on('change', function () {
             _SimulationController.setVisualizationInterval($('#jqxNumericInput_SimulationVelocity').val());
         });
         $("#jqxCheckBox_EEConnect").on('change', function (event) {

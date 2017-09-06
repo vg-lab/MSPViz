@@ -915,6 +915,10 @@ hr {
     path.selected {
         stroke-width: 2px !important;
     }
+
+    #tooltip {
+        font-size: 1.6vmin;
+    }
 }
 
 

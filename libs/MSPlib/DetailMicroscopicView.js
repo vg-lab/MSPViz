@@ -208,14 +208,7 @@ MSP.DetailMicroscopicView.prototype = {
         var duration = _SimulationController.UpdateVelocity;
 
         this.nodes = this.tree(self.root);
-        /*            .sort(function(a, b) {
-         if(a.depth<2 || b.depth<2) return 0;
-         var lIndex = _SimulationController.actSimStep % _SimulationData.numSimStepsPerFile;
-         var cal1 = _SimulationData.gNeuronsDetails[a.id].Calcium[lIndex];
-         var cal2 = _SimulationData.gNeuronsDetails[b.id].Calcium[lIndex];
-         return d3.ascending(cal1,cal2);
-         });*/
-        var i = 0;
+
         this.nodesRep = _SigletonConfig.svg
             .selectAll("g.node")
             .data(self.nodes, function (d) {
@@ -226,7 +219,7 @@ MSP.DetailMicroscopicView.prototype = {
         this.nodesRep.enter()
             .append("g")
             .filter(function (d, i) {
-                return i !== 0
+                return i !== 0 && d.id !== "vacantNode"
             })
             .attr("class", "node")
             .attr("id", function (d) {
@@ -553,8 +546,8 @@ MSP.DetailMicroscopicView.prototype = {
                 break;
         }
         this.recalculateChilds("Excitatory", ENode);
-        this.recalculateChilds("Inhibitory", ANode);
-        this.recalculateChilds("Axonal", INode);
+        this.recalculateChilds("Inhibitory", INode);
+        this.recalculateChilds("Axonal", ANode);
         this.graph.updateGraph();
         this.updateCalcium();
 
@@ -574,7 +567,7 @@ MSP.DetailMicroscopicView.prototype = {
         }
         var idsList = [];
         this.nodes[k]["uniqueID"] = pParentId;
-
+        //FIXME: Vacants
         if (pParentId === "Axonal") {
             if (typeof (_SimulationData.gConnectivity.EI[_SimulationData.steps[_SimulationController.actSimStep]]) !== "undefined")
                 _SimulationData.gConnectivity.EI[_SimulationData.steps[_SimulationController.actSimStep]].forEach(
@@ -630,6 +623,7 @@ MSP.DetailMicroscopicView.prototype = {
         idsList.sort(function (c1, c2) {
             return _SimulationData.gNeurons[c1].index < _SimulationData.gNeurons[c2].index ? -1 : 1;
         });
+
         var uniqueID = [];
         var ids = [];
         for (var i = 0; i < idsList.length; i++) {
@@ -641,6 +635,11 @@ MSP.DetailMicroscopicView.prototype = {
                 uniqueID["node" + idsList[i]] += 1;
                 ids.push(pParentId + " " + idsList[i] + " " + uniqueID["node" + idsList[i]]);
             }
+        }
+
+        for(var i = idsList.length; i <pActNumChilds; i++) {
+            idsList.push("vacantNode");
+            ids.push(pParentId+" vacantNode "+i);
         }
 
         p.children = [];

@@ -76,71 +76,70 @@ MSP.GraphMicroscopicView = function () {
     this.minFontSize = 10;
 };
 
-MSP.GraphMicroscopicView.prototype =
-    {
-        constructor: MSP.GraphMicroscopicView
+MSP.GraphMicroscopicView.prototype = {
+    constructor: MSP.GraphMicroscopicView,
 
-        , resize: function () {
+    resize: function () {
         this.generateGraph();
     },
-        generateGraph: function () {
+    generateGraph: function () {
 
-            var self = this;
-            var ratioHeight = _SigletonConfig.height;
-            var ratioWidth = _SigletonConfig.width;
-            var leftMargin = 60;
-            var rightMargin = ratioWidth * 0.01;
-            var width = _SigletonConfig.width * 0.49 - rightMargin - leftMargin;
-            this.margin = {top: ratioWidth * 0.005, right: ratioWidth, left: leftMargin};
-            this.width = width;
-            this.height = ratioHeight * 0.30;
+        var self = this;
+        var ratioHeight = _SigletonConfig.height;
+        var ratioWidth = _SigletonConfig.width;
+        var leftMargin = 60;
+        var rightMargin = ratioWidth * 0.01;
+        var width = _SigletonConfig.width * 0.49 - rightMargin - leftMargin;
+        this.margin = {top: ratioWidth * 0.005, right: ratioWidth, left: leftMargin};
+        this.width = width;
+        this.height = ratioHeight * 0.30;
 
-            this.margin2 = {
-                top: this.height + this.margin.top + ratioHeight * 0.08,
-                right: ratioWidth,
-                bottom: 0,
-                left: leftMargin
-            };
-            this.width2 = width;
-            this.height2 = ratioHeight * 0.16;
+        this.margin2 = {
+            top: this.height + this.margin.top + ratioHeight * 0.08,
+            right: ratioWidth,
+            bottom: 0,
+            left: leftMargin
+        };
+        this.width2 = width;
+        this.height2 = ratioHeight * 0.16;
 
-            this.margin3 = {
-                top: this.height2 + this.margin2.top + ratioHeight * 0.04,
-                right: ratioWidth,
-                bottom: 0,
-                left: leftMargin
-            };
-            this.width3 = width;
-            this.height3 = ratioHeight * 0.16;
+        this.margin3 = {
+            top: this.height2 + this.margin2.top + ratioHeight * 0.04,
+            right: ratioWidth,
+            bottom: 0,
+            left: leftMargin
+        };
+        this.width3 = width;
+        this.height3 = ratioHeight * 0.16;
 
-            this.margin4 = {
-                top: this.height3 + this.margin3.top + ratioHeight * 0.04,
-                right: ratioWidth,
-                bottom: 0,
-                left: leftMargin
-            };
-            this.width4 = width;
-            this.height4 = ratioHeight * 0.16;
-
-
-            d3.select("#caGraph").remove();
-
-            this.svg = d3.select("#renderArea")
-                .append("svg")
-                .style("width", "49%")
-                .style("border-right", "1px solid #ebebeb")
-                .attr("id", "caGraph")
-                .attr("width", _SigletonConfig.width * 0.49)
-                .attr("height", _SigletonConfig.height)
-                .append("g")
-                .call(d3.behavior.zoom().scaleExtent([1, 10]).on("zoom", self.zoom))
-                .attr("transform", "translate(" + self.margin.left + "," + self.margin.top + ")")
-                .append("g");
-
-            this.updateGraph();
+        this.margin4 = {
+            top: this.height3 + this.margin3.top + ratioHeight * 0.04,
+            right: ratioWidth,
+            bottom: 0,
+            left: leftMargin
+        };
+        this.width4 = width;
+        this.height4 = ratioHeight * 0.16;
 
 
-        }, updateGraph: function (selectedID) {
+        d3.select("#caGraph").remove();
+
+        this.svg = d3.select("#renderArea")
+            .append("svg")
+            .style("width", "49%")
+            .style("border-right", "1px solid #ebebeb")
+            .attr("id", "caGraph")
+            .attr("width", _SigletonConfig.width * 0.49)
+            .attr("height", _SigletonConfig.height)
+            .append("g")
+            .attr("transform", "translate(" + self.margin.left + "," + self.margin.top + ")")
+            .append("g");
+
+        this.updateGraph();
+
+
+    },
+    updateGraph: function (selectedID) {
         var self = this;
         var lIndex = _SimulationController.actSimStep % _SimulationData.numSimStepsPerFile;
 
@@ -179,6 +178,20 @@ MSP.GraphMicroscopicView.prototype =
             dataCalcium.push(data);
         });
 
+        var dataIDs = {"E": "DeSeEA", "I": "DeSeIA", "A": "AxSeA"};
+
+        switch (_SigletonConfig.SEViewSelector) {
+            case 0:
+                dataIDs = {"E": "DeSeEA", "I": "DeSeIA", "A": "AxSeA"};
+                break;
+            case 1:
+                dataIDs = {"E": "DeSeEV", "I": "DeSeIV", "A": "AxSeV"};
+                break;
+            case 2:
+                dataIDs = {"E": "DeSeEC", "I": "DeSeIC", "A": "AxSeC"};
+                break;
+        }
+
         var dataE = [];
         neurons.forEach(function (d) {
             var color = "#ababab";
@@ -192,7 +205,7 @@ MSP.GraphMicroscopicView.prototype =
             var data = {text: "Excitatory", id: d, textShort: d, color: color, data: [], selected: d === selectedID};
             var startStep = _SimulationData.actFile * _SimulationData.numSimStepsPerFile;
             for (var i = 0; i < lIndex + 1; i++) {
-                data.data.push({value: startStep, data: _SimulationData.gNeuronsDetails[d].DeSeEA[i]});
+                data.data.push({value: startStep, data: _SimulationData.gNeuronsDetails[d][dataIDs["E"]][i]});
                 startStep++;
             }
             dataE.push(data);
@@ -212,7 +225,7 @@ MSP.GraphMicroscopicView.prototype =
             var data = {text: "Inhibitory", id: d, textShort: d, color: color, data: [], selected: d === selectedID};
             var startStep = _SimulationData.actFile * _SimulationData.numSimStepsPerFile;
             for (var i = 0; i < lIndex + 1; i++) {
-                data.data.push({value: startStep, data: _SimulationData.gNeuronsDetails[d].DeSeIA[i]});
+                data.data.push({value: startStep, data: _SimulationData.gNeuronsDetails[d][dataIDs["I"]][i]});
                 startStep++;
             }
             dataI.push(data);
@@ -232,7 +245,7 @@ MSP.GraphMicroscopicView.prototype =
             var data = {text: "Axonal", id: d, textShort: d, color: color, data: [], selected: d === selectedID};
             var startStep = _SimulationData.actFile * _SimulationData.numSimStepsPerFile;
             for (var i = 0; i < lIndex + 1; i++) {
-                data.data.push({value: startStep, data: _SimulationData.gNeuronsDetails[d].AxSeA[i]});
+                data.data.push({value: startStep, data: _SimulationData.gNeuronsDetails[d][dataIDs["A"]][i]});
                 startStep++;
             }
             dataA.push(data);
@@ -245,7 +258,8 @@ MSP.GraphMicroscopicView.prototype =
         this.graph(4, this.svg, this.width, this.margin4.left, this.margin4.top, this.height4, dataA, false, 4, selectedID);
 
 
-    }, graph: function (graphID, svg, widthTotal, marginLeft, marginTop, height, data, hasLegend, steps, selectedID) {
+    },
+    graph: function (graphID, svg, widthTotal, marginLeft, marginTop, height, data, hasLegend, steps, selectedID) {
         var renderWidth = _SigletonConfig.width;
         var renderHeight = _SigletonConfig.height;
         var defaultFontSize = Math.max(Math.min(renderHeight, renderWidth) * this.fontSizeRatio, this.minFontSize);
@@ -329,7 +343,7 @@ MSP.GraphMicroscopicView.prototype =
             .append("text")
             .attr("transform", "rotate(-90)")
             .attr("y", graphTitlePos.x)
-            .attr("x", graphTitlePos.y-marginTop)
+            .attr("x", graphTitlePos.y - marginTop)
             .style("text-anchor", "middle")
             .attr("font-family", "sans-serif")
             .attr("font-size", titleFontSize)
@@ -346,13 +360,6 @@ MSP.GraphMicroscopicView.prototype =
         //TODO: Limipar el codigo agrupar en funciones mejorar parametros
         data.forEach(function (d, z) {
             if (!_SimulationData.gNeurons[d.id].selectedM) {
-                if (data.length === 1) {
-                    glineas.append("path")
-                        .datum(d.data)
-                        .attr("class", "graphArea a" + graphID)
-                        .attr("d", area);
-                }
-
                 glineas.append("path")
                     .attr("class", "graphLine")
                     .attr("id", d.id)
@@ -441,7 +448,7 @@ MSP.GraphMicroscopicView.prototype =
                 var simulationStep = Math.round(x(mousePos[0]));
                 var linePosX = (Math.round(x(mousePos[0])) - _SimulationData.numSimStepsPerFile * _SimulationData.actFile)
                     * (width / (_SimulationController.actSimStep - _SimulationData.numSimStepsPerFile
-                    * _SimulationData.actFile));
+                        * _SimulationData.actFile));
 
                 if ((tooltipX + tooltipWidth) > $(window).width())
                     tooltipX -= tooltipWidth;
@@ -506,7 +513,6 @@ MSP.GraphMicroscopicView.prototype =
 
         svg.selectAll(".axis").selectAll("path").remove();
 
-    }, zoom: function () {
-        this.svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
     }
-    };
+
+};

@@ -334,6 +334,21 @@ MSP.GraphDetailMicroscopicView.prototype = {
         var dataE = {text: "Excitatory", textShort: "", color: _SigletonConfig.EColor, data: []};
         var dataI = {text: "Inhibitory", textShort: "", color: _SigletonConfig.IColor, data: []};
         var dataA = {text: "Axonal", textShort: "", color: _SigletonConfig.AColor, data: []};
+
+        var dataIDs = {"E": "DeSeEA", "I": "DeSeIA", "A": "AxSeA"};
+
+        switch (_SigletonConfig.SEViewSelector) {
+            case 0:
+                dataIDs = {"E": "DeSeEA", "I": "DeSeIA", "A": "AxSeA"};
+                break;
+            case 1:
+                dataIDs = {"E": "DeSeEV", "I": "DeSeIV", "A": "AxSeV"};
+                break;
+            case 2:
+                dataIDs = {"E": "DeSeEC", "I": "DeSeIC", "A": "AxSeC"};
+                break;
+        }
+
         var startStep = _SimulationData.actFile * _SimulationData.numSimStepsPerFile;
         for (var i = 0; i < lIndex + 1; i++) {
             data.data.push({
@@ -343,17 +358,17 @@ MSP.GraphDetailMicroscopicView.prototype = {
 
             dataE.data.push({
                 value: startStep,
-                data: _SimulationData.gNeuronsDetails[_SigletonConfig.neuronSelected].DeSeEA[i]
+                data: _SimulationData.gNeuronsDetails[_SigletonConfig.neuronSelected][dataIDs["E"]][i]
             });
 
             dataI.data.push({
                 value: startStep,
-                data: _SimulationData.gNeuronsDetails[_SigletonConfig.neuronSelected].DeSeIA[i]
+                data: _SimulationData.gNeuronsDetails[_SigletonConfig.neuronSelected][dataIDs["I"]][i]
             });
 
             dataA.data.push({
                 value: startStep,
-                data: _SimulationData.gNeuronsDetails[_SigletonConfig.neuronSelected].AxSeA[i]
+                data: _SimulationData.gNeuronsDetails[_SigletonConfig.neuronSelected][dataIDs["A"]][i]
             });
             startStep++;
         }
