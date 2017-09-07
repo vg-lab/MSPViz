@@ -70,6 +70,13 @@ UI.Visualizator = function () {
         ]
     };
 
+    this.filterTypes = [{label: "Calcium Concentration", cat: "decimal", type: "Ca", color: "#de9425"},
+        {label: "Excitatory Connections", cat: "real", type: "IConn", color: _SigletonConfig.IColor},
+        {label: "Inhibitory Connections", cat: "real", type: "EConn", color: _SigletonConfig.EColor},
+        {label: "Axonal Connections", cat: "real", type: "AConn", color: _SigletonConfig.AColor}];
+
+
+
     this.viewsID = {
         GlobalConnectionsView: 0, MacroscopicViewGrid: 1, MacroscopicViewElipse: 4,
         GlobalConnectionsViewGraph: 5, MacroscopicViewForce: 6, MacroscopicViewCanvas: 7, ConnectivityMatrixView: 8,
@@ -146,12 +153,7 @@ UI.Visualizator.prototype = {
         $("#chkNeuronType1").jqxCheckBox({width: 80, height: 25, checked: true});
         $("#chkNeuronType2").jqxCheckBox({width: 80, height: 25, checked: true});
 
-        var sourceFilter = [{label: "Calcium Concentration", cat: "decimal", type: "Ca", color: "#de9425"},
-            {label: "Excitatory Connections", cat: "real", type: "IConn", color: _SigletonConfig.IColor},
-            {label: "Inhibitory Connections", cat: "real", type: "EConn", color: _SigletonConfig.EColor},
-            {label: "Axonal Connections", cat: "real", type: "AConn", color: _SigletonConfig.AColor}];
-
-        sourceFilter.forEach(function (elem, i) {
+        self.filterTypes.forEach(function (elem, i) {
             $("#comboBoxTypeFilter").append($('<option>', {
                 value: i,
                 text: elem.label
@@ -521,10 +523,9 @@ UI.Visualizator.prototype = {
 
 
         });
-
         $("#comboBoxTypeFilter").on('change', function () {
             var idx = $("#comboBoxTypeFilter").prop('selectedIndex');
-            if (sourceFilter[idx].cat === "decimal") {
+            if (self.filterTypes[idx].cat === "decimal") {
                 $("#caMinRangeFilter").jqxNumberInput('decimalDigits', 10);
                 $("#caMaxRangeFilter").jqxNumberInput('decimalDigits', 10);
             } else {
@@ -538,9 +539,9 @@ UI.Visualizator.prototype = {
 
         $("#btnApplyFilter").on('click', function () {
             var idx = $("#comboBoxTypeFilter").prop('selectedIndex');
-            var tipo = sourceFilter[idx].type;
-            var color = sourceFilter[idx].color;
-            var tipoCompleto = sourceFilter[idx].label;
+            var tipo = self.filterTypes[idx].type;
+            var color = self.filterTypes[idx].color;
+            var tipoCompleto = self.filterTypes[idx].label;
             var filtro = {
                 type: tipo, min: $("#caMinRangeFilter").val(), max: $("#caMaxRangeFilter").val(),
                 excitatory: $("#chkNeuronType1").val(), inhibitory: $("#chkNeuronType2").val()

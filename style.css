@@ -608,6 +608,7 @@ html {
     color: white;
     font-size: 1.3vmin;
     padding: 0 0.2vw 0 0;
+    cursor: pointer;
 }
 
 .filterE {
