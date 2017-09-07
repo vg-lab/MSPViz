@@ -566,74 +566,75 @@ MSP.DetailMicroscopicView.prototype = {
             else ++k;
         }
         var idsList = [];
-        this.nodes[k]["uniqueID"] = pParentId;
-        //FIXME: Vacants
-        if (pParentId === "Axonal") {
-            if (typeof (_SimulationData.gConnectivity.EI[_SimulationData.steps[_SimulationController.actSimStep]]) !== "undefined")
-                _SimulationData.gConnectivity.EI[_SimulationData.steps[_SimulationController.actSimStep]].forEach(
-                    function (d) {
-                        if (d[0] === lId) idsList.push(d[1])
-                    });
-            if (typeof (_SimulationData.gConnectivity.EE[_SimulationData.steps[_SimulationController.actSimStep]]) !== "undefined")
-                _SimulationData.gConnectivity.EE[_SimulationData.steps[_SimulationController.actSimStep]].forEach(
-                    function (d) {
-                        if (d[0] === lId) idsList.push(d[1])
-                    });
-
-            if (typeof (_SimulationData.gConnectivity.IE[_SimulationData.steps[_SimulationController.actSimStep]]) !== "undefined")
-                _SimulationData.gConnectivity.IE[_SimulationData.steps[_SimulationController.actSimStep]].forEach(
-                    function (d) {
-                        if (d[0] === lId) idsList.push(d[1])
-                    });
-            if (typeof (_SimulationData.gConnectivity.II[_SimulationData.steps[_SimulationController.actSimStep]]) !== "undefined")
-                _SimulationData.gConnectivity.II[_SimulationData.steps[_SimulationController.actSimStep]].forEach(
-                    function (d) {
-                        if (d[0] === lId) idsList.push(d[1])
-                    });
-
-        }
-        else if (pParentId === "Inhibitory") {
-
-            if (typeof (_SimulationData.gConnectivity.IE[_SimulationData.steps[_SimulationController.actSimStep]]) !== "undefined")
-                _SimulationData.gConnectivity.IE[_SimulationData.steps[_SimulationController.actSimStep]].forEach(
-                    function (d) {
-                        if (d[1] === lId) idsList.push(d[0])
-                    });
-            if (typeof (_SimulationData.gConnectivity.II[_SimulationData.steps[_SimulationController.actSimStep]]) !== "undefined")
-                _SimulationData.gConnectivity.II[_SimulationData.steps[_SimulationController.actSimStep]].forEach(
-                    function (d) {
-                        if (d[1] === lId) idsList.push(d[0])
-                    });
-        }
-        else {
-
-            if (typeof (_SimulationData.gConnectivity.EI[_SimulationData.steps[_SimulationController.actSimStep]]) !== "undefined")
-                _SimulationData.gConnectivity.EI[_SimulationData.steps[_SimulationController.actSimStep]].forEach(
-                    function (d) {
-                        if (d[1] === lId) idsList.push(d[0])
-                    });
-            if (typeof (_SimulationData.gConnectivity.EE[_SimulationData.steps[_SimulationController.actSimStep]]) !== "undefined")
-                _SimulationData.gConnectivity.EE[_SimulationData.steps[_SimulationController.actSimStep]].forEach(
-                    function (d) {
-                        if (d[1] === lId) idsList.push(d[0])
-                    });
-        }
-
-
-        idsList.sort(function (c1, c2) {
-            return _SimulationData.gNeurons[c1].index < _SimulationData.gNeurons[c2].index ? -1 : 1;
-        });
-
-        var uniqueID = [];
         var ids = [];
-        for (var i = 0; i < idsList.length; i++) {
-            if (typeof uniqueID["node" + idsList[i]] === 'undefined') {
-                uniqueID["node" + idsList[i]] = 0;
-                ids.push(pParentId + " " + idsList[i] + " " + uniqueID["node" + idsList[i]]);
+        this.nodes[k]["uniqueID"] = pParentId;
+        if(_SigletonConfig.SEViewSelector !==1) {
+            if (pParentId === "Axonal") {
+                if (typeof (_SimulationData.gConnectivity.EI[_SimulationData.steps[_SimulationController.actSimStep]]) !== "undefined")
+                    _SimulationData.gConnectivity.EI[_SimulationData.steps[_SimulationController.actSimStep]].forEach(
+                        function (d) {
+                            if (d[0] === lId) idsList.push(d[1])
+                        });
+                if (typeof (_SimulationData.gConnectivity.EE[_SimulationData.steps[_SimulationController.actSimStep]]) !== "undefined")
+                    _SimulationData.gConnectivity.EE[_SimulationData.steps[_SimulationController.actSimStep]].forEach(
+                        function (d) {
+                            if (d[0] === lId) idsList.push(d[1])
+                        });
+
+                if (typeof (_SimulationData.gConnectivity.IE[_SimulationData.steps[_SimulationController.actSimStep]]) !== "undefined")
+                    _SimulationData.gConnectivity.IE[_SimulationData.steps[_SimulationController.actSimStep]].forEach(
+                        function (d) {
+                            if (d[0] === lId) idsList.push(d[1])
+                        });
+                if (typeof (_SimulationData.gConnectivity.II[_SimulationData.steps[_SimulationController.actSimStep]]) !== "undefined")
+                    _SimulationData.gConnectivity.II[_SimulationData.steps[_SimulationController.actSimStep]].forEach(
+                        function (d) {
+                            if (d[0] === lId) idsList.push(d[1])
+                        });
+
+            }
+            else if (pParentId === "Inhibitory") {
+
+                if (typeof (_SimulationData.gConnectivity.IE[_SimulationData.steps[_SimulationController.actSimStep]]) !== "undefined")
+                    _SimulationData.gConnectivity.IE[_SimulationData.steps[_SimulationController.actSimStep]].forEach(
+                        function (d) {
+                            if (d[1] === lId) idsList.push(d[0])
+                        });
+                if (typeof (_SimulationData.gConnectivity.II[_SimulationData.steps[_SimulationController.actSimStep]]) !== "undefined")
+                    _SimulationData.gConnectivity.II[_SimulationData.steps[_SimulationController.actSimStep]].forEach(
+                        function (d) {
+                            if (d[1] === lId) idsList.push(d[0])
+                        });
             }
             else {
-                uniqueID["node" + idsList[i]] += 1;
-                ids.push(pParentId + " " + idsList[i] + " " + uniqueID["node" + idsList[i]]);
+
+                if (typeof (_SimulationData.gConnectivity.EI[_SimulationData.steps[_SimulationController.actSimStep]]) !== "undefined")
+                    _SimulationData.gConnectivity.EI[_SimulationData.steps[_SimulationController.actSimStep]].forEach(
+                        function (d) {
+                            if (d[1] === lId) idsList.push(d[0])
+                        });
+                if (typeof (_SimulationData.gConnectivity.EE[_SimulationData.steps[_SimulationController.actSimStep]]) !== "undefined")
+                    _SimulationData.gConnectivity.EE[_SimulationData.steps[_SimulationController.actSimStep]].forEach(
+                        function (d) {
+                            if (d[1] === lId) idsList.push(d[0])
+                        });
+            }
+
+
+            idsList.sort(function (c1, c2) {
+                return _SimulationData.gNeurons[c1].index < _SimulationData.gNeurons[c2].index ? -1 : 1;
+            });
+
+            var uniqueID = [];
+            for (var i = 0; i < idsList.length; i++) {
+                if (typeof uniqueID["node" + idsList[i]] === 'undefined') {
+                    uniqueID["node" + idsList[i]] = 0;
+                    ids.push(pParentId + " " + idsList[i] + " " + uniqueID["node" + idsList[i]]);
+                }
+                else {
+                    uniqueID["node" + idsList[i]] += 1;
+                    ids.push(pParentId + " " + idsList[i] + " " + uniqueID["node" + idsList[i]]);
+                }
             }
         }
 
