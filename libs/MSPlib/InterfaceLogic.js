@@ -555,7 +555,9 @@ UI.Visualizator.prototype = {
                 '<div><span class="filterTitleSecondary">Max:</span><span>' + (filtro.max) + '</span></div></div>');
             $(".btnFiltro").last().on('click', function () {
                 self.deleteFilter($(this.parentNode).parent());
-            })
+            });
+            _SimulationFilter.filter();
+            _SimulationController.view.updateVisualization();
         });
         $("#jqxCheckBoxMixNeurons").on('change', function (event) {
             _SimulationFilter.orderMix = event.args.checked;
@@ -1301,6 +1303,8 @@ UI.Visualizator.prototype = {
                 $("#listaFiltros").children()[i].remove();
             }
         }
+        _SimulationFilter.filter();
+        _SimulationController.view.updateVisualization();
     }
 };
 
