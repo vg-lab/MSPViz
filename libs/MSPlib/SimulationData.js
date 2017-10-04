@@ -176,7 +176,7 @@ MSP.SimulationData.prototype =
             var lProgres = 1;
             $("#jqxBottomControls_ProgressBar").jqxProgressBar({value: lProgres});
 
-            _gVisualizatorUI.disableUI(true);
+            _gVisualizerUI.disableUI(true);
 
             //.cfg simulation file
             var readerSimulationFiles = new FileReader();
@@ -404,8 +404,8 @@ MSP.SimulationData.prototype =
         },
         loadSimulationEnd: function () {
             if (this.numFilesLoaded === this.stdSimulationFileNames.length) {
-                _gVisualizatorUI.generateView(0);
-                _gVisualizatorUI.disableUI(false);
+                _gVisualizerUI.generateView(0);
+                _gVisualizerUI.disableUI(false);
                 $("#jqxBottomControls_ProgressBar").hide();
                 $("#jqxBottomControls_SliderTimeline").jqxSlider('max',_SimulationData.steps.length-1);
                 $("#jqxBottomControls_SliderTimeline").jqxSlider('val',0);
@@ -467,7 +467,7 @@ MSP.SimulationData.prototype =
                         $("#jqxBottomControls_ProgressBar").jqxProgressBar({value: lProgres});
 
                         //Reactivate the UI
-                        //_gVisualizatorUI.disableUI(false);
+                        //_gVisualizerUI.disableUI(false);
                         _SimulationController.view.updateVisualization();
                     });
                 });
@@ -536,7 +536,7 @@ MSP.SimulationData.prototype =
             var lProgres = 1;
             $("#jqxBottomControls_ProgressBar").jqxProgressBar({value: lProgres});
 
-            _gVisualizatorUI.disableUI(true);
+            _gVisualizerUI.disableUI(true);
 
             //self.requester 	= new YAAWebDavLib(lPathToFile, '2880', 'http', pUser, pPass);
             self.requester = new JAWDL(lPathToFile, '2880', 'http', pUser, pPass);
@@ -656,7 +656,7 @@ MSP.SimulationData.prototype =
             self.WebDavCascadeLoad = false;
 
             //Reactivate the UI
-            _gVisualizatorUI.disableUI(false);
+            _gVisualizerUI.disableUI(false);
 
         },
 

@@ -109,7 +109,7 @@ MSP.SimulationController.prototype =
 	,stopVisualization: function () 
 	{
 		this.pause = true;
-        $('#jqxBottomControls_ButtonSimulate').val('Simulate');
+        $('#jqxBottomControls_ButtonSimulate').val('Play Simulation');
 		clearTimeout(this.myTimer);
 	}	
 	
