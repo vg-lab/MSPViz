@@ -1,3 +1,13 @@
+body{
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    overflow: hidden;
+}
+
 #back {
     background-color: #ffffff;
 }
@@ -95,39 +105,26 @@ path.selected {
     overflow: hidden;
 }
 
-.bar {
-    fill: steelblue;
-    shape-rendering: crispEdges;
-}
-
-.bar:hover {
-    fill: brown;
-}
-
-.axis {
+#colorSampleBand .axis {
     font: 1.2vh sans-serif;
     stroke-width: 0.1vmin;
 }
 
 .textoL {
-    font: 14px sans-serif;
+    font: 0.8vw sans-serif;
 }
 
 .textoA {
-    font: 14px sans-serif;
+    font: 1vw sans-serif;
 }
 
-.x.axis text {
-    padding-top: 2px;
-}
-
-.axis path {
+#colorSampleBand .axis path {
     fill: none;
     stroke: #000;
     shape-rendering: crispEdges;
 }
 
-.axis line {
+#colorSampleBand .axis line {
     fill: none;
     stroke: #000;
     shape-rendering: crispEdges;
@@ -468,7 +465,7 @@ html {
 .graphLine {
     fill: none;
     stroke: steelblue;
-    stroke-width: 1.5px;
+    stroke-width: 0.15vmin;
 }
 
 .a20 {
@@ -611,6 +608,7 @@ html {
     color: white;
     font-size: 1.3vmin;
     padding: 0 0.2vw 0 0;
+    cursor: pointer;
 }
 
 .filterE {
@@ -742,6 +740,7 @@ html {
     margin-bottom: 2vh;
     justify-content: flex-end;
     width: 90%;
+    font-size: 1.4vmin;
 }
 
 .colorFlex div {
@@ -754,7 +753,6 @@ html {
 
 .colorFlex span {
     float: left;
-    font-size: 1.4vmin;
     margin: 0 0.2vw;
     font-family: sans-serif;
     font-weight: 700;
@@ -762,7 +760,6 @@ html {
 }
 
 .colorFlex label {
-    font-size: 1.4vmin;
     font-family: Verdana, serif;
     font-style: italic;
     flex-grow: 1;
@@ -817,6 +814,25 @@ hr {
     align-self: center;
 }
 
+.circle {
+    width: 1vmin;
+    height: 1vmin;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.stepTooltip {
+    display: block;
+    width: 100%;
+    border-bottom: 1px solid #858585;
+    text-align: center;
+    margin-bottom: 1vh
+}
+
+.border-1{
+    border: 0.1vmin solid #d0d0d0;
+}
+
 @media screen and (max-width: 1919px) {
     #jqxWidgets {
         height: 100vh;
@@ -845,16 +861,64 @@ hr {
     .navViewButton.active {
         border-left: 4px solid #FF9800;
     }
+
+    .textoL {
+        font: 14px sans-serif;
+    }
+
+    .textoA {
+        font: 14px sans-serif;
+    }
+
+    .text-input {
+        font-size: 1.6vmin;
+    }
+
+    .button {
+        font-size: 1.6vmin;
+    }
+
+    #jqxBottomControls {
+        font-size: 1.8vmin;
+    }
+
+    .btnSwitch {
+        font-size: 1.6vmin;
+    }
+
+    .colorFlex {
+        font-size: 1.6vmin;
+    }
+
+    .checkBoxWrapper {
+        font-size: 1.6vmin !important;
+    }
+
+    .radioWrapper {
+        font-size: 1.6vmin !important;
+    }
+
+    .numeriInputWrapper input {
+        font-size: 1.6vmin !important;
+    }
 }
 
 @media screen and (max-height: 1000px) {
-    .axis {
-        font: 1.2vh sans-serif;
+    #colorSampleBand .axis {
+        font: 1.4vh sans-serif;
         stroke-width: 1px !important;
     }
 
     path {
         stroke-width: 1px !important;
+    }
+
+    path.selected {
+        stroke-width: 2px !important;
+    }
+
+    #tooltip {
+        font-size: 1.6vmin;
     }
 }
 

@@ -68,7 +68,7 @@ MSP.SimulationController.prototype =
 			{				
 				_SimulationData.swapSimulationInfo();
 			}
-			_SimulationFilter.createDummy();
+			_SimulationFilter.filter();
 			this.view.updateVisualization();
 			this.updateUI();
 		}
@@ -115,8 +115,7 @@ MSP.SimulationController.prototype =
 	
 	,concreteSimulationStep: function (pKey) 
 	{
-		this.pause = true;
-		clearTimeout(this.myTimer);
+        this.stopVisualization();
 
 		console.log("Entrando en slider change");
 
@@ -207,7 +206,7 @@ MSP.SimulationController.prototype =
 			}								
 		}
 
-        _SimulationFilter.createDummy();
+        _SimulationFilter.filter();
 
 		if (!lDataReloaded) this.view.updateVisualization();
 		this.updateUI();

@@ -57,6 +57,9 @@ MSP.ColorPicker = function () {
     this.squareAnchor = null;
     this.svgContainer = null;
     this.numSteps = 10;
+    this.callback = null;
+    this.configPropID = null;
+    this.originDOMElement = null;
 };
 
 MSP.ColorPicker.prototype = {
@@ -359,11 +362,9 @@ MSP.ColorPicker.prototype = {
     },
     accept: function () {
         var self = _ColorPicker;
-        var color = $("#genericColorPicker").jqxColorPicker('getColor').hex;
-        self.colorSelecGlobal = d4.color('#' + color);
+        var color = "#"+$("#genericColorPicker").jqxColorPicker('getColor').hex;
         $("#popup").css({"visibility": "hidden"});
-        $("#" + (caller.attr("id")) + " div").css('background', self.colorSelecGlobal);
-        $("#" + (caller.attr("id")) + " span").text(this.rgbToHex(self.colorSelecGlobal));
+        self.callback(self.originDOMElement,color,self.configPropID);
     },
     moveBarColor: function () {
         var self = _ColorPicker;

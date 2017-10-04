@@ -30,35 +30,87 @@ d3.selection.prototype.moveToFront = function () {
     });
 };
 
+function dataURLtoBlob(dataurl) {
+    var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+        bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+    while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new Blob([u8arr], {type: mime});
+}
+
+function downloadCanvas(imgData, name) {
+    var tempDownloadLink = document.createElement("a");
+    document.body.appendChild(tempDownloadLink);
+    var blob = dataURLtoBlob(imgData);
+    var objurl = URL.createObjectURL(blob);
+    tempDownloadLink.download = name + ".png";
+    tempDownloadLink.href = objurl;
+    tempDownloadLink.click();
+    document.body.removeChild(tempDownloadLink);
+}
+
+function toColor(num) {
+    num >>>= 0;
+    var b = num & 0xFF,
+        g = (num & 0xFF00) >>> 8,
+        r = (num & 0xFF0000) >>> 16;
+    return "rgb(" + [r, g, b].join(",") + ")";
+}
+
+function cleanRenderArea() {
+    d3.selectAll("svg").filter(function () {
+        return !this.classList.contains('color')
+    }).remove();
+
+    d3.selectAll("canvas").filter(function () {
+        return !this.classList.contains('imgCanvas')
+    }).remove();
+}
+
 function saveAsImage() {
-    var html = d3.select("svg")
-        .attr("version", 1.1)
-        .attr("xmlns", "http://www.w3.org/2000/svg")
-        .node().parentNode.innerHTML;
-
-    var imgsrc = 'data:image/svg+xml;base64,' + btoa(html);
-    var img = '<img src="' + imgsrc + '">';
-    d3.select("#svgdataurl").html(img);
-
-    var canvas = document.querySelector("canvas"),
-        context = canvas.getContext("2d");
-
-    var image = new Image;
-    image.src = imgsrc;
-    image.onload = function () {
-        context.drawImage(image, 0, 0);
-
-        var canvasdata = canvas.toDataURL("image/png");
+    if ($("#renderArea").has("svg").size() === 0) {
+        var canvas = $("#renderArea canvas")[0];
+        var canvasdata = canvas.toDataURL({format: 'png', multiplier: 4});
 
         var pngimg = '<img src="' + canvasdata + '">';
         d3.select("#pngdataurl").html(pngimg);
 
-        var a = document.createElement("a");
-        a.download = "sample.png";
-        a.href = canvasdata;
-        a.click();
-    };
-    delete image;
+        downloadCanvas(canvasdata, "snapshot")
+    } else {
+
+        d3.select("#renderArea").selectAll("svg")
+            .attr("version", 1.1)
+            .attr("xmlns", "http://www.w3.org/2000/svg")
+            .each(function (d,i) {
+
+                var html = $(this)[0].outerHTML;
+                var imgsrc = 'data:image/svg+xml;base64,' + btoa(html);
+                var img = '<img src="' + imgsrc + '">';
+                d3.select("#svgdataurl").html(img);
+                d3.select("#canvas")
+                    .attr("height",  $(this).height())
+                    .attr("width",  $(this).width());
+
+                var canvas = document.querySelector("canvas"),
+                    context = canvas.getContext("2d");
+
+                var image = new Image;
+                image.src = imgsrc;
+                image.onload = function () {
+                    context.clearRect(0, 0, canvas.width, canvas.height);
+                    context.drawImage(image, 0, 0);
+
+                    var canvasdata = canvas.toDataURL("image/png");
+
+                    var pngimg = '<img src="' + canvasdata + '">';
+                    d3.select("#pngdataurl").html(pngimg);
+
+                    downloadCanvas(canvasdata, "snapshot"+i)
+                };
+            });
+
+    }
 
 //// Canvasg	
 //	  var html = d3.select("svg")
@@ -216,15 +268,15 @@ function getCookie(cname) {
 }
 
 function updateCookieColor() {
-    var valores = getConfig();
-    setCookie("color", valores, 2000);
+    var values = getConfig();
+    setCookie("color", values, 2000);
 }
 
 function getConfig() {
     var valores = {
-        neuronST: 0, neuronS: 5, excitatoryC: '#e41a1c', inhibitoryC: '#377eb8',
+        neuronST: 0, neuronS: 5, excitatoryC: '#e41a1c', inhibitoryC: '#377eb8', axonalC: '#62d14b',
         connST: 0, connS: 5, EEC: '#e41a1c', EIC: '#377eb8', IEC: '#4daf4a', IIC: '#984ea3',
-        calciumST: 1, calciumS: 1, caMaxC: '#000004', caMinC: '#fcffa4'
+        calciumST: 1, calciumS: 1, caMaxC: '#fcffa4', caMinC: '#000004'
     };
 
     valores.neuronST = $("#comboScaleTypeNeuron").prop('selectedIndex');
@@ -235,12 +287,13 @@ function getConfig() {
     valores.calciumS = $("#comboScaleCalcium").prop('selectedIndex');
     valores.excitatoryC = $("#dropDownExcitatoryButton").children("span").text();
     valores.inhibitoryC = $("#dropDownInhibitoryButton").children("span").text();
+    valores.axonalC = $("#dropDownAxonalButton").children("span").text();
     valores.EEC = $("#dropDownEEButton").children("span").text();
     valores.EIC = $("#dropDownEIButton").children("span").text();
     valores.IEC = $("#dropDownIEButton").children("span").text();
     valores.IIC = $("#dropDownIIButton").children("span").text();
-    valores.caaxC = $("#dropDownCaMinValueColorButton").children("span").text();
-    valores.caMinC = $("#dropDownCaMaxValueColorButton").children("span").text();
+    valores.caMaxC = $("#dropDownCaMaxValueColorButton").children("span").text();
+    valores.caMinC = $("#dropDownCaMinValueColorButton").children("span").text();
     return valores;
 }
 
@@ -252,14 +305,12 @@ function generateNav() {
     data.forEach(function (d, i) {
         divPadre.append('<input class="btnSwitch' + (i === 0 ? ' active' : '') + '" type="button" value="' + d.label + '" onclick="navBar(' + i + ',' + d.viewID + ')"/>');
     })
-
-
 }
 
 function delCenter(idx) {
     _SimulationData.gNeurons[idx].centerElipse = false;
     $(".btnCentro").each(function () {
-        if ($(this).text() === idx+"") $(this).remove();
+        if ($(this).text() === idx + "") $(this).remove();
     });
     _SimulationController.view.update();
 }
@@ -275,54 +326,55 @@ function navBar(btnIdx, viewID) {
 function loadCookieColor() {
     var valCookie = getCookie("color");
     if (valCookie != "") {
-        var valores = JSON.parse(valCookie);
-        $("#comboScaleTypeNeuron").prop('selectedIndex', valores.neuronST);
-        $('#comboScaleTypeNeuron').trigger('change');
-        $("#comboScaleTypeConnection").prop('selectedIndex', valores.connST);
-        $('#comboScaleTypeConnection').trigger('change');
-        $("#comboScaleTypeCalcium").prop('selectedIndex', valores.calciumST);
-        $('#comboScaleTypeCalcium').trigger('change');
-        $("#comboScaleNeuron").prop('selectedIndex', valores.neuronS);
-        $('#comboScaleNeuron').trigger('change');
-        $("#comboScaleConnection").prop('selectedIndex', valores.connS);
-        $('#comboScaleConnection').trigger('change');
-        $("#comboScaleCalcium").prop('selectedIndex', valores.calciumS);
-        $('#comboScaleCalcium').trigger('change');
-        $("#dropDownExcitatoryButton").children("span").text(valores.excitatoryC);
-        $("#dropDownInhibitoryButton").children("span").text(valores.inhibitoryC);
-        $("#dropDownEEButton").children("span").text(valores.EEC);
-        $("#dropDownEIButton").children("span").text(valores.EIC);
-        $("#dropDownIEButton").children("span").text(valores.IEC);
-        $("#dropDownIIButton").children("span").text(valores.IIC);
-        $("#dropDownCaMinValueColorButton").children("span").text(valores.caMaxC);
-        $("#dropDownCaMaxValueColorButton").children("span").text(valores.caMinC);
-        console.log(valores);
+        var values = JSON.parse(valCookie);
+        loadConfig(values);
+        console.log(values);
     }
 
 }
 
-function loadConfig(valores) {
+function loadConfig(values) {
 
-    $("#comboScaleTypeNeuron").prop('selectedIndex', valores.neuronST);
+    $("#comboScaleTypeNeuron").prop('selectedIndex', values.neuronST);
     $('#comboScaleTypeNeuron').trigger('change');
-    $("#comboScaleTypeConnection").prop('selectedIndex', valores.connST);
+    $("#comboScaleTypeConnection").prop('selectedIndex', values.connST);
     $('#comboScaleTypeConnection').trigger('change');
-    $("#comboScaleTypeCalcium").prop('selectedIndex', valores.calciumST);
+    $("#comboScaleTypeCalcium").prop('selectedIndex', values.calciumST);
     $('#comboScaleTypeCalcium').trigger('change');
-    $("#comboScaleNeuron").prop('selectedIndex', valores.neuronS);
+    $("#comboScaleNeuron").prop('selectedIndex', values.neuronS);
     $('#comboScaleNeuron').trigger('change');
-    $("#comboScaleConnection").prop('selectedIndex', valores.connS);
+    $("#comboScaleConnection").prop('selectedIndex', values.connS);
     $('#comboScaleConnection').trigger('change');
-    $("#comboScaleCalcium").prop('selectedIndex', valores.calciumS);
+    $("#comboScaleCalcium").prop('selectedIndex', values.calciumS);
     $('#comboScaleCalcium').trigger('change');
-    $("#dropDownExcitatoryButton").children("span").text(valores.excitatoryC);
-    $("#dropDownInhibitoryButton").children("span").text(valores.inhibitoryC);
-    $("#dropDownEEButton").children("span").text(valores.EEC);
-    $("#dropDownEIButton").children("span").text(valores.EIC);
-    $("#dropDownIEButton").children("span").text(valores.IEC);
-    $("#dropDownIIButton").children("span").text(valores.IIC);
-    $("#dropDownCaMinValueColorButton").children("span").text(valores.caMaxC);
-    $("#dropDownCaMaxValueColorButton").children("span").text(valores.caMinC);
+
+    _SigletonConfig.EColor = values.excitatoryC;
+    _SigletonConfig.IColor = values.inhibitoryC;
+    _SigletonConfig.AColor = values.axonalC;
+    _SigletonConfig.EEColor = values.EEC;
+    _SigletonConfig.EIColor = values.EIC;
+    _SigletonConfig.IEColor = values.IEC;
+    _SigletonConfig.IIColor = values.IIC;
+    _SigletonConfig.maxCaColor = values.caMaxC;
+    _SigletonConfig.minCaColor = values.caMinC;
+
+    var colorElements = [
+        {id: "#dropDownInhibitoryButton", color: _SigletonConfig.IColor},
+        {id: "#dropDownExcitatoryButton", color: _SigletonConfig.EColor},
+        {id: "#dropDownAxonalButton", color: _SigletonConfig.AColor},
+        {id: "#dropDownEEButton", color: _SigletonConfig.EEColor},
+        {id: "#dropDownEIButton", color: _SigletonConfig.EIColor},
+        {id: "#dropDownIEButton", color: _SigletonConfig.IEColor},
+        {id: "#dropDownIIButton", color: _SigletonConfig.IIColor},
+        {id: "#dropDownCaMinValueColorButton", color: _SigletonConfig.minCaColor},
+        {id: "#dropDownCaMaxValueColorButton", color: _SigletonConfig.maxCaColor}
+    ];
+
+    colorElements.forEach(function (elem) {
+        var selector = $(elem.id);
+        selector.children("div").css("background", elem.color);
+        selector.children("span").text(elem.color);
+    });
     updateCookieColor();
 }
 
@@ -334,4 +386,16 @@ function saveConfig() {
     hiddenElement.download = 'config.json';
     hiddenElement.click();
 }
+
+function rgbToHex(color) {
+    var hexColor = "#";
+    for (var i = 0; i < 3; i++) {
+        var hexChannel = color[i].toString(16);
+        if (hexChannel.length === 1)
+            hexChannel = "0" + hexChannel;
+        hexColor += hexChannel;
+    }
+    return hexColor;
+}
+
 //# sourceURL=Utils.js

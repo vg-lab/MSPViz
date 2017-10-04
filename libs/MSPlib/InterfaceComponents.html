@@ -100,9 +100,9 @@
 
     <!-- Help and Info -->
     <div class="info">
-        <a class="navOptionsButton" id="navInfoInfo">
-            <img src="./content/images/info.png"/>
-            <p class="tooltiptext">View Instructions</p>
+        <a class="navOptionsButton" id="navScreenCapture">
+            <img src="./content/images/scapture.png"/>
+            <p class="tooltiptext">Download view image</p>
         </a>
         <a class="navOptionsButton" id="navInfoHelp">
             <img src="./content/images/help.png"/>
@@ -126,7 +126,7 @@
         <!-- <input id='jqxWindow_Config_button' type="button" value="Set value"/> -->
         <div class="box">
             <div class="navBarSectionTitle">
-                <label class="sectionHeader">Local Simulation</label>
+                <span class="sectionHeader">Local Simulation</span>
             </div>
             <!-- Window load local simulation-->
             <div class="centerFlex">
@@ -143,7 +143,7 @@
         </div>
         <div class="box">
             <div class="navBarSectionTitle">
-                <label class="sectionHeader">Simulation from Server</label>
+                <span class="sectionHeader">Simulation from Server</span>
             </div>
             <!-- Window load remote simulation from server-->
             <div class="centerFlex">
@@ -155,7 +155,7 @@
 
         <div class="box">
             <div class="navBarSectionTitle">
-                <label class="sectionHeader">Simulation from dCache</label>
+                <span class="sectionHeader">Simulation from dCache</span>
             </div>
             <!-- Window load remote simulation from dCache-->
             <div class="centerFlex">
@@ -180,7 +180,7 @@
 
         <div class="box">
             <div class="navBarSectionTitle">
-                <label class="sectionHeader">Load Configuration</label>
+                <span class="sectionHeader">Load Configuration</span>
             </div>
             <!-- Window load local simulation-->
             <div class="centerFlex">
@@ -195,7 +195,7 @@
 
         <div class="box">
             <div class="navBarSectionTitle">
-                <label class="sectionHeader">Save Configuration</label>
+                <span class="sectionHeader">Save Configuration</span>
             </div>
             <!-- Window load local simulation-->
             <div class="centerFlex">
@@ -209,7 +209,7 @@
         <!-- <input id='jqxWindow_Config_button' type="button" class="button" value="Set value"/> -->
         <div class="box">
             <div class="navBarSectionTitle">
-                <label class="sectionHeader">Elements</label>
+                <span class="sectionHeader">Elements</span>
             </div>
             <div class="centerFlex">
                 <div class="colorOptions">
@@ -236,7 +236,7 @@
         </div>
         <div class="box">
             <div class="navBarSectionTitle">
-                <label class="sectionHeader">Connections</label>
+                <span class="sectionHeader">Connections</span>
             </div>
             <div class="centerFlex">
                 <div class="colorOptions">
@@ -268,21 +268,23 @@
         </div>
         <div class="box">
             <div class="navBarSectionTitle">
-                <label class="sectionHeader">Calcium</label>
+                <span class="sectionHeader">Calcium</span>
             </div>
             <div class="centerFlex">
                 <div class="colorOptions">
                     <select id="comboScaleTypeCalcium" class="text-input" style="margin-right: 0.2vw;"></select>
                     <select id="comboScaleCalcium" class="text-input"></select>
                 </div>
+                <div class="colorOptions marginBottom border-1" id="calciumColorScale">
+                </div>
                 <hr>
-                <div class="colorFlex" id="dropDownCaMaxValueColorButton">
-                    <label>Maximum calcium</label>
+                <div class="colorFlex" id="dropDownCaMinValueColorButton">
+                    <label>Minimum calcium</label>
                     <span></span>
                     <div></div>
                 </div>
-                <div class="colorFlex" id="dropDownCaMinValueColorButton">
-                    <label>Minimum calcium</label>
+                <div class="colorFlex" id="dropDownCaMaxValueColorButton">
+                    <label>Maximum calcium</label>
                     <span></span>
                     <div></div>
                 </div>
@@ -309,7 +311,7 @@
                 </div>
                 <div class="tagInput">
                     <label class="labelSubtitle">Simulation velocity</label>
-                    <div class="numeriInputWrapper" id='jqxNumericInput_SimulationVelocity'></div>
+                    <div class="numeriInputShort numeriInputWrapper" id='jqxNumericInput_SimulationVelocity'></div>
                 </div>
 
                 <label class="labelSubtitle marginBottom">Type of connections</label>
@@ -330,7 +332,7 @@
     <div id="macroViewTab" class="tabs" style="display:none">
         <div class="box">
             <div class="navBarSectionTitle">
-                <label class="sectionHeader">Connections</label>
+                <span class="sectionHeader">Connections</span>
             </div>
             <div class="centerFlex">
                 <div class="checkBoxWrapper" id='jqxCheckBox_EEConnect' style='margin-left: 10px; '> Draw EE connect.
@@ -348,9 +350,9 @@
             </div>
         </div>
 
-        <div id="macroViewElipseTab" class="box">
+        <div id="macroViewElipseTab" class="box" style="display:none">
             <div class="navBarSectionTitle">
-                <label class="sectionHeader">Inner elipse</label>
+                <span class="sectionHeader">Inner elipse</span>
             </div>
             <div class="centerFlex">
                 <div class="tagInput">
@@ -378,7 +380,7 @@
             <div class="centerFlex">
                 <div class="tagInput">
                     <label class="labelSubtitle">Number of histogram steps</label>
-                    <div class="numeriInputWrapper" id="numericBarElements"></div>
+                    <div class="numeriInputShort numeriInputWrapper" id="numericBarElements"></div>
                 </div>
             </div>
         </div>
@@ -388,7 +390,7 @@
 
         <div class="box">
             <div class="navBarSectionTitle">
-                <label class="sectionHeader">Create filter</label>
+                <span class="sectionHeader">Create filter</span>
             </div>
             <div class="centerFlex">
                 <div class="flex">
@@ -415,7 +417,7 @@
         </div>
         <div class="box">
             <div class="navBarSectionTitle">
-                <label class="sectionHeader">Current filters</label>
+                <span class="sectionHeader">Current filters</span>
             </div>
             <div class="centerFlex">
                 <div id="listaFiltros">
@@ -428,7 +430,7 @@
     <div id="sortTab" class="tabs" style="display:none">
         <div class="box">
             <div class="navBarSectionTitle">
-                <label class="sectionHeader">Neuron Sorting</label>
+                <span class="sectionHeader">Neuron Sorting</span>
             </div>
             <div class="centerFlex" style=" align-items: left;">
                 <div class="checkBoxWrapper" id='jqxCheckBoxMixNeurons'>Mix neuron's types</div>
@@ -753,7 +755,7 @@
         <span> <img src="./content/images/gears.png" alt="" style="margin-right: 15px"/>ImgExporter</span>
     </div>
     <div id="svgdataurl"></div>
-    <canvas id="canvas" width="1280" height="600" style="display:none"></canvas>
+    <canvas id="canvas" class="imgCanvas" width="1280" height="600" style="display:none"></canvas>
 </div>
 <!-- Image Exporter Window-->
 

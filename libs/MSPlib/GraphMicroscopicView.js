@@ -5,7 +5,7 @@
  * @remarks Do not distribute without further notice.
  */
 
-MSP.GraphMicroscopicView = function() {
+MSP.GraphMicroscopicView = function () {
     this.margin;
     this.margin2;
     this.x;
@@ -44,326 +44,328 @@ MSP.GraphMicroscopicView = function() {
     this.maxEConn;
     this.maxIConn;
     this.maxAConn;
-    this.MSPViewType="GlobalCV";
+    this.MSPViewType = "GlobalCV";
     this.colorScale;
+    this.tooltipMarginRatio = 0.005;
+
+    this.marginRatios = {
+        top: 0.01,
+        bottom: 0.04,
+        left: 0.04,
+        right: 0.06
+    };
+
+    this.minLeftMargin = 60;
+    this.minRightMargin = 90;
+
+    this.graphRatio = 0.5;
+
+    this.tooltipMarginRatio = 0.005;
+
+    this.circleRatio = 0.01;
+
+    this.firstGraphMargin;
+    this.scndGraphMargin;
+    this.firstGraphDim;
+    this.scndGraphDim;
+    this.svg;
+
+    this.legendRatios = {margin: 0.01, fontSize: 1.3, lineHeight: 1.5, circleWidth: 0.005};
+    this.graphTitleFontSizeRatio = 1.3;
+    this.fontSizeRatio = 0.012;
+    this.minFontSize = 10;
 };
 
-MSP.GraphMicroscopicView.prototype =
-    {
-        constructor : MSP.GraphMicroscopicView
+MSP.GraphMicroscopicView.prototype = {
+    constructor: MSP.GraphMicroscopicView,
 
-        ,resize : function()
-    {
+    resize: function () {
         this.generateGraph();
     },
-        generateGraph : function()
-        {
+    generateGraph: function () {
 
-            var self = this;
-            var ratioHeight = _SigletonConfig.height;
-            var ratioWidth = _SigletonConfig.width;
-            var leftMargin = 60;
-            var rightMargin = ratioWidth * 0.01;
-            var width = _SigletonConfig.width * 0.49 - rightMargin - leftMargin;
-            this.margin = {top: ratioWidth * 0.005, right: ratioWidth, left: leftMargin};
-            this.width = width;
-            this.height = ratioHeight * 0.30;
+        var self = this;
+        var ratioHeight = _SigletonConfig.height;
+        var ratioWidth = _SigletonConfig.width;
+        var leftMargin = 60;
+        var rightMargin = ratioWidth * 0.01;
+        var width = _SigletonConfig.width * 0.49 - rightMargin - leftMargin;
+        this.margin = {top: ratioWidth * 0.005, right: ratioWidth, left: leftMargin};
+        this.width = width;
+        this.height = ratioHeight * 0.30;
 
-            this.margin2 = {
-                top: this.height + this.margin.top + ratioHeight * 0.08,
-                right: ratioWidth,
-                bottom: 0,
-                left: leftMargin
-            };
-            this.width2 = width;
-            this.height2 = ratioHeight * 0.16;
+        this.margin2 = {
+            top: this.height + this.margin.top + ratioHeight * 0.08,
+            right: ratioWidth,
+            bottom: 0,
+            left: leftMargin
+        };
+        this.width2 = width;
+        this.height2 = ratioHeight * 0.16;
 
-            this.margin3 = {
-                top: this.height2 + this.margin2.top + ratioHeight * 0.04,
-                right: ratioWidth,
-                bottom: 0,
-                left: leftMargin
-            };
-            this.width3 = width;
-            this.height3 = ratioHeight * 0.16;
+        this.margin3 = {
+            top: this.height2 + this.margin2.top + ratioHeight * 0.04,
+            right: ratioWidth,
+            bottom: 0,
+            left: leftMargin
+        };
+        this.width3 = width;
+        this.height3 = ratioHeight * 0.16;
 
-            this.margin4 = {
-                top: this.height3 + this.margin3.top + ratioHeight * 0.04,
-                right: ratioWidth,
-                bottom: 0,
-                left: leftMargin
-            };
-            this.width4 = width;
-            this.height4 = ratioHeight * 0.16;
-
-
-            d3.select("#caGraph").remove();
-
-            this.svg = d3.select("#renderArea")
-                .append("svg")
-                .style("width","49%")
-                .style("border-right","1px solid #ebebeb")
-                .attr("id","caGraph")
-                .attr("width", self.width)
-                .attr("height", _SigletonConfig.height)
-                .append("g")
-                .call(d3.behavior.zoom().scaleExtent([1, 10])
-                    .on("zoom", self.zoom))
-                .attr("transform", "translate(" + self.margin.left + "," + self.margin.top + ")")
-                .append("g");
-
-            this.updateGraph();
+        this.margin4 = {
+            top: this.height3 + this.margin3.top + ratioHeight * 0.04,
+            right: ratioWidth,
+            bottom: 0,
+            left: leftMargin
+        };
+        this.width4 = width;
+        this.height4 = ratioHeight * 0.16;
 
 
-        },updateGraph: function(selectedID) {
+        d3.select("#caGraph").remove();
+
+        this.svg = d3.select("#renderArea")
+            .append("svg")
+            .style("width", "49%")
+            .style("border-right", "1px solid #ebebeb")
+            .attr("id", "caGraph")
+            .attr("width", _SigletonConfig.width * 0.49)
+            .attr("height", _SigletonConfig.height)
+            .append("g")
+            .attr("transform", "translate(" + self.margin.left + "," + self.margin.top + ")")
+            .append("g");
+
+        this.updateGraph();
+
+
+    },
+    updateGraph: function (selectedID) {
         var self = this;
         var lIndex = _SimulationController.actSimStep % _SimulationData.numSimStepsPerFile;
 
 
         var neurons = [];
-        _SimulationData.gNeurons.forEach(function (d,i) {
-            if(d.selected)
+        _SimulationData.gNeurons.forEach(function (d, i) {
+            if (d.selected)
                 neurons.push(d.NId);
         });
 
         var dataCalcium = [];
-        neurons.forEach(function (d){
+        neurons.forEach(function (d) {
             var color = "#ababab";
-            if(typeof _SimulationController.view.selectedMicro !== "undefined" && _SimulationController.view.selectedMicro.length===0){
-                if((typeof selectedID !== "undefined" && d === selectedID) || (typeof selectedID === "undefined" && _SimulationFilter.gNeuronsFilterB[d]))
+            if (typeof _SimulationController.view.selectedMicro !== "undefined" && _SimulationController.view.selectedMicro.length === 0) {
+                if ((typeof selectedID !== "undefined" && d === selectedID) || (typeof selectedID === "undefined" && _SimulationFilter.gNeuronsFilterB[d]))
                     color = _SigletonConfig.EEColor;
-            }else {
+            } else {
                 if (_SimulationData.gNeurons[d].selectedM)
                     color = _SigletonConfig.EEColor;
             }
 
 
-
-            var data = {text:"Calcium concentration", id: d , textShort:d, color:color, data:[], selected: d === selectedID};
-            for(var i = 0; i<lIndex+1;i++) {
-                data.data.push({value:i,data:_SimulationData.gNeuronsDetails[d].Calcium[i]});
+            var data = {
+                text: "Calcium concentration",
+                id: d,
+                textShort: d,
+                color: color,
+                data: [],
+                selected: d === selectedID
+            };
+            var startStep = _SimulationData.actFile * _SimulationData.numSimStepsPerFile;
+            for (var i = 0; i < lIndex + 1; i++) {
+                data.data.push({value: startStep, data: _SimulationData.gNeuronsDetails[d].Calcium[i]});
+                startStep++;
             }
             dataCalcium.push(data);
         });
 
+        var dataIDs = {"E": "DeSeEA", "I": "DeSeIA", "A": "AxSeA"};
+
+        switch (_SigletonConfig.SEViewSelector) {
+            case 0:
+                dataIDs = {"E": "DeSeEA", "I": "DeSeIA", "A": "AxSeA"};
+                break;
+            case 1:
+                dataIDs = {"E": "DeSeEV", "I": "DeSeIV", "A": "AxSeV"};
+                break;
+            case 2:
+                dataIDs = {"E": "DeSeEC", "I": "DeSeIC", "A": "AxSeC"};
+                break;
+        }
+
         var dataE = [];
-        neurons.forEach(function (d){
+        neurons.forEach(function (d) {
             var color = "#ababab";
-            if(typeof _SimulationController.view.selectedMicro !== "undefined" && _SimulationController.view.selectedMicro.length===0){
-                if((typeof selectedID !== "undefined" && d === selectedID) || (typeof selectedID === "undefined" && _SimulationFilter.gNeuronsFilterB[d]))
+            if (typeof _SimulationController.view.selectedMicro !== "undefined" && _SimulationController.view.selectedMicro.length === 0) {
+                if ((typeof selectedID !== "undefined" && d === selectedID) || (typeof selectedID === "undefined" && _SimulationFilter.gNeuronsFilterB[d]))
                     color = _SigletonConfig.EColor;
-            }else {
+            } else {
                 if (_SimulationData.gNeurons[d].selectedM)
                     color = _SigletonConfig.EColor;
             }
-            var data = {text:"Excitatory", id: d , textShort:d, color:color, data:[], selected: d === selectedID};
-            for(var i = 0; i<lIndex+1;i++) {
-                data.data.push({value:i,data:_SimulationData.gNeuronsDetails[d].DeSeEA[i]});
+            var data = {text: "Excitatory", id: d, textShort: d, color: color, data: [], selected: d === selectedID};
+            var startStep = _SimulationData.actFile * _SimulationData.numSimStepsPerFile;
+            for (var i = 0; i < lIndex + 1; i++) {
+                data.data.push({value: startStep, data: _SimulationData.gNeuronsDetails[d][dataIDs["E"]][i]});
+                startStep++;
             }
             dataE.push(data);
         });
 
         var dataI = [];
-        neurons.forEach(function (d){
+        neurons.forEach(function (d) {
             var color = "#ababab";
-            if(typeof _SimulationController.view.selectedMicro !== "undefined" && _SimulationController.view.selectedMicro.length===0){
-                if((typeof selectedID !== "undefined" && d === selectedID) || (typeof selectedID === "undefined" && _SimulationFilter.gNeuronsFilterB[d]))
+            if (typeof _SimulationController.view.selectedMicro !== "undefined" && _SimulationController.view.selectedMicro.length === 0) {
+                if ((typeof selectedID !== "undefined" && d === selectedID) || (typeof selectedID === "undefined" && _SimulationFilter.gNeuronsFilterB[d]))
                     color = _SigletonConfig.IColor;
-            }else {
+            } else {
                 if (_SimulationData.gNeurons[d].selectedM)
                     color = _SigletonConfig.IColor;
             }
 
-            var data = {text:"Inhibitory", id: d , textShort:d, color:color, data:[], selected: d === selectedID};
-            for(var i = 0; i<lIndex+1;i++) {
-                data.data.push({value:i,data:_SimulationData.gNeuronsDetails[d].DeSeIA[i]});
+            var data = {text: "Inhibitory", id: d, textShort: d, color: color, data: [], selected: d === selectedID};
+            var startStep = _SimulationData.actFile * _SimulationData.numSimStepsPerFile;
+            for (var i = 0; i < lIndex + 1; i++) {
+                data.data.push({value: startStep, data: _SimulationData.gNeuronsDetails[d][dataIDs["I"]][i]});
+                startStep++;
             }
             dataI.push(data);
         });
 
         var dataA = [];
-        neurons.forEach(function (d){
+        neurons.forEach(function (d) {
             var color = "#ababab";
-            if(typeof _SimulationController.view.selectedMicro !== "undefined" && _SimulationController.view.selectedMicro.length===0){
-                if((typeof selectedID !== "undefined" && d === selectedID) || (typeof selectedID === "undefined" && _SimulationFilter.gNeuronsFilterB[d]))
+            if (typeof _SimulationController.view.selectedMicro !== "undefined" && _SimulationController.view.selectedMicro.length === 0) {
+                if ((typeof selectedID !== "undefined" && d === selectedID) || (typeof selectedID === "undefined" && _SimulationFilter.gNeuronsFilterB[d]))
                     color = _SigletonConfig.AColor;
-            }else {
+            } else {
                 if (_SimulationData.gNeurons[d].selectedM)
                     color = _SigletonConfig.AColor;
             }
 
-            var data = {text:"Axonal", id: d , textShort:d, color:color, data:[], selected: d === selectedID};
-            for(var i = 0; i<lIndex+1;i++) {
-                data.data.push({value:i,data:_SimulationData.gNeuronsDetails[d].AxSeA[i]});
+            var data = {text: "Axonal", id: d, textShort: d, color: color, data: [], selected: d === selectedID};
+            var startStep = _SimulationData.actFile * _SimulationData.numSimStepsPerFile;
+            for (var i = 0; i < lIndex + 1; i++) {
+                data.data.push({value: startStep, data: _SimulationData.gNeuronsDetails[d][dataIDs["A"]][i]});
+                startStep++;
             }
             dataA.push(data);
         });
 
-// for(var i = 0; i<lIndex+1;i++)
-// {
-//     data.data.push({
-//         value : i,
-//         data : _SimulationData.gNeuronsDetails[_SigletonConfig.neuronSelected].Calcium[i]
-//     });
-//
-//     dataE.data.push({
-//         value : i,
-//         data : _SimulationData.gNeuronsDetails[_SigletonConfig.neuronSelected].DeSeEA[i]
-//     });
-//
-//     dataI.data.push({
-//         value : i,
-//         data : _SimulationData.gNeuronsDetails[_SigletonConfig.neuronSelected].DeSeIA[i]
-//     });
-//
-//     dataA.data.push({
-//         value : i,
-//         data : _SimulationData.gNeuronsDetails[_SigletonConfig.neuronSelected].AxSeA[i]
-//     });
-//
-// }
 
-        this.graph(1,this.svg,this.width,this.margin.left,this.margin.top,this.height,dataCalcium,false,4,selectedID);
-        this.graph(2,this.svg,this.width,this.margin2.left,this.margin2.top,this.height2,dataE,false,4,selectedID);
-        this.graph(3,this.svg,this.width,this.margin3.left,this.margin3.top,this.height3,dataI,false,4,selectedID);
-        this.graph(4,this.svg,this.width, this.margin4.left,this.margin4.top,this.height4,dataA,false,4,selectedID);
+        this.graph(1, this.svg, this.width, this.margin.left, this.margin.top, this.height, dataCalcium, false, 4, selectedID);
+        this.graph(2, this.svg, this.width, this.margin2.left, this.margin2.top, this.height2, dataE, false, 4, selectedID);
+        this.graph(3, this.svg, this.width, this.margin3.left, this.margin3.top, this.height3, dataI, false, 4, selectedID);
+        this.graph(4, this.svg, this.width, this.margin4.left, this.margin4.top, this.height4, dataA, false, 4, selectedID);
 
 
-    }, graph: function(i,svg,widthTotal,marginLeft,marginTop,height,data,hasLegend,steps,selectedID)
-    {
-        svg.selectAll(".graph"+i).remove();
-        var gGraph= svg.append("g").attr("class","graph"+i);
+    },
+    graph: function (graphID, svg, widthTotal, marginLeft, marginTop, height, data, hasLegend, steps, selectedID) {
+        var renderWidth = _SigletonConfig.width;
+        var renderHeight = _SigletonConfig.height;
+        var defaultFontSize = Math.max(Math.min(renderHeight, renderWidth) * this.fontSizeRatio, this.minFontSize);
+        var axisFontSize = defaultFontSize + "px";
+        var titleFontSize = defaultFontSize * this.graphTitleFontSizeRatio + "px";
+        var circleIndicatorRadius = renderHeight * this.circleRatio;
+
+        svg.selectAll(".graph" + graphID).remove();
+        var gGraph = svg.append("g").attr("class", "graph" + graphID);
         var self = this;
         var width = widthTotal;
-        var scales = [];
-        var scalesX = [];
         var xx = d3.scale.linear().range([0, width]);
-
-        gGraph
-            .append("text")
-            .attr("transform","rotate(-90)")
-            .attr("y", 0 - (marginLeft-10))
-            .attr("x", 0 - ((height /2)+marginTop))
-            .attr("dy", ".71em")
-            .attr("class","textoL")
-            .style("text-anchor", "middle")
-            .text(data[0].text); //TODO: fallo, no declarar el texto por elemento modificar
-
-        gGraph.append("rect")
-            .attr("class", "overlay_graph a"+i)
-            .attr("width", width)
-            .attr("y",marginTop)
-            .attr("height", height);
-
-        if(hasLegend) {
-
-            var gLegend = gGraph.append("g").attr("class", "legend a" + i).attr("transform", "translate(0," + marginTop + ")");
-
-            data.forEach(function (d, z) {
-                gLegend.append("circle")
-                    .attr("class", "circleL")
-                    .attr("cx", width + marginLeft - 20)
-                    .attr("cy", ((height / 2) - ((22 * data.length) / 2)) + 10 + (z * 20))
-                    .style("stroke", d.color)
-                    .style("fill", d.color)
-                    .attr("r", 4);
-
-                gLegend.append("text")
-                    .attr("x", width + marginLeft - 10)
-                    .attr("y", ((height / 2) - ((22 * data.length) / 2)) + 16 + (z * 20))
-                    .attr("class", "textoL")
-                    .text(d.text);
-            });
-        }
 
 
         gGraph.append("line")
-            .attr("class", "line_over"+i)
+            .attr("class", "line_over" + graphID)
             .attr("stroke-width", 1)
-            .attr("stroke","#000")
-            .attr("x1",0)
-            .attr("x2",0)
-            .attr("y1",marginTop)
-            .attr("y2",height+marginTop)
-            .attr("style","display:none;")
-            .style("opacity","0.5")
-            .attr("shape-rendering","crispEdges");
+            .attr("stroke", "#000")
+            .attr("x1", 0)
+            .attr("x2", 0)
+            .attr("y1", marginTop)
+            .attr("y2", height + marginTop)
+            .attr("style", "display:none;")
+            .style("opacity", "0.5")
+            .attr("shape-rendering", "crispEdges");
 
 
         var area = d3.svg.area()
-            .x(function(d) { return xx(d.value); })
-            .y1(function(d) { return y(d.data); });
+            .x(function (d) {
+                return xx(d.value);
+            })
+            .y1(function (d) {
+                return y(d.data);
+            });
 
         var valueline = d3.svg.line()
-            .x(function(d) { return xx(d.value); })
-            .y(function(d) {  return y(d.data);  });
+            .x(function (d) {
+                return xx(d.value);
+            })
+            .y(function (d) {
+                return y(d.data);
+            });
         var max = 0;
 
-        data.forEach(function(d){
-            d.data.forEach(function(d){
-                if(d.data > max) max = d.data;
+        data.forEach(function (d) {
+            d.data.forEach(function (d) {
+                if (d.data > max) max = d.data;
             });
         });
 
-        var x2 = d3.scale.linear().range([ 0, width], 1);
-        x2.domain([0,_SimulationController.actSimStep]);
+        var x2 = d3.scale.linear().range([0, width], 1);
+        x2.domain([_SimulationData.actFile * _SimulationData.numSimStepsPerFile, _SimulationController.actSimStep]);
         var xAxis2 = d3.svg.axis().scale(x2).tickValues(x2.ticks().concat(x2.domain())).orient("bottom").innerTickSize(-height);
 
-        var y = d3.scale.linear().range([ height, 0 ]).domain([0,max]).nice(steps);
+        var y = d3.scale.linear().range([height, 0]).domain([0, max]).nice(steps);
         y.domain([0, d3.max(y.ticks(steps)) + y.ticks(steps)[1]]);
         var yAxis = d3.svg.axis().scale(y).orient("left").ticks(steps).innerTickSize(-width);
 
         gGraph.append("g")
-            .attr("class", "x axis p"+i)
-            .attr("transform", "translate(0," + (marginTop+height) + ")")
+            .attr("class", "x axis p" + graphID)
+            .attr("transform", "translate(0," + (marginTop + height) + ")")
             .call(xAxis2)
         ;
 
 
         gGraph.append("g")
             .attr("transform", "translate(0," + (marginTop) + ")")
-            .attr("class", "y axis p"+i)
+            .attr("class", "y axis p" + graphID)
             .call(yAxis);
 
 
-        xx.domain([0,_SimulationController.actSimStep]);
-        var x = d3.scale.linear().range([0, _SimulationController.actSimStep]);
-        x.domain([0,   width]);
-        var gBurbujas = gGraph.append("g").attr("class","history c"+i).attr("transform","translate(0,"+marginTop+")");
-        var glineas = gGraph.append("g").attr("class","history b"+i).attr("transform","translate(0,"+marginTop+")");
-        var g = gGraph.append("g").attr("class","history a"+i).attr("transform","translate(0,"+marginTop+")");
+        var yAxisTextWidth = 0;
+        if (typeof $(".graph" + graphID + " .y.axis.p" + graphID + " text").last()[0] !== "undefined")
+            yAxisTextWidth = $(".graph" + graphID + " .y.axis.p" + graphID + " text").last()[0].getBoundingClientRect().width;
+        var graphTitlePos = {
+            x: -((marginLeft - yAxisTextWidth) * 0.5) - yAxisTextWidth,
+            y: -(height * 0.5)
+        };
 
-        g.append("rect")
-            .attr("class", "rect_over")
-            .attr("fill-opacity","1")
-            .attr("fill","#ffffff")
-            .attr("x",0)
-            .attr("rx",5)
-            .attr("ry",5)
-            .attr("height",20*data.length+8)
-            .attr("width",80)
-            .attr("y",400)
-            .attr("style","display:none;");
-        var selecD = undefined;
+        gGraph
+            .append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", graphTitlePos.x)
+            .attr("x", graphTitlePos.y - marginTop)
+            .style("text-anchor", "middle")
+            .attr("font-family", "sans-serif")
+            .attr("font-size", titleFontSize)
+            .text(data[0].text); //TODO: fallo, no declarar el texto por elemento modificar
+
+        xx.domain([_SimulationData.actFile * _SimulationData.numSimStepsPerFile, _SimulationController.actSimStep]);
+        var x = d3.scale.linear().range([_SimulationData.actFile * _SimulationData.numSimStepsPerFile, _SimulationController.actSimStep]);
+        x.domain([0, width]);
+        var gBurbujas = gGraph.append("g").attr("class", "history c" + graphID).attr("transform", "translate(0," + marginTop + ")");
+        var glineas = gGraph.append("g").attr("class", "history b" + graphID).attr("transform", "translate(0," + marginTop + ")");
+        var g = gGraph.append("g").attr("class", "history a" + graphID).attr("transform", "translate(0," + marginTop + ")");
+
+
         //TODO: Limipar el codigo agrupar en funciones mejorar parametros
-        data.forEach(function (d,z) {
-            if(!_SimulationData.gNeurons[d.id].selectedM) {
-                area.y0(y(0));
-                scales.push(y);
-                scalesX.push(xx);
-                if (data.length === 1) {
-                    glineas.append("path")
-                        .datum(d.data)
-                        .attr("class", "graphArea a" + i)
-                        .attr("d", area);
-                }
-
-
+        data.forEach(function (d, z) {
+            if (!_SimulationData.gNeurons[d.id].selectedM) {
                 glineas.append("path")
                     .attr("class", "graphLine")
-                    .attr("id",d.id)
-                    .attr("color",d.color)
+                    .attr("id", d.id)
+                    .attr("color", d.color)
                     .style("stroke", d.color)
+                    .attr("fill", "none")
                     .style("stroke-opacity", function () {
                         if (d.color === "#ababab")
                             return 0.4;
@@ -384,44 +386,31 @@ MSP.GraphMicroscopicView.prototype =
                     .style("display", "none")
                     .style("stroke", d.color)
                     .style("fill", "none")
+                    .style("stroke-width", "0.15vmin")
                     .attr("r", 6);
-                g.append("circle")
-                    .attr("class", "circleTxt")
-                    .style("display", "none")
-                    .style("stroke", d.color)
-                    .style("fill", d.color)
-                    .attr("r", 3);
-
-
-                g.append("text")
-                    .attr("class", "texto")
-                    .style("display", "none");
             }
         });
 
         var colorRange = d4.schemeSet1;
         var numColors = _SigletonConfig.gSelectionIds.length;
 
-        data.forEach(function (d,z) {
-            if(_SimulationData.gNeurons[d.id].selectedM) {
-                area.y0(y(0));
-                scales.push(y);
-                scalesX.push(xx);
+        data.forEach(function (d, z) {
+            if (_SimulationData.gNeurons[d.id].selectedM) {
                 if (data.length === 1) {
                     glineas.append("path")
                         .datum(d.data)
-                        .attr("class", "graphArea a" + i)
+                        .attr("class", "graphArea a" + graphID)
                         .attr("d", area);
                 }
 
-
                 glineas.append("path")
                     .attr("class", "graphLine")
-                    .attr("id",d.id)
-                    .attr("color", colorRange[z%numColors])
-                    .style("stroke", colorRange[z%numColors])
-                    .style("stroke-width",2.5)
-                    .style("stroke-opacity",1)
+                    .attr("id", d.id)
+                    .attr("color", colorRange[z % numColors])
+                    .style("stroke", colorRange[z % numColors])
+                    .style("stroke-width", 2.5)
+                    .style("stroke-opacity", 1)
+                    .style("fill", "none")
                     .attr("d", valueline(d.data));
 
                 gBurbujas.append("circle")
@@ -434,145 +423,96 @@ MSP.GraphMicroscopicView.prototype =
                 g.append("circle")
                     .attr("class", "circlePos")
                     .style("display", "none")
-                    .style("stroke",  colorRange[z%numColors])
+                    .style("stroke", colorRange[z % numColors])
                     .style("fill", "none")
                     .attr("r", 6);
-                g.append("circle")
-                    .attr("class", "circleTxt")
-                    .style("display", "none")
-                    .style("stroke",  colorRange[z%numColors])
-                    .style("fill", colorRange[z%numColors])
-                    .attr("r", 3);
-
-
-                g.append("text")
-                    .attr("class", "texto")
-                    .style("display", "none");
             }
 
         });
 
 
-
-
-        d3.selectAll(".overlay.a"+i).remove();
+        d3.selectAll(".overlay.a" + graphID).remove();
         gGraph.append("rect")
-            .attr("class", "overlay a"+i)
-
+            .attr("class", "overlay a" + graphID)
             .attr("width", width)
-            .attr("fill","")
-            .attr("y",marginTop)
+            .attr("fill", "none")
+            .attr("y", marginTop)
             .attr("height", height)
             .on("mousemove", function () {
-                var coordinate = d3.mouse(this);
-                var ys = [];
-                g.selectAll('.circlePos')[0].forEach(function(d,i){
-                    ys.push(y(data[i].data[Math.floor(x(coordinate[0]))].data));
+                var mousePos = d3.mouse(this);
+                var tooltipX = d3.mouse(d3.select('body').node())[0] + self.tooltipMarginRatio * _SigletonConfig.width;
+                var tooltipY = d3.mouse(d3.select('body').node())[1] + self.tooltipMarginRatio * _SigletonConfig.height;
+                var tooltipWidth = $("#tooltip").outerWidth();
+                var tooltipHeight = $("#tooltip").outerHeight();
+                var dataIndex = Math.round(x(mousePos[0])) % _SimulationData.numSimStepsPerFile;
+                var simulationStep = Math.round(x(mousePos[0]));
+                var linePosX = (Math.round(x(mousePos[0])) - _SimulationData.numSimStepsPerFile * _SimulationData.actFile)
+                    * (width / (_SimulationController.actSimStep - _SimulationData.numSimStepsPerFile
+                        * _SimulationData.actFile));
+
+                if ((tooltipX + tooltipWidth) > $(window).width())
+                    tooltipX -= tooltipWidth;
+
+                if ((tooltipY + tooltipHeight) > $("#renderArea").height())
+                    tooltipY -= tooltipHeight;
+
+                var tooltipHTML = "<span class='stepTooltip'><b>" + simulationStep + "</b></span>";
+                data.forEach(function (d, z) {
+                    var color = "#ababab";
+                    if (_SimulationController.view.selectedMicro.length === 0) color = d.color;
+                    else if (_SimulationData.gNeurons[d.id].selectedM) color = colorRange[z % numColors];
+                    tooltipHTML += "<div class='circle' style='background-color:" + color + "'></div><b>" + d.textShort +
+                        "</b> - " + d.data[dataIndex].data + "<br>";
                 });
-                var ini =0;
-                if((data.length*20)>height && i>1)  ini = height- (data.length*20);
-                d3.selectAll('.line_over'+i)
+
+                d3.select("#tooltip")
+                    .html(tooltipHTML)
+                    .style("left", tooltipX + "px")
+                    .style("top", tooltipY + "px")
+                    .classed("hidden", false);
+
+                d3.selectAll('.line_over' + graphID)
                     .style("display", "inline")
-                    .style("z-index",1000)
-                    .attr("x1",parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep))
-                    .attr("x2",parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep));
-
-                var maxlen = 0;
-                g.selectAll('.texto')
-                    .style("display", "inline")
-                    .attr("x",function(){
-                        var pos = parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep)+30+10;
-                        if(((maxlen*8+20)+pos+5) > width)
-                            return parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep)-(maxlen*8+20);
-                        else
-                            return parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep)+30+20
-                    })
-                    .attr("y",function(d,i){
-                        return ini+((i+1)*20);
-                    })
-                    .text(function(d,i){
-                        if((data[i].textShort+" "+ data[i].data[Math.floor(x(coordinate[0]))].data).length > maxlen) maxlen = (data[i].textShort+" "+ data[i].data[Math.floor(x(coordinate[0]))].data).length;
-                        return data[i].textShort+" "+ data[i].data[Math.floor(x(coordinate[0]))].data;
-                    });
-
-
-
-
-                g.selectAll('.circleTxt')
-                    .style("display", "inline")
-                    .attr("cx", function(){
-                        var pos = parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep)+30+10;
-                        if(((maxlen*8+20)+pos+5) > width)
-                            return parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep)-(maxlen*8+30);
-                        else
-                            return parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep)+30+10
-                    })
-                    .attr("cy",function(d,i){
-                        return ini+((i+1)*20);
-                    });
-
-                g.selectAll('.texto')
-                    .style("display", "inline")
-                    .attr("x",function(){
-                        var pos = parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep)+30+10;
-                        if(((maxlen*8+20)+pos+5) > width)
-                            return parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep)-(maxlen*8+20);
-                        else
-                            return parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep)+30+20
-                    })
-                    .attr("y",function(d,i){
-                        return ini+((i+1)*20);
-                    })
-                    .text(function(d,i){
-                        return data[i].textShort+" "+ data[i].data[Math.floor(x(coordinate[0]))].data;
-                    });
-
-
-                g.selectAll('.rect_over')
-                    .style("display", "inline")
-                    .attr("width",maxlen*8+20)
-                    .attr("x",function(){
-                        var pos = parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep)+30+10;
-                        if(((maxlen*8+20)+pos+5) > width)
-                            return parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep)-(maxlen*8+40);
-                        else
-                            return parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep)+30;
-                    })
-                    .attr("y",function(){
-                        return ini;
-                    });
-
-
+                    .style("z-index", 1000)
+                    .attr("x1", linePosX)
+                    .attr("x2", linePosX);
 
                 g.selectAll('.circlePos')
                     .style("display", "inline")
-                    .attr("cy",function(d,i){
-                        return y(data[i].data[Math.floor(x(coordinate[0]))].data);
+                    .attr("cy", function (d, i) {
+                        return y(data[i].data[dataIndex].data);
                     })
-                    .attr("cx",parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep));
+                    .attr("cx", linePosX);
 
                 gBurbujas.selectAll('.circleBck')
                     .style("display", "inline")
-                    .attr("cy",function(d,i){
-                        return y(data[i].data[Math.floor(x(coordinate[0]))].data);
+                    .attr("cy", function (d, i) {
+                        return y(data[i].data[dataIndex].data);
                     })
-                    .attr("cx",parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep));
+                    .attr("cx", linePosX);
             })
             .on("mouseout", function () {
-                d3.selectAll('.circleTxt').style("display", "none");
-                d3.selectAll('.line_over'+i).style("display", "none");
-                d3.selectAll('.rect_over').style("display", "none");
-                d3.selectAll('.texto').style("display", "none");
+                d3.selectAll('.line_over' + graphID).style("display", "none");
+                d3.select("#tooltip").classed("hidden", true);
                 d3.selectAll('.circlePos').style("display", "none");
                 d3.selectAll('.circleBck').style("display", "none");
             });
 
-        this.svg.selectAll(".y.axis.p"+i+" text").attr("transform",  "translate(" +  -4+ ",0)");
-        this.svg.selectAll(".x.axis.p"+i+" text").attr("transform",  "translate(0," +  4+ ")");
 
+        svg.selectAll(".axis.p" + graphID + " .tick").selectAll("line")
+            .attr("stroke-width", 1)
+            .attr("stroke", "#000")
+            .style("opacity", "0.1");
 
-    }, zoom: function ()
-    {
-        this.svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+        d3.select(svg.selectAll(".x.axis.p" + graphID + " .tick").select("line")[0][0]).style("opacity", "1");
+        d3.select(svg.selectAll(".y.axis.p" + graphID + " .tick").select("line")[0][0]).style("opacity", "1");
+
+        svg.selectAll(".tick").selectAll("text")
+            .attr("font-family", "sans-serif")
+            .attr("font-size", axisFontSize);
+
+        svg.selectAll(".axis").selectAll("path").remove();
+
     }
-    };
+
+};

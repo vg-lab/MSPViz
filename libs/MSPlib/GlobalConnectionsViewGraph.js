@@ -5,392 +5,384 @@
  * @remarks Do not distribute without further notice.
  */
 
-MSP.GlobalConnectionsViewGraph = function() {
-    this.margin;
-    this.margin2;
-    this.x;
-    this.y;
-    this.x3;
-    this.y3;
-    this.x4;
-    this.y4;
-    this.x5;
-    this.y5;
-    this.xAxis;
-    this.yAxis;
+MSP.GlobalConnectionsViewGraph = function () {
+    this.MSPViewType = "GlobalCV";
 
-    this.xAxis3;
-    this.yAxis35;
+    this.marginRatios = {
+        top: 0.01,
+        bottom: 0.04,
+        left: 0.04,
+        right: 0.06
+    };
 
+    this.minLeftMargin = 60;
+    this.minRightMargin = 90;
 
-    this.xAxis4;
-    this.yAxis4;
+    this.graphRatio = 0.5;
 
+    this.tooltipMarginRatio = 0.005;
 
-    this.xAxis5;
-    this.yAxis5;
+    this.circleRatio = 0.01;
 
-
-    this.numYTicks;
-    this.ActData;
-    this.lConnectionTypes;
-
-    this.width;
-    this.height;
-    this.width2;
-    this.height2;
+    this.firstGraphMargin;
+    this.scndGraphMargin;
+    this.firstGraphDim;
+    this.scndGraphDim;
     this.svg;
-    this.maxCalciumValue;
-    this.maxEConn;
-    this.maxIConn;
-    this.maxAConn;
-    this.MSPViewType="GlobalCV";
-    this.colorScale;
 
+    this.legendRatios ={margin: 0.01, fontSize: 1.3, lineHeight: 1.5, circleWidth: 0.005};
+    this.graphTitleFontSizeRatio = 1.3;
+    this.fontSizeRatio = 0.012;
+    this.minFontSize = 10;
 };
 
-MSP.GlobalConnectionsViewGraph.prototype =
-    {
-        constructor : MSP.GlobalConnectionsViewGraph
+MSP.GlobalConnectionsViewGraph.prototype = {
+    constructor: MSP.GlobalConnectionsViewGraph,
 
-        ,resize : function()
-        {
-            this.generateGlobalConnectionsViewGraph();
-        },
-        generateGlobalConnectionsViewGraph : function()
-        {
-            // Destroy the previous canvas
-            d3.selectAll("svg").filter(function() {
-                return !this.classList.contains('color')
-            }).remove();
+    resize: function () {
+        this.generateGlobalConnectionsViewGraph();
+    },
+    generateGlobalConnectionsViewGraph: function () {
+        d3.selectAll("svg").filter(function () {
+            return !this.classList.contains('color')
+        }).remove();
 
-            d3.selectAll("canvas")
-                .remove();
+        d3.selectAll("canvas").filter(function () {
+            return !this.classList.contains('imgCanvas')
+        }).remove();
+
+        var renderWidth = _SigletonConfig.width;
+        var renderHeight = _SigletonConfig.height;
+        this.firstGraphMargin = {
+            top: renderHeight * this.marginRatios.top,
+            cumulativeTop: 0,
+            right: Math.max(this.minRightMargin, renderWidth * this.marginRatios.right),
+            bottom: renderHeight * this.marginRatios.bottom,
+            left: Math.max(this.minLeftMargin, renderWidth * this.marginRatios.left)
+        };
+
+        this.firstGraphDim = {
+            width: _SigletonConfig.width - this.firstGraphMargin.right - this.firstGraphMargin.left,
+            height: (_SigletonConfig.height * this.graphRatio) - this.firstGraphMargin.top
+            - this.firstGraphMargin.bottom
+        };
+
+        this.firstGraphMargin.cumulativeTop = this.firstGraphMargin.top;
+
+        this.scndGraphMargin = {
+            top: renderHeight * this.marginRatios.top,
+            cumulativeTop: 0,
+            right: Math.max(this.minRightMargin, renderWidth * this.marginRatios.right),
+            bottom: renderHeight * this.marginRatios.bottom,
+            left: Math.max(this.minLeftMargin, renderWidth * this.marginRatios.left)
+        };
+
+        this.scndGraphDim = {
+            width: _SigletonConfig.width - this.scndGraphMargin.right - this.scndGraphMargin.left,
+            height: (_SigletonConfig.height * this.graphRatio) - this.scndGraphMargin.top - this.scndGraphMargin.bottom
+        };
+
+        this.scndGraphMargin.cumulativeTop = this.firstGraphMargin.top + this.firstGraphDim.height
+            + this.firstGraphMargin.bottom + this.scndGraphMargin.top;
+
+        this.svg = d3.select("#renderArea")
+            .append("svg")
+            .attr("width", _SigletonConfig.width)
+            .attr("height", _SigletonConfig.height)
+            .append("g")
+            .call(d3.behavior.zoom().scaleExtent([1, Infinity]).on("zoom", this.zoom))
+            .attr("transform",
+                "translate(" + this.firstGraphMargin.left + "," + this.firstGraphMargin.cumulativeTop + ")")
+            .append("g")
+            .attr("class", "graphs");
+
+        this.updateVisualization();
+
+        this.svg
+            .append("rect")
+            .attr("class", "overlay")
+            .attr("x", -_SigletonConfig.width)
+            .attr("y", -_SigletonConfig.height)
+            .attr("width", _SigletonConfig.width * 3)
+            .attr("height", _SigletonConfig.height * 3)
+            .style("opacity", "0.0");
+
+    },
+    updateVisualization: function () {
+        var lIndex = _SimulationController.actSimStep % _SimulationData.numSimStepsPerFile;
+        var dataEE = {text: "EE Conn.", textShort: "", max: 0, color: _SigletonConfig.EEColor, data: []};
+        var dataEI = {text: "EI  Conn.", textShort: "", max: 0, color: _SigletonConfig.EIColor, data: []};
+        var dataIE = {text: "IE  Conn.", textShort: "", max: 0, color: _SigletonConfig.IEColor, data: []};
+        var dataII = {text: "II  Conn.", textShort: "", max: 0, color: _SigletonConfig.IIColor, data: []};
+        var dataAI = {text: "All E SE.", textShort: "", max: 0, color: _SigletonConfig.EColor, data: []};
+        var dataAE = {text: "All I SE.", textShort: "", max: 0, color: _SigletonConfig.IColor, data: []};
+        var startStep = _SimulationData.actFile * _SimulationData.numSimStepsPerFile;
+        for (var i = 0; i < lIndex + 1; i++) {
+            dataEE.data.push({
+                simStep: startStep,
+                value: _SimulationData.EEConn[i]
+            });
+            if (_SimulationData.EEConn[i] > dataEE.max) dataEE.max = _SimulationData.EEConn[i];
+
+            dataEI.data.push({
+                simStep: startStep,
+                value: _SimulationData.EIConn[i]
+            });
+            if (_SimulationData.EIConn[i] > dataEI.max) dataEI.max = _SimulationData.EIConn[i];
+
+            dataIE.data.push({
+                simStep: startStep,
+                value: _SimulationData.IEConn[i]
+            });
+            if (_SimulationData.IEConn[i] > dataIE.max) dataIE.max = _SimulationData.IEConn[i];
+
+            dataII.data.push({
+                simStep: startStep,
+                value: _SimulationData.IIConn[i]
+            });
+            if (_SimulationData.IIConn[i] > dataII.max) dataII.max = _SimulationData.IIConn[i];
+
+            dataAE.data.push({
+                simStep: startStep,
+                value: _SimulationData.AESe[i]
+            });
+            if (_SimulationData.AESe[i] > dataAE.max) dataAE.max = _SimulationData.AESe[i];
+
+            dataAI.data.push({
+                simStep: startStep,
+                value: _SimulationData.AISe[i]
+            });
+            if (_SimulationData.AISe[i] > dataAI.max) dataAI.max = _SimulationData.AISe[i];
+            startStep++;
+        }
+
+        this.graph(1, this.firstGraphDim, this.firstGraphMargin, [dataEE, dataEI, dataIE, dataII], "Global Connections");
+        this.graph(2, this.scndGraphDim, this.scndGraphMargin, [dataAE, dataAI], "Synaptic elements");
+    },
+    graph: function (graphID, graphDim, graphMargin, dataArray, graphTitle) {
+        var self = this;
+        var renderWidth = _SigletonConfig.width;
+        var renderHeight = _SigletonConfig.height;
+        var defaultFontSize = Math.max(Math.min(renderHeight, renderWidth) * this.fontSizeRatio, this.minFontSize);
+        var legendProp = {
+            margin: renderWidth * this.legendRatios.margin,
+            fontSize: defaultFontSize * this.legendRatios.fontSize + "px",
+            lineHeight: defaultFontSize * this.legendRatios.lineHeight,
+            circleWidth: renderHeight * this.legendRatios.circleWidth
+        };
+        var axisFontSize = defaultFontSize + "px";
+        var titleFontSize = defaultFontSize * this.graphTitleFontSizeRatio + "px";
+        var simInitialStep = _SimulationData.actFile * _SimulationData.numSimStepsPerFile;
+        var simLastStep = _SimulationController.actSimStep;
+        var circleIndicatorRadius = renderHeight * this.circleRatio;
+
+        d3.select(".graph" + graphID).remove();
+
+        var graphElements = this.svg.append("g")
+            .attr("class", "graph" + graphID)
+            .attr("transform", "translate(0," + graphMargin.cumulativeTop + ")");
+
+        var legendElements = graphElements.append("g")
+            .attr("class", "legend a" + graphID);
+
+        var legendText = legendElements.append("text")
+            .attr("y", (graphDim.height * 0.5) - (legendProp.lineHeight * dataArray.length * 0.5))
+            .attr("x", graphDim.width + graphMargin.left)
+            .style("dominant-baseline", "middle")
+            .attr("font-size", legendProp.fontSize)
+            .attr("font-family", "sans-serif");
+
+        dataArray.forEach(function (d, z) {
+            legendElements.append("circle")
+                .attr("class", "circleL")
+                .attr("cx", graphDim.width + legendProp.margin)
+                .attr("cy", (((graphDim.height * 0.5) - (legendProp.lineHeight * dataArray.length * 0.5))
+                    + (legendProp.lineHeight * (z + 1))))
+                .style("stroke", d.color)
+                .style("fill", d.color)
+                .attr("r", legendProp.circleWidth);
+
+            legendText.append("tspan")
+                .attr("x", graphDim.width + legendProp.margin + legendProp.circleWidth + legendProp.margin)
+                .attr("dy", legendProp.lineHeight)
+                .text(d.text);
+        });
+
+        graphElements.append("line")
+            .attr("class", "verticalLine" + graphID)
+            .attr("stroke-width", 1)
+            .attr("stroke", "#000")
+            .attr("x1", 0)
+            .attr("x2", 0)
+            .attr("y1", 0)
+            .attr("y2", graphDim.height)
+            .attr("style", "display:none;")
+            .style("opacity", "0.5")
+            .attr("shape-rendering", "crispEdges");
+
+        var maxDataValue = 0;
+        dataArray.forEach(function (data) {
+            if (data.max > maxDataValue) maxDataValue = data.max;
+        });
+
+        var xScaleStepToWidth = d3.scale.linear()
+            .range([0, graphDim.width])
+            .domain([simInitialStep, simLastStep]);
+
+        var xAxis = d3.svg.axis()
+            .scale(xScaleStepToWidth)
+            .tickValues(xScaleStepToWidth.ticks().concat(xScaleStepToWidth.domain()))
+            .orient("bottom")
+            .innerTickSize(-graphDim.height);
+
+        graphElements.append("g")
+            .attr("class", "x axis p" + graphID)
+            .attr("transform", "translate(0," + graphDim.height + ")")
+            .call(xAxis);
+
+        var yScaleDataToHeight = d3.scale.linear()
+            .range([graphDim.height, 0])
+            .domain([0, maxDataValue]);
+
+        var yAxis = d3.svg.axis()
+            .scale(yScaleDataToHeight)
+            .orient("left")
+            .tickValues(yScaleDataToHeight.ticks().concat(yScaleDataToHeight.domain()))
+            .innerTickSize(-graphDim.width);
+
+        graphElements.append("g")
+            .attr("class", "y axis p" + graphID)
+            .call(yAxis);
 
 
-            var self = this;
-            this.maxCalciumValue = Math.max.apply(Math, _SimulationData.gNeuronsDetails[126].Calcium);
-            this.maxEConn = Math.max.apply(Math, _SimulationData.gNeuronsDetails[126].DeSeEA);
-            this.maxIConn = Math.max.apply(Math, _SimulationData.gNeuronsDetails[126].DeSeIA);
-            this.maxAConn = Math.max.apply(Math, _SimulationData.gNeuronsDetails[126].AxSeA);
+        var yAxisTextWidth = $(".graph" + graphID + " .y.axis text").last()[0].getBoundingClientRect().width;
+        var graphTitlePos = {
+            x: -((graphMargin.left - yAxisTextWidth) * 0.5) - yAxisTextWidth,
+            y: -(graphDim.height * 0.5)
+        };
 
-            if (_SimulationData.gNeurons[126].NAct === "E") {
-                this.colorScale = _SimulationData.CaEScale;
+        graphElements.append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", graphTitlePos.x)
+            .attr("x", graphTitlePos.y)
+            .style("text-anchor", "middle")
+            .attr("font-family", "sans-serif")
+            .attr("font-size", titleFontSize)
+            .text(graphTitle);
 
-            } else {
-                this.colorScale = _SimulationData.CaIScale;
+        var circleIndicatorsBackground = graphElements.append("g");
+        var graphLines = graphElements.append("g");
+        var circleIndicator = graphElements.append("g");
 
-            }
-            this.margin = {top: 10, right: 15, left: 65};
-            this.width = _SigletonConfig.width-this.margin.right-this.margin.left;
-            this.height = ((_SigletonConfig.height-(this.margin.top*2)-50)/2)-5;
-
-            this.margin2 = {top: this.height+this.margin.top+40, right: 15, bottom: 0, left: 65};
-            this.width2 = _SigletonConfig.width-this.margin.right-this.margin.left;
-            this.height2 = this.height;
-
-            this.numYTicks 			= 10;
-
-            this.y = d3.scale.linear().range([ this.height, 0 ]).nice();
-            this.yAxis = d3.svg.axis().scale(this.y).orient("left").innerTickSize(-this.width).outerTickSize(3);
-            self.y.domain([0, d3.max([ 0, this.maxCalciumValue]) ]);
-
-
-            d3.select("#caGraph").remove();
-
-            this.svg = d3.select("#renderArea")
-                .append("svg")
-                .style("border-left","1px solid #ebebeb")
-                .attr("id","caGraph")
-                .attr("width",_SigletonConfig.width)
-                .attr("height", _SigletonConfig.height)
-                .append("g")
-                .call(d3.behavior.zoom().scaleExtent([1, 10])
-                    .on("zoom", self.zoom))
-                .attr("transform", "translate(" + self.margin.left + "," + self.margin.top + ")")
-                .append("g")
-            ;
-
-            this.updateVisualization();
-
-
-
-        },
-        updateVisualization: function() {
-            var lIndex = _SimulationController.actSimStep % _SimulationData.numSimStepsPerFile;
-            var dataEE = {text:"EE Conn.", textShort:"", color:_SigletonConfig.EEColor, data:[]};
-            var dataEI = {text:"EI  Conn.", textShort:"", color:_SigletonConfig.EIColor, data:[]};
-            var dataIE = {text:"IE  Conn.", textShort:"", color:_SigletonConfig.IEColor, data:[]};
-            var dataII = {text:"II  Conn.", textShort:"", color:_SigletonConfig.IIColor, data:[]};
-            var dataAI = {text:"All E SE.", textShort:"", color:_SigletonConfig.EColor, data:[]};
-            var dataAE = {text:"All I SE.", textShort:"", color:_SigletonConfig.IColor, data:[]};
-            for(var i = 0; i<lIndex+1;i++)
-            {
-                dataEE.data.push({
-                    value : i,
-                    data : _SimulationData.EEConn[i]
-                });
-                dataEI.data.push({
-                    value : i,
-                    data : _SimulationData.EIConn[i]
-                });
-                dataIE.data.push({
-                    value : i,
-                    data : _SimulationData.IEConn[i]
-                });
-                dataII.data.push({
-                    value : i,
-                    data : _SimulationData.IIConn[i]
-                });
-                dataAE.data.push({
-                    value : i,
-                    data : _SimulationData.AESe[i]
-                });
-                dataAI.data.push({
-                    value : i,
-                    data : _SimulationData.AISe[i]
-                });
-            }
-
-            this.graph(1,this.width,this.margin.left, this.margin.top,this.height,[dataEE,dataEI,dataIE,dataII],"Global Connections");
-            this.graph(2,this.width2,this.margin.left, this.margin2.top,this.height2,[dataAE,dataAI],"Synaptic elements");
-
-        },
-        // Method for drawing graphs
-        // Everything is redrawn because every element (lines, axis, values) are step dependant
-        graph: function(i,widthTotal,marginLeft,marginTop,height,data,title)
-        {
-            var self = this;
-            var width = widthTotal-80;
-            var scales = [];
-            var scalesX = [];
-            var xx = d3.scale.linear().range([0, width]);
-            d3.select(".history.a"+i).remove();
-            d3.select(".history.b"+i).remove();
-            this.svg.selectAll(".legend.a"+i).remove();
-            var gLegend = this.svg.append("g").attr("class","legend a"+i).attr("transform","translate(0,"+marginTop+")");
-
-            d3.select(".textoA.t"+i).remove();
-
-            this.svg
-                .append("text")
-                .attr("transform","rotate(-90)")
-                .attr("y", 0 - (marginLeft-10))
-                .attr("x", 0 - (height /2)-marginTop)
-                .attr("dy", ".71em")
-                .attr("class","textoA t"+i)
-                .style("text-anchor", "middle")
-                .text(title);
-
-            data.forEach(function (d,z) {
-                gLegend.append("circle")
-                    .attr("class","circleL")
-                    .attr("cx",width+marginLeft-45)
-                    .attr("cy",((height/2)-((22*data.length)/2))+10+(z*20))
-                    .style("stroke",d.color)
-                    .style("fill",d.color)
-                    .attr("r", 4);
-
-                gLegend.append("text")
-                    .attr("x",width+marginLeft-35)
-                    .attr("y",((height/2)-((22*data.length)/2))+16+(z*20))
-                    .attr("class","textoL")
-                    .text(d.text);
+        var lineFunction = d3.svg.line()
+            .x(function (d) {
+                return xScaleStepToWidth(d.simStep);
+            })
+            .y(function (d) {
+                return yScaleDataToHeight(d.value);
             });
 
+        dataArray.forEach(function (d) {
+            graphLines.append("path")
+                .attr("class", "graphLine")
+                .style("stroke", d.color)
+                .attr("fill", "none")
+                .attr("d", lineFunction(d.data));
 
-            this.svg.append("line")
-                .attr("class", "line_over"+i)
-                .attr("stroke-width", 1)
-                .attr("stroke","#000")
-                .attr("x1",0)
-                .attr("x2",0)
-                .attr("y1",marginTop)
-                .attr("y2",height+marginTop)
-                .attr("style","display:none;")
-                .style("opacity","0.5")
-                .attr("shape-rendering","crispEdges");
+            circleIndicatorsBackground.append("circle")
+                .attr("class", "circleIndicatorBackground")
+                .style("display", "none")
+                .style("stroke", "none")
+                .style("fill", "white")
+                .attr("r", circleIndicatorRadius);
 
+            circleIndicator.append("circle")
+                .attr("class", "circleIndicator")
+                .style("display", "none")
+                .style("stroke", d.color)
+                .style("fill", "none")
+                .style("stroke-width", "0.15vmin")
+                .attr("r", circleIndicatorRadius);
+        });
 
+        d3.select(".graphs")
+            .append("rect")
+            .attr("class", "overlay a" + graphID)
+            .attr("width", graphDim.width)
+            .attr("y", graphMargin.cumulativeTop)
+            .attr("height", graphDim.height)
+            .attr("fill", "none")
+            .on("mousemove", function () {
+                var mousePos = d3.mouse(this);
+                var tooltip = {
+                    x: d3.mouse(d3.select('body').node())[0] + self.tooltipMarginRatio * _SigletonConfig.width,
+                    y: d3.mouse(d3.select('body').node())[1] + self.tooltipMarginRatio * _SigletonConfig.height,
+                    width: $("#tooltip").outerWidth(),
+                    height: $("#tooltip").outerHeight(),
+                    html: ""
+                };
 
+                if ((tooltip.x + tooltip.width) > $(window).width()) tooltip.x -= tooltip.width;
+                if ((tooltip.y + tooltip.height) > $("#renderArea").height()) tooltip.y -= tooltip.height;
 
-            var area = d3.svg.area()
-                .x(function(d) { return xx(d.value); })
-                .y1(function(d) { return y(d.data); });
+                var simulationStep = Math.round(xScaleStepToWidth.invert(mousePos[0]));
+                var graphStepPosition = 0;
+                if (simLastStep > 0) graphStepPosition = simulationStep * (graphDim.width / simLastStep);
 
-            var valueline = d3.svg.line()
-                .x(function(d) { return xx(d.value); })
-                .y(function(d) {  return y(d.data);  });
-            var max = 0;
-
-            data.forEach(function(d){
-                d.data.forEach(function(d){
-                    if(d.data > max) max = d.data;
-                });
-            });
-
-            var x2 = d3.scale.linear().range([ 0, width], 1);
-            x2.domain([0,_SimulationController.actSimStep]);
-            var xAxis2 = d3.svg.axis().scale(x2).tickValues(x2.ticks().concat(x2.domain())).orient("bottom").innerTickSize(-height);
-
-            var y = d3.scale.linear().range([ height, 0 ]).domain([0,max]);
-            var yAxis = d3.svg.axis().scale(y).orient("left").tickValues(y.ticks().concat(y.domain())).innerTickSize(-width);
-
-            d3.select(".x.axis.p"+i).remove();
-            d3.select(".y.axis.p"+i).remove();
-            this.svg.append("g")
-                .attr("class", "x axis p"+i)
-                .attr("transform", "translate(0," + (marginTop+height) + ")")
-                .call(xAxis2)
-            ;
-
-
-            this.svg.append("g")
-                .attr("transform", "translate(0," + (marginTop) + ")")
-                .attr("class", "y axis p"+i)
-                .call(yAxis);
-
-            this.svg.selectAll(".y.axis.p"+i+" text").attr("transform",  "translate(" +  -4+ ",0)");
-            this.svg.selectAll(".x.axis.p"+i+" text").attr("transform",  "translate(0," +  4+ ")");
-
-            xx.domain([0,_SimulationController.actSimStep]);
-            var x = d3.scale.linear().range([0, _SimulationController.actSimStep]);
-            x.domain([0,   width]);
-            var gBurbujas = this.svg.append("g").attr("class","history c"+i).attr("transform","translate(0,"+marginTop+")");
-            var glineas = this.svg.append("g").attr("class","history b"+i).attr("transform","translate(0,"+marginTop+")");
-            var g = this.svg.append("g").attr("class","history a"+i).attr("transform","translate(0,"+marginTop+")");
-
-            g.selectAll(".rect_over").remove();
-            g.append("rect")
-                .attr("class", "rect_over")
-                .attr("fill-opacity","1")
-                .attr("fill","#ffffff")
-                .attr("x",0)
-                .attr("rx",5)
-                .attr("ry",5)
-                .attr("height",22*data.length)
-                .attr("width",80)
-                .attr("y",400)
-                .attr("style","display:none;");
-
-
-            data.forEach(function (d,z) {
-                area.y0(y(0));
-                scales.push(y);
-                scalesX.push(xx);
-                if(data.length===1) {
-                    glineas.append("path")
-                        .datum(d.data)
-                        .attr("class", "graphArea a" + i)
-                        .attr("d", area);
-                }
-
-
-                glineas.append("path")
-                    .attr("class", "graphLine")
-                    .style("stroke",d.color)
-                    .attr("d", valueline(d.data));
-
-                gBurbujas.append("circle")
-                    .attr("class","circleBck")
-                    .style("display", "none")
-                    .style("stroke","none")
-                    .style("fill","white")
-                    .attr("r", 6);
-
-                g.append("circle")
-                    .attr("class","circlePos")
-                    .style("display", "none")
-                    .style("stroke",d.color)
-                    .style("fill","none")
-                    .attr("r", 6);
-                g.append("circle")
-                    .attr("class","circleTxt")
-                    .style("display", "none")
-                    .style("stroke",d.color)
-                    .style("fill",d.color)
-                    .attr("r", 3);
-
-
-                g.append("text")
-                    .attr("class","texto")
-                    .style("display", "none");
-            });
-
-
-            d3.selectAll(".overlay.a"+i).remove();
-            d3.select("svg")
-                .append("rect")
-                .attr("class", "overlay a"+i)
-                .attr("transform", "translate("+self.margin.left+","+self.margin.top+")")
-                .attr("width", width)
-                .attr("y",marginTop)
-                .attr("height", height)
-                .on("mousemove", function () {
-                    var coordinate = d3.mouse(this);
-                    var ys = [];
-                    g.selectAll('.circlePos')[0].forEach(function(d,i){
-                        ys.push(y(data[i].data[Math.floor(x(coordinate[0]))].data));
-                    });
-                    d3.selectAll('.line_over'+i)
-                        .style("display", "inline")
-                        .attr("x1",parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep))
-                        .attr("x2",parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep));
-
-                    g.selectAll('.rect_over')
-                        .style("display", "inline")
-                        .attr("x",parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep)+30)
-                        .attr("y",function(){
-                            return d3.max(ys);
-                        });
-
-
-
-                    g.selectAll('.circleTxt')
-                        .style("display", "inline")
-                        .attr("cx",parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep)+30+10)
-                        .attr("cy",function(d,i){
-                            return d3.max(ys)+15+(i*20);
-                        });
-
-                    g.selectAll('.texto')
-                        .style("display", "inline")
-                        .attr("x",parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep)+30+20)
-                        .attr("y",function(d,i){
-                            return d3.max(ys)+20+(i*20);
-                        })
-                        .text(function(d,i){
-                            return data[i].textShort+" "+ data[i].data[Math.floor(x(coordinate[0]))].data;
-                        });
-
-                    g.selectAll('.circlePos')
-                        .style("display", "inline")
-                        .attr("cy",function(d,i){
-                            return y(data[i].data[Math.floor(x(coordinate[0]))].data);
-                        })
-                        .attr("cx",parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep));
-
-                    gBurbujas.selectAll('.circleBck')
-                        .style("display", "inline")
-                        .attr("cy",function(d,i){
-                            return y(data[i].data[Math.floor(x(coordinate[0]))].data);
-                        })
-                        .attr("cx",parseInt(x(coordinate[0]))*(width/_SimulationController.actSimStep));
-                })
-                .on("mouseout", function () {
-                    d3.selectAll('.circleTxt').style("display", "none");
-                    d3.selectAll('.line_over'+i).style("display", "none");
-                    d3.selectAll('.rect_over').style("display", "none");
-                    d3.selectAll('.texto').style("display", "none");
-                    d3.selectAll('.circlePos').style("display", "none");
-                    d3.selectAll('.circleBck').style("display", "none");
+                tooltip.html = "<span class='stepTooltip'><b>" + simulationStep + "</b></span>";
+                dataArray.forEach(function (d) {
+                    tooltip.html += "<div class='circle' style='background-color:" + d.color + "'></div><b>"
+                        + d.textShort + "</b><b> " + d.data[simulationStep].value + "</b><br>";
                 });
 
+                d3.select("#tooltip")
+                    .html(tooltip.html)
+                    .style("left", tooltip.x + "px")
+                    .style("top", tooltip.y + "px")
+                    .classed("hidden", false);
 
+                d3.selectAll('.verticalLine' + graphID)
+                    .style("display", "inline")
+                    .attr("x1", graphStepPosition)
+                    .attr("x2", graphStepPosition);
 
+                circleIndicator.selectAll('.circleIndicator')
+                    .style("display", "inline")
+                    .attr("cy", function (d, i) {
+                        return yScaleDataToHeight(dataArray[i].data[simulationStep].value);
+                    })
+                    .attr("cx", graphStepPosition);
 
-        }, zoom: function ()
-    {
-        this.svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+                circleIndicatorsBackground.selectAll('.circleIndicatorBackground')
+                    .style("display", "inline")
+                    .attr("cy", function (d, i) {
+                        return yScaleDataToHeight(dataArray[i].data[simulationStep].value);
+                    })
+                    .attr("cx", graphStepPosition);
+            })
+            .on("mouseout", function () {
+                d3.selectAll('.verticalLine' + graphID).style("display", "none");
+                d3.selectAll('.circleIndicator').style("display", "none");
+                d3.selectAll('.circleIndicatorBackground').style("display", "none");
+                d3.select("#tooltip").classed("hidden", true);
+            });
+
+        d3.selectAll(".axis.p" + graphID + " .tick").selectAll("line")
+            .attr("stroke-width", 1)
+            .attr("stroke", "#000")
+            .style("opacity", "0.1");
+
+        d3.select(d3.selectAll(".x.axis.p" + graphID + " .tick").select("line")[0][0]).style("opacity", "1");
+        d3.select(d3.selectAll(".y.axis.p" + graphID + " .tick").select("line")[0][0]).style("opacity", "1");
+
+        d3.selectAll(".tick").selectAll("text")
+            .attr("font-family", "sans-serif")
+            .attr("font-size", axisFontSize);
+
+        d3.selectAll(".axis").selectAll("path").remove();
+    },
+    zoom: function () {
+        _SimulationController.view.svg.attr("transform",
+            "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
     }
-    };
+};
