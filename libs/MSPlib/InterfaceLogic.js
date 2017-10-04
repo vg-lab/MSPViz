@@ -12,7 +12,7 @@ _SimulationData = null;
 _SimulationFilter = null;
 _ColorPicker = null;
 
-UI.Visualizator = function () {
+UI.Visualizer = function () {
     this.activeView = null;
     this.activeTab = "none";
     this.simulationFiles = null;
@@ -87,8 +87,8 @@ UI.Visualizator = function () {
 
 };
 
-UI.Visualizator.prototype = {
-    constructor: UI.Visualizator,
+UI.Visualizer.prototype = {
+    constructor: UI.Visualizer,
     generateUI: function () {
         var self = this;
         $(document).ready(function () {
@@ -1310,5 +1310,5 @@ UI.Visualizator.prototype = {
 
 _ColorPicker = new MSP.ColorPicker();
 //Generate the interface
-_gVisualizatorUI = new UI.Visualizator();
+_gVisualizerUI = new UI.Visualizer();
 //# sourceURL=InterfaceLogic.js

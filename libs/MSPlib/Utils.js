@@ -320,7 +320,7 @@ function navBar(btnIdx, viewID) {
     var btnsBar = $(".btnSwitch");
     btnsBar.removeClass("active");
     btnsBar.eq(btnIdx).addClass("active");
-    _gVisualizatorUI.generateView(viewID);
+    _gVisualizerUI.generateView(viewID);
 }
 
 function loadCookieColor() {
