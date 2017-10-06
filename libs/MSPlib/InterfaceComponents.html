@@ -147,7 +147,10 @@
             </div>
             <!-- Window load remote simulation from server-->
             <div class="centerFlex">
-                <input type="text" id="jqxWindow_RemoteSimulationId" class="text-input" placeholder="Simulation ID"/>
+                <select id="jqxWindow_RemoteSimulationId"
+                        class="text-input" title="Simulation ID">
+                    <option disabled="disabled" selected="selected">Select simulation</option>
+                </select>
                 <input id='jqxWindow__ButtonLoadRemoteSimulationFromServer' class="button" type="button"
                        value="Load/Reload Remote Simulation"/>
             </div>
