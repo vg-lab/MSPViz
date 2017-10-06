@@ -18,7 +18,10 @@ UI.Visualizer = function () {
     this.simulationFiles = null;
     this.simulationFilesConfig = null;
     this.colorScaleTypes = ['Categorical', 'Diverging', 'Sequential'];
-    this.colorScaleTypesCalcium = ['Diverging', 'Sequential'];
+    this.colorScaleTypesCalcium = [this.colorScaleTypes[2]];
+    this.colorScaleTypesElements = [this.colorScaleTypes[0]];
+    this.colorScaleTypesConnections = [this.colorScaleTypes[0]];
+
     this.colorScales = {
         'Categorical': [
             {labelInternal: "schemeAccent", label: "schemeAccent", group: "Categorical"},
@@ -204,10 +207,10 @@ UI.Visualizer.prototype = {
 
         /* Sort */
 
-        self.createColorCombos("#comboScaleTypeNeuron", self.colorScaleTypes, "#comboScaleNeuron", self.colorScales);
+        self.createColorCombos("#comboScaleTypeNeuron", self.colorScaleTypesElements, "#comboScaleNeuron", self.colorScales);
 
 
-        self.createColorCombos("#comboScaleTypeConnection", self.colorScaleTypes, "#comboScaleConnection", self.colorScales);
+        self.createColorCombos("#comboScaleTypeConnection", self.colorScaleTypesConnections, "#comboScaleConnection", self.colorScales);
 
 
         self.generateScaleCalcium();
@@ -1070,6 +1073,10 @@ UI.Visualizer.prototype = {
                 text: elem
             }));
         });
+
+        if(colorScaleTypes.length <= 1) {
+            $(idComboType).css("display","none");
+        }
 
         colorScales[colorScaleTypes[0]].forEach(function (elem, i) {
             $(idComboScheme).append($('<option>', {
