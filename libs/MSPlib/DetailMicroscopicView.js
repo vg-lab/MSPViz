@@ -186,8 +186,8 @@ MSP.DetailMicroscopicView.prototype = {
         var AxNode = {id: "Axonal"};
 
         this.root.children = [ENode];
-        this.root.children.push(INode);
         this.root.children.push(AxNode);
+        this.root.children.push(INode);
 
         this.usedIds = 4;
 
