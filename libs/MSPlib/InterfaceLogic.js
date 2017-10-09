@@ -487,14 +487,14 @@ UI.Visualizer.prototype = {
 
         $("#jqxWindow__ButtonLoadRemoteSimulationFromServer").on('click', function (event) {
 
-            var lSimName = $("#jqxWindow_RemoteSimulationId").val();
-            var lSimNameLength = lSimName.length;
-            if (lSimNameLength > 0) {
+            if ($("#jqxWindow_RemoteSimulationId").prop('selectedIndex') > 0) {
+                var lSimName = $("#jqxWindow_RemoteSimulationId").val();
                 self.loadRemoteSimulationFromServer(lSimName);
                 self.navBarSelectView(0);
             }
-            else
+            else {
                 window.alert("Please, select a valid simulation id.");
+            }
         });
 
         //Boton de conectar (De momento además se traerá los datos)
@@ -761,6 +761,28 @@ UI.Visualizer.prototype = {
             _SigletonConfig.incomingConn = event.args.checked;
             _SimulationController.view.updateVisualization();
         });
+
+        var request = $.ajax('listSimFiles.php');
+
+        request.done(function (response) {
+                var files = JSON.parse(response);
+                if (files.length > 0) {
+                    files.forEach(function (elem) {
+                        $('#jqxWindow_RemoteSimulationId').append($('<option>', {
+                            value: elem, text: elem
+                        }));
+                    });
+                }
+                else {
+                    $('#jqxWindow_RemoteSimulationId option').text("No files found");
+                    $('#jqxWindow_RemoteSimulationId').prop("disabled", true);
+                }
+
+        });
+
+        request.fail(function () {
+            window.alert("There was a problem retrieving simulation files list from the server.")
+        })
     },
     selectColor: function (self, configPropID) {
         return function () {
