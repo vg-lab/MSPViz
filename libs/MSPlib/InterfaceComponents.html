@@ -1,9 +1,24 @@
 <!--
- * @brief
- * @author  Juan Pedro Brito Mendez <juanpebm@gmail.com>
- * @date
- * @remarks Do not distribute without further notice.
- */
+ *
+ * Copyright (c) 2017 CCS/GMRV/UPM/URJC.
+ *
+ * Authors: Juan P. Brito <juanpedro.brito@upm.es>
+ * 			Nicusor Cosmin Toader <cosmin.toader.nicu@gmail.com> 
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License version 3.0 as published
+ * by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ *
  -->
 
 <!-- Interface components -->
@@ -594,90 +609,141 @@
             <p style="text-align: center;">
                 <strong><span style="text-decoration: underline;">MSPViz</span></strong>
             </p>
-            <p style="text-align: justify;">This is a visualization tool for
-                the data of the model of structural plasticity. The data musb be in JSON format,
-                the user can use the <a title="MSPJSONGenerator.py" href="./libs/scripts/MSPJSONGenerator.py">MSPJSONGenerator.py</a>
-                script to transform the data, and be able to load in the visualization tool.</p>
+            <p style="text-align: justify;"> MSPViz is a visualization tool for Structural Plasticity Models. It uses a novel visualisation technique based on the representation of the neuronal information through the use of abstract levels and a set of representations into each level. This hierarchical representations, lets the user interact and change the representation modifying the degree of detail of the information to be analysed in an simple and intuitive way, through the navigation of different views at different levels of abstraction. The designed representations in each view only containing the necessary variables to achieve the desired tasks, avoiding overwhelming saturation of information. The multilevel structure and the design of the representations constitutes an approach that provides organized views that facilitates visual analysis tasks. Moreover, each view has been enhanced adding line and bar charts to analyse trends in simulation data, and also filtering and sorting capabilities can be applied on each view easing the analysis. Additionally, some other views, such as connectivity matrices and force directed layouts, have been incorporated, enriching the already existing views and improving the analysis process. Finally, this tool has been optimized to lower render and data loading times, even from remote sources such as WebDav servers. 
+                The data musb be in JSON format, the user can use the <a title="MSPJSONGenerator.py" href="./libs/scripts/MSPJSONGenerator.py">MSPJSONGenerator.py</a>
+                script to transform the data from NEST to be able to load in the visualization tool.</p>
             <p style="text-align: justify;">
                 <strong>All the views lets the use of</strong>:
             </p>
             <p style="text-align: justify;">
             <ul>
-                <li><span style="line-height: 24px;">Zooming: Using the
-						mouse wheel.</span></li>
-                <li><span style="line-height: 24px;">Panning: Click on
-						the background and moving the mouse.</span></li>
-                <li><span style="line-height: 24px;">Selection: Pressing
-						shift button and clicking over the neuron representation.
-						Additionally, the macroscopic view lets multi selecion, pressing
-						shift key and moving the mouse over the view. </span></li>
+				<li> <span style="text-decoration: underline;">Zooming: </span> 					
+				Using the mouse wheel.</span></li>
+				<li> <span style="text-decoration: underline;">Panning:</span> 					
+				Click on the background and moving the mouse.</span></li>
+				<li> <span style="text-decoration: underline;">Selection: </span> 					
+				Pressing shift button and clicking over the neuron representation.
+				Additionally, the macroscopic view lets multi selecion, pressing
+				shift key and moving the mouse over the view. </span></li>
             </ul>
 
             <p style="text-align: justify;">
-                <strong>Main menu</strong>:
+                <strong>Main menu (on the left)</strong>: The main menu are structured into thre different parts.
+                The first one is on the top, where the user can select different views (at different levels of abstraction).
+                These views are:
             </p>
-            <ul>
-                <li style="text-align: justify;"><span
-                        style="line-height: 24px;"><span
-                        style="text-decoration: underline;">File/Open local
-							simulation</span>: Load the simulation files from local directory. Needs
-						the 3 standart files, called "LocalNeuronInformation.json",
-						"GlobalSimulationParams.json" and "Connectivity.json". The user
-						must select the three files at the same time.</span></li>
-                <li style="text-align: justify;"><span
-                        style="line-height: 28.7999992370605px;"><span
-                        style="text-decoration: underline;">File/Reset
-							Visualization</span>: Reset the visualization tool, to prepare a new
-						visualization.</span></li>
-                <li style="text-align: justify;"><span
-                        style="line-height: 28.7999992370605px;"><span
-                        style="text-decoration: underline;">Edit/Take an snapshot</span>:
-						Take an snapshot of the current view and at the current simulation
-						step. (Not work propertly)</span></li>
-                <li style="text-align: justify;"><span
-                        style="line-height: 28.7999992370605px;"><span
-                        style="text-decoration: underline;">Edit/Preferences</span>: Lets
-						the user to change the preferences of the visualization.</span></li>
-                <li style="text-align: justify;"><span
-                        style="line-height: 28.7999992370605px;"><span
-                        style="text-decoration: underline;">View/Global Connections
-							View</span>: This view lets the user to analyze the total connections in
-						the simulation, such as the total number of synaptic elements.</span></li>
-                <li style="text-align: justify;"><span
-                        style="line-height: 28.7999992370605px;"><span
-                        style="text-decoration: underline;">View/Macroscopic View</span>:
-				</span><span>This view give the user and overview of the rewiring
-						proces during the simulation. Neurons are represented as trinagles
-						for excitatory neurons, and circles for inhibitory neruons, the
-						color of each shape is acording to its calcium concentration. The
-						arrows are the conections, and the color of the arrows are the
-						type of the connection (EE, EI, IE, II). </span></li>
-                <li style="text-align: justify;"><span
-                        style="line-height: 28.7999992370605px;"><span
-                        style="text-decoration: underline;">View/Microscopic View</span>:
-						This view shows the relation of synaptic elements of the neurons,
-						previously selected in the </span><span>Macroscopic View.</span></li>
-                <li style="text-align: justify;"><span
-                        style="line-height: 28.7999992370605px;"><span
-                        style="text-decoration: underline;">View/Detailled
-							Microscopic View</span>: </span><span style="line-height: 28.7999992370605px;">This
-						view shows the exact number of synaptic elements of the selected
-						neuron from the </span><span>Microscopic View.</span></li>
-                <li style="text-align: justify;"><span
-                        style="line-height: 28.7999992370605px;">Help/About:
-						Information about this tool. </span></li>
-            </ul>
+                
+			<ul>
+                <li> <span style="text-decoration: underline;">Global Connection:</span> 
+                This view shows the global connectivity
+                data in the simulation, that is the total number of synaptic 
+                elements and connections. 
+                </li>
+                <li> <span style="text-decoration: underline;">Macroscopic:</span> 
+                This view is designed to have a global
+				view of all neurons and synapses in the simulation, and 
+				at the same time, this view shows the connections between neurons 
+				in each time step of the simulation.
+                </li>
+                <li> <span style="text-decoration: underline;">Connectivity Matrix:</span> 
+                 This view shows the synaptic connection 
+                of neurons during the simulation in a Matrix way.
+                </li>
+                <li> <span style="text-decoration: underline;">Microscopic:</span> 
+                This view allows to analyze and compare
+				the synaptic elements in each neuron.
+                </li>
+                <li> <span style="text-decoration: underline;">Detailed Microscopic:</span> 
+                This view is designed to visualize 
+                directly the number of synaptic elements in each neuron, 
+                showing in each time step how the synaptic elements appears 
+                and disappears in a certain neuron.
+                </li>                
+			</ul>
+
+            <p style="text-align: justify;">
+                After the view selection, there is the main controls of the application, related with 
+                the most common tasks during the analysis.
+            </p>
+
+			<ul>
+				<li style="text-align: justify;"><span
+						style="line-height: 24px;"><span
+						style="text-decoration: underline;">File menu</span>: 
+						Load the simulation files from different places, such as local simulation
+						or simulations stores on remote serves, following simple attps request 
+						or WebDav protocols. In this menu, the user could store and load different 
+						configuration related with the visualization, such as color paletes for 
+						each parameter under analysis.						
+						</span></li>
+				<li style="text-align: justify;"><span
+						style="line-height: 28.7999992370605px;"><span
+						style="text-decoration: underline;">Color preferences menu</span>: 
+						In this menu, the user can select different and standar color paletes for 
+						each parameter under analysis, such as the calcium concentration, the 
+						type of connection or the type of the neuronal element.						
+						</span></li>
+				<li style="text-align: justify;"><span
+						style="line-height: 28.7999992370605px;"><span
+						style="text-decoration: underline;">Global configuration menu</span>:
+						This menu lets the user to configure some generic visual parameters for 
+						the visualization, such as type of connection, the type of the synaptic elements
+						to visualize or the speed of the visualization.
+						</span></li>
+				<li style="text-align: justify;"><span
+						style="line-height: 28.7999992370605px;"><span
+						style="text-decoration: underline;">Global configuration menu</span>:
+						This menu lets the user to configure some generic visual parameters for 
+						the visualization, such as type of connection, the type of the synaptic elements
+						to visualize or the speed of the visualization.
+						</span></li>
+				<li style="text-align: justify;"><span
+						style="line-height: 28.7999992370605px;"><span
+						style="text-decoration: underline;">View configuration menu</span>:
+						This menu lets the user to configure specific parameters 
+						of the active view, for example, wich connectios to show 
+						on the Macroscopic View or the number of historam
+						 steps on Detailed Micoscopic.
+						</span></li>
+				<li style="text-align: justify;"><span
+						style="line-height: 28.7999992370605px;"><span
+						style="text-decoration: underline;">Filter menu</span>:
+						This menu lets the user to filter the data within a specific visualization, 
+						selecting what data is displayed easing the analysis.
+						</span></li>
+				<li style="text-align: justify;"><span
+						style="line-height: 28.7999992370605px text-decoration: underline;">
+						<span style="text-decoration: underline;">Sort menu:</span>
+						This menu lets the user to sort the data within a specific 
+						visualization using different criterias such as 
+						calcium concentration or number of connections.
+						</span></li>
+			</ul>
+
+            <p style="text-align: justify;">
+				On the bottom part of the main menu there are two generic operations
+            </p>
+
+			<ul>
+				<li> <span style="text-decoration: underline;">Download view image:</span> 	
+				To take high quality screenshots of the visual representaion of the data. </span></li>
+				
+				<li> <span style="text-decoration: underline;">Help/About: </span> 	
+				Information about this tool. </span></li>			
+			</ul>
+
+            
             <p style="text-align: justify;">
                 <strong>Bottom controls:</strong>
             </p>
             <ul>
                 <li style="text-align: justify;"><span
                         style="line-height: 24px;"><span
-                        style="text-decoration: underline;">Simulate button</span>: Start
+                        style="text-decoration: underline;">Play Simulation</span>: Start
 						the visualization of the simulation.</span></li>
                 <li style="text-align: justify;"><span
                         style="line-height: 24px;"><span
-                        style="text-decoration: underline;">Stop simulation button</span>:
+                        style="text-decoration: underline;">Stop Simulation</span>:
 				</span><span>Stop the visualization of the simulation.</span></li>
                 <li style="text-align: justify;"><span
                         style="line-height: 24px;"><span
@@ -687,6 +753,11 @@
                         style="line-height: 24px;"><span
                         style="text-decoration: underline;">Step</span>: </span><span>Lets
 						the user go to an especitfic step of the simulation.</span></li>
+                <li style="text-align: justify;"><span
+                        style="line-height: 24px;"><span
+                        style="text-decoration: underline;">Layouts</span>: </span><span>The different 
+                        views have different layouts to place the elements on the screen following 
+                        different paradigims. The layouts depends on the view under analysis.</span></li>
             </ul>
         </div>
 

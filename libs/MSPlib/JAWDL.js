@@ -1,14 +1,26 @@
-
- /**
- * @brief
- * @author  Juan Pedro Brito Mendez <juanpebm@gmail.com>
- * @date
- * @remarks Do not distribute without further notice.
+/*
+ * Copyright (c) 2017 CCS/GMRV/UPM/URJC.
+ *
+ * Authors: Juan P. Brito <juanpedro.brito@upm.es>
+ * 			Nicusor Cosmin Toader <cosmin.toader.nicu@gmail.com> 
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License version 3.0 as published
+ * by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
  */
 
 JAWDL = function (pUrl, pPort, pProtocol, pUser, pPass)
 {
-	//Subdivision of pies
 	this.folderUrl 	= 	pUrl;
 	this.port 		= 	pPort;
 	this.protocol 	= 	pProtocol;
@@ -59,9 +71,8 @@ JAWDL.prototype =
 
 		$.getJSON(lUrl, function(response)
 					{
-						// response is an array of objects
 						for( i=1; i<response.length; i++) 
-						{ // i=1 because first result is current folder
+						{
 							fileName 	= response[i].name;
 							contentType = response[i].getcontenttype;
 							// do something with it

@@ -1,10 +1,24 @@
-/**
- * @brief
- * @author  Juan Pedro Brito Mendez <juanpebm@gmail.com>
- * @date
- * @remarks Do not distribute without further notice.
+/*
+ * Copyright (c) 2017 CCS/GMRV/UPM/URJC.
+ *
+ * Authors: Juan P. Brito <juanpedro.brito@upm.es>
+ * 			Nicusor Cosmin Toader <cosmin.toader.nicu@gmail.com> 
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License version 3.0 as published
+ * by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
  */
-
+ 
 //Namespaces
 var MSP = MSP || {};
 var UI = UI || {};
@@ -111,57 +125,6 @@ function saveAsImage() {
             });
 
     }
-
-//// Canvasg	
-//	  var html = d3.select("svg")
-//				.attr("version", 1.1)
-//				.attr("xmlns", "http://www.w3.org/2000/svg")
-//				        .node().parentNode.innerHTML;
-//	
-//	//	// the canvg call that takes the svg xml and converts it to a canvas
-//	//	canvg('canvas', $("#svg").html());
-//	  
-//	// the canvas calls to output a png
-//	  var imgsrc = 'data:image/svg+xml;base64,'+ btoa(html);
-//	  var img = '<img src="'+imgsrc+'">'; 
-//	  
-//	  canvg(document.getElementById('canvas'), img);
-//
-//	  var c = document.getElementById('canvas');
-//	  var ctx = c.getContext('2d');
-////	  ctx.drawSvg(html, 0, 0, 1024, 768);
-//	  
-////	  //Export to file
-////	  var canvas = document.getElementById("canvas");
-////	  var imgExp    = canvas.toDataURL("image/png");
-////	  document.write('<img src="'+imgExp+'"/>');
-
-    // Otro canvasg
-//	//document.createElement('canvas')
-//	var svg = $("#svg").html();
-//	
-//	var c = document.getElementById('canvas');		
-//	c.width = 1024;
-//	c.height = 768;
-//	document.getElementById('canvas').innerHTML = '';
-//	document.getElementById('canvas').appendChild(c);
-//	
-//	canvg(c, svg, { log: true, renderCallback: function (dom) {
-//		if (typeof FlashCanvas != "undefined") 
-//		{
-//			document.getElementById('svg').innerHTML = 'svg not supported';
-//		} else 
-//		{
-//			var svg = (new XMLSerializer()).serializeToString(dom);
-//			document.getElementById('svg').innerHTML = svg;
-//			if (overrideTextBox) 
-//			{
-//				document.getElementById('input').value = svg;
-//				overrideTextBox = false;
-//			}
-//		}
-//	}});
-
 }
 
 function make_base_auth(user, password) {
@@ -225,13 +188,7 @@ function makeCorsRequest(pURL) {
 
     // Response handlers.
     xhr.onload = function () {
-//		var text = xhr.responseText;
-//		var title = getTitle(text);
-//		alert('Response from CORS request to ' + url + ': ' + title);
-
         console.log(xhr.responseText);
-
-        //_GlobalSimulationParams.LoadSimulation(url);
     };
 
     xhr.onerror = function () {
@@ -240,7 +197,6 @@ function makeCorsRequest(pURL) {
         console.log(xhr.responseText);
     };
 
-    //xhr.send();
     return xhr;
 }
 
@@ -398,4 +354,3 @@ function rgbToHex(color) {
     return hexColor;
 }
 
-//# sourceURL=Utils.js

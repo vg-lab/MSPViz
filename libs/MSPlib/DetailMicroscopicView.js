@@ -1,8 +1,22 @@
-/**
- * @brief
- * @author  Juan Pedro Brito Mendez <juanpebm@gmail.com>
- * @date
- * @remarks Do not distribute without further notice.
+/*
+ * Copyright (c) 2017 CCS/GMRV/UPM/URJC.
+ *
+ * Authors: Juan P. Brito <juanpedro.brito@upm.es>
+ * 			Nicusor Cosmin Toader <cosmin.toader.nicu@gmail.com> 
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License version 3.0 as published
+ * by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
  */
 
 MSP.DetailMicroscopicView = function () {
@@ -273,28 +287,6 @@ MSP.DetailMicroscopicView.prototype = {
                         lColor = _SimulationData.CaIScale(_SimulationData.gNeuronsDetails[d.id].Calcium[lIndex]);
 
                     }
-
-
-                    /*              switch (d.parent.id)
-                     {
-                     case "Excitatory":
-                     lColor= _SigletonConfig.EColor;
-                     break;
-                     case "Inhibitory":
-                     var lTmpColor;
-                     if (_SimulationData.gNeurons[_SigletonConfig.neuronSelected].NAct=="E") 	lTmpColor = new KolorWheel(_SigletonConfig.EColor).getRgb();
-                     else																		lTmpColor = new KolorWheel(_SigletonConfig.IColor).getRgb();
-
-                     axonalColor = "rgba("+lTmpColor[0] + "," + lTmpColor[1] +","+ lTmpColor[2]+", 0.5)" ;
-                     delete lTmpColor;
-
-                     lColor = axonalColor;
-                     break;
-
-                     case "Axonal":
-                     lColor = _SigletonConfig.IColor;
-                     break;
-                     }*/
                 }
                 else if (d.id == "Excitatory") //Excitatory
                 {
@@ -687,6 +679,5 @@ MSP.DetailMicroscopicView.prototype = {
         _SigletonConfig.neuronSelected = id;
         this.graph.generateGraph();
         this.generateDetailMicroscopicView(id);
-        //   this.updateVisualization();
     }
 };

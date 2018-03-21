@@ -1,3 +1,21 @@
+#Copyright (c) 2017 CCS/GMRV/UPM/URJC.
+
+#Authors: Juan P. Brito <juanpedro.brito@upm.es>
+#			Nicusor Cosmin Toader <cosmin.toader.nicu@gmail.com> 
+
+#This library is free software; you can redistribute it and/or modify it under
+#the terms of the GNU Lesser General Public License version 3.0 as published
+#by the Free Software Foundation.
+
+#This library is distributed in the hope that it will be useful, but WITHOUT
+#ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+#FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
+#details.
+
+#You should have received a copy of the GNU Lesser General Public License
+#along with this library; if not, write to the Free Software Foundation, Inc.,
+#51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
 """
 Options for the script:
 -v -> Verbose mode
@@ -6,10 +24,6 @@ Options for the script:
 -n timesteps to split
 """
 
-## @brief
-# @author  Juan Pedro Brito Mendez <juanpebm@gmail.com>
-# @date
-# @remarks Do not distribute without further notice.
 import io, json
 import sys
 import getopt
@@ -132,7 +146,6 @@ def splitConnectivity(pWorkingDirectory):
     with open(lPath) as data_file:    
         data = json.load(data_file)
 
-#    gSimSteps           =   data['simSteps'];
     lMaxNumElesInFile   =   gItemsPerFile
     
     lEEKeys = sorted(data["EE"].keys(), cmp=_compare_keys)
@@ -142,7 +155,6 @@ def splitConnectivity(pWorkingDirectory):
     
     for i in range (0, gTotalNumFiles):
         lIncrement = i*gItemsPerFile;
-#        print "--->>>> Iteracion:"+str(i)
         JSONContainer={}
         
         JSONContainer['EE'] = collections.OrderedDict()
@@ -152,7 +164,6 @@ def splitConnectivity(pWorkingDirectory):
         
         for j in range (0, lMaxNumElesInFile):
             lActKey = str(gSimSteps[lIncrement+j])
-#            print "Internal iteration:"+str(j)+" "+str(lActKey)
              
             if lActKey in lEEKeys:
                 JSONContainer['EE'][lActKey]=data['EE'][lActKey]
@@ -167,9 +178,6 @@ def splitConnectivity(pWorkingDirectory):
  
             if lActKey in lIIKeys:
                 JSONContainer['II'][lActKey]=data['II'][lActKey]
-
-#        Falta ordenar la salida para que sea mas eficiente el acceso en javascript
-#        Creo que con modificar el criterio de insercion ordenada valdria
         
         lFileName = "Connectivity_"+str(i)+'.json'
         lPathFile = pWorkingDirectory+lFileName
@@ -230,7 +238,6 @@ def splitLocalParams(pWorkingDirectory):
             lNumElesInFile=len(data[0]['DeSeEV']) - (i*gItemsPerFile)
                 
         for j in range (0, len(data)):
-#             print "Increments: "+str(lIncrement)+" - lNumElesInFile:"+str(lIncrement+lNumElesInFile)
             JSONTmpElement={'DeSeEV':data[j]['DeSeEV'][lIncrement:lIncrement+lNumElesInFile]}
             JSONTmpElement['DeSeEA'] =data[j]['DeSeEA'][lIncrement:lIncrement+lNumElesInFile];
             JSONTmpElement['DeSeIV'] =data[j]['DeSeIV'][lIncrement:lIncrement+lNumElesInFile];
@@ -264,8 +271,7 @@ def main():
     try:
         opts, args = getopt.getopt(sys.argv[1:], "hd:vn", ["help", "directory="])
     except getopt.GetoptError as err:
-        # print help information and exit:
-        print str(err) # will print something like "option -a not recognized"
+        print str(err)
         print "for help use --help"
         sys.exit(2)
 

@@ -1,8 +1,22 @@
-/**
- * @brief
- * @author  Juan Pedro Brito Mendez <juanpebm@gmail.com>
- * @date
- * @remarks Do not distribute without further notice.
+/*
+ * Copyright (c) 2017 CCS/GMRV/UPM/URJC.
+ *
+ * Authors: Juan P. Brito <juanpedro.brito@upm.es>
+ * 			Nicusor Cosmin Toader <cosmin.toader.nicu@gmail.com> 
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License version 3.0 as published
+ * by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
  */
 
 MSP.GraphDetailMicroscopicView = function () {
@@ -199,59 +213,7 @@ MSP.GraphDetailMicroscopicView.prototype = {
         this.sxthGraphMargin.cumulativeTop = this.ffthGraphMargin.cumulativeTop + this.ffthGraphDim.height
             + this.ffthGraphMargin.bottom + this.sxthGraphMargin.top;
 
-
-        // this.width = width - this.margin.right - this.margin.left;
-        // this.height = (_SigletonConfig.height) * 0.21;
         this.textBarMarginRatio = 0.01;
-        // this.dimension = {width: this.width, height: this.height};
-        //
-        // this.margin2 = {
-        //     top: this.height + this.margin.top + ratioHeight * 0.02,
-        //     right: 15,
-        //     bottom: 0,
-        //     left: Math.max(50, width * 0.1)
-        // };
-        // this.width2 = width - this.margin2.right - this.margin2.left;
-        // this.height2 = (_SigletonConfig.height) * 0.08;
-        //
-        // this.margin3 = {
-        //     top: this.height2 + this.margin2.top + ratioHeight * 0.06,
-        //     right: 15,
-        //     bottom: 0,
-        //     left: Math.max(50, width * 0.1)
-        // };
-        // this.width3 = width - this.margin3.right - this.margin3.left;
-        // this.height3 = (_SigletonConfig.height) * 0.07;
-        // this.dimension3 = {width: this.width3, height: this.height3};
-        //
-        // this.margin4 = {
-        //     top: this.height3 + this.margin3.top + ratioHeight * 0.03,
-        //     right: 15,
-        //     bottom: 0,
-        //     left: Math.max(50, width * 0.1)
-        // };
-        // this.width4 = width - this.margin4.right - this.margin4.left;
-        // this.height4 = (_SigletonConfig.height) * 0.07;
-        // this.dimension4 = {width: this.width4, height: this.height4};
-        //
-        // this.margin5 = {
-        //     top: this.height4 + this.margin4.top + ratioHeight * 0.03,
-        //     right: 15,
-        //     bottom: 0,
-        //     left: Math.max(50, width * 0.1)
-        // };
-        // this.width5 = width - this.margin5.right - this.margin5.left;
-        // this.height5 = (_SigletonConfig.height) * 0.07;
-        // this.dimension5 = {width: this.width5, height: this.height5};
-        //
-        // this.margin6 = {
-        //     top: this.height5 + this.margin5.top + ratioHeight * 0.04,
-        //     right: 15,
-        //     bottom: 0,
-        //     left: Math.max(50, width * 0.1)
-        // };
-        // this.width6 = width - this.margin6.right - this.margin6.left;
-        // this.height6 = (_SigletonConfig.height) * 0.23;
 
         this.numYTicks = 10;
         d3.select("#caGraph").remove();

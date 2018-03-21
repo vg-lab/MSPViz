@@ -1,8 +1,22 @@
-/**
- * @brief
- * @author  Juan Pedro Brito Mendez <juanpebm@gmail.com>
- * @date
- * @remarks Do not distribute without further notice.
+/*
+ * Copyright (c) 2017 CCS/GMRV/UPM/URJC.
+ *
+ * Authors: Juan P. Brito <juanpedro.brito@upm.es>
+ * 			Nicusor Cosmin Toader <cosmin.toader.nicu@gmail.com> 
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License version 3.0 as published
+ * by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
  */
 
 MSP.MicroscopicView = function () {
@@ -472,10 +486,8 @@ MSP.MicroscopicView.prototype = {
             if ((self.selectedMicro.length === 0 && !_SimulationFilter.gNeuronsFilterB[d]) || (self.selectedMicro.length !== 0 && !_SimulationData.gNeurons[d].selectedM)) {
                 return "#434343";
             }
-            //if (d.NAct == "E")
-            //console.log("Neuron Id:"+d);
+
             if (_SimulationData.gNeurons[d].NAct == "E") {
-                //var lVal = _SimulationData.CaEScale(_SimulationData.gNeuronsDetails[d].Calcium[lIndex]);
                 var lVal = _SimulationData.CaEScale(_SimulationData.gNeuronsDetails[d].Calcium[lIndex]);
                 return lVal;
             }
@@ -500,7 +512,6 @@ MSP.MicroscopicView.prototype = {
         this.graph.updateGraph();
         if (typeof proc === "undefined") {
             this.recalculatePos();
-            //this.reclculateSEScales();
             this.updatePos();
         }
         var lIndex = _SimulationController.actSimStep % _SimulationData.numSimStepsPerFile;
@@ -547,11 +558,9 @@ MSP.MicroscopicView.prototype = {
             )
         ;
 
-
         this.paths
             .data(d3.layout.pie())
             .each(function (d) {
-                    // Wrap dom element in d3 selection
                     var elm = d3.select(this);
 
                     var lIndirectNeuId = parseInt(elm.attr('id') / 3);
@@ -692,7 +701,7 @@ MSP.MicroscopicView.prototype = {
         return function () {
             d3.select(this)
                 .transition()
-                .delay(0)//Solucion al bug del parpadeo
+                .delay(0)
                 .attrTween("d", function (d) {
                         var i = d3.interpolate(d.outerRadius, d.foo);
                         return function (t) {

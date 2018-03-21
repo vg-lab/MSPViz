@@ -1,10 +1,23 @@
-/**
- * @brief
- * @author  Juan Pedro Brito Mendez <juanpebm@gmail.com>
- * @date
- * @remarks Do not distribute without further notice.
+/*
+ * Copyright (c) 2017 CCS/GMRV/UPM/URJC.
+ *
+ * Authors: Juan P. Brito <juanpedro.brito@upm.es>
+ * 			Nicusor Cosmin Toader <cosmin.toader.nicu@gmail.com> 
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License version 3.0 as published
+ * by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
  */
-
 
 //Global vars
 _SimulationController = null;
@@ -290,21 +303,6 @@ UI.Visualizer.prototype = {
 
         $("#jqxCheckBox_IIConnect").jqxCheckBox({width: 140, height: 25, checked: true});
 
-
-        /*                $("#jqxConfWindow_ButtonUpdateView").jqxButton({ width: '150'});
-         $("#jqxConfWindow_ButtonUpdateView").on('click', function (event) {
-
-         _SimulationData.recalculateScales(_SigletonConfig.minCaColor
-         ,_SigletonConfig.maxCaColor
-         ,_SigletonConfig.ColorInerpolMethod);
-         //Recalc scales for the cheeses, only in MicroView
-         if (_SimulationController.view.MSPViewType=="MicroV")
-         _SimulationController.view.reclculateSEScales();
-
-         self.updateSimulationFromTimeline();
-         });*/
-
-
         $('#jqxWindow_ImgExporter').jqxWindow({
             showCollapseButton: true,
             maxHeight: 1280,
@@ -347,7 +345,7 @@ UI.Visualizer.prototype = {
 
         //Dont reload the files form the same place in Chrome
         document.getElementById('fileDialog').addEventListener('change',
-            function (evt) //selectFiles()
+            function (evt)
             {
                 var files = document.getElementById('fileDialog').files;
 
@@ -377,7 +375,7 @@ UI.Visualizer.prototype = {
         ;
 
         document.getElementById('fileDialogConfig').addEventListener('change',
-            function (evt) //selectFiles()
+            function (evt)
             {
                 var files = document.getElementById('fileDialogConfig').files;
 
@@ -406,7 +404,7 @@ UI.Visualizer.prototype = {
         $("#jqxConfWindow_ButtonSelectConfig").on('click', self.loadLocalConfiguration);
         $("#jqxConfWindow_ButtonLoadConfig").on('click', self.loadLocalConfigurationFiles);
         $("#jqxConfWindow_ButtonSaveConfig").on('click', saveConfig);
-        //Navbar view buttons
+
         $("#navClose").on('click', self.closeNav);
 
         $("#navViewGlobal").on('click', self._openView(self.viewsID.GlobalConnectionsView, 0));
@@ -500,7 +498,6 @@ UI.Visualizer.prototype = {
             }
         });
 
-        //Boton de conectar (De momento además se traerá los datos)
         $("#jqxWindow_ButtonLoadRemoteSimulationFromDCache").on('click', function (event) {
 
             var serversPath = ["Nop"
@@ -511,7 +508,7 @@ UI.Visualizer.prototype = {
             var lItem = $("#jqxWindow_LoadRemoteSimulation_ComboRemoteServers").selectedIndex;
             var lUserLenght = $("#jqxWindow_LoadRemoteSimulation_inputUser").val().length;
             var lPassLenght = $("#jqxWindow_LoadRemoteSimulation_inputPass").val().length;
-            //console.log("--->>>>"+lItem +" "+lUserLenght+" "+lPassLenght);
+
             if (
                 (lItem > 0)
                 && (lUserLenght > 0)
@@ -526,6 +523,7 @@ UI.Visualizer.prototype = {
 
 
         });
+
         $("#comboBoxTypeFilter").on('change', function () {
             var idx = $("#comboBoxTypeFilter").prop('selectedIndex');
             if (self.filterTypes[idx].cat === "decimal") {
@@ -1338,6 +1336,4 @@ UI.Visualizer.prototype = {
 };
 
 _ColorPicker = new MSP.ColorPicker();
-//Generate the interface
 _gVisualizerUI = new UI.Visualizer();
-//# sourceURL=InterfaceLogic.js

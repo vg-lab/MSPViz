@@ -1,3 +1,24 @@
+/*
+ * Copyright (c) 2017 CCS/GMRV/UPM/URJC.
+ *
+ * Authors: Juan P. Brito <juanpedro.brito@upm.es>
+ * 			Nicusor Cosmin Toader <cosmin.toader.nicu@gmail.com> 
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License version 3.0 as published
+ * by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ */
+
 MSP.SimulationFilter = function () {
     this.gNeuronsFilter = [];
     this.gNeuronsFilterB = [];
@@ -37,25 +58,25 @@ MSP.SimulationFilter.prototype = {
             this.gNeuronsFilter = [];
             _SimulationData.gNeurons.forEach(function (d, z) {
                 for (var i = 0; i < self.filters.length; i++) {
-                    //Filtro de calcio
+                    //Calcium filter
                     if (self.filters[i].type === "Ca" && !(_SimulationData.gNeuronsDetails[d.NId].Calcium[_SimulationController.actSimStep] >= self.filters[i].min
                         && _SimulationData.gNeuronsDetails[d.NId].Calcium[_SimulationController.actSimStep] <= self.filters[i].max)
                         && ((d.NAct === "E" && self.filters[i].excitatory) || (d.NAct === "I" && self.filters[i].inhibitory))) {
                         self.gNeuronsFilterB[z] = false;
                     }
-                    //Filtro de conexiones excitadoras
+                    //Excitatory conections filter
                     else if (self.filters[i].type === "EConn" && !(_SimulationData.gNeuronsDetails[d.NId].DeSeEA[_SimulationController.actSimStep] >= self.filters[i].min
                         && _SimulationData.gNeuronsDetails[d.NId].DeSeEA[_SimulationController.actSimStep] <= self.filters[i].max)
                         && ((d.NAct === "E" && self.filters[i].excitatory) || (d.NAct === "I" && self.filters[i].inhibitory))) {
                         self.gNeuronsFilterB[z] = false;
                     }
-                    //Filtro de conexiones inhibidoras
+                    //Inhibitory conections filter
                     else if (self.filters[i].type === "IConn" && !(_SimulationData.gNeuronsDetails[d.NId].DeSeIA[_SimulationController.actSimStep] >= self.filters[i].min
                         && _SimulationData.gNeuronsDetails[d.NId].DeSeIA[_SimulationController.actSimStep] <= self.filters[i].max)
                         && ((d.NAct === "E" && self.filters[i].excitatory) || (d.NAct === "I" && self.filters[i].inhibitory))) {
                         self.gNeuronsFilterB[z] = false;
                     }
-                    //Filtro de conexiones axonales
+                    //Axonal conections filter
                     else if (self.filters[i].type === "AConn" && !(_SimulationData.gNeuronsDetails[d.NId].AxSeA[_SimulationController.actSimStep] >= self.filters[i].min
                         && _SimulationData.gNeuronsDetails[d.NId].AxSeA[_SimulationController.actSimStep] <= self.filters[i].max)
                         && ((d.NAct === "E" && self.filters[i].excitatory) || (d.NAct === "I" && self.filters[i].inhibitory))) {

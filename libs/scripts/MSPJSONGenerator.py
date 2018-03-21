@@ -1,13 +1,26 @@
+#Copyright (c) 2017 CCS/GMRV/UPM/URJC.
+
+#Authors: Juan P. Brito <juanpedro.brito@upm.es>
+#			Nicusor Cosmin Toader <cosmin.toader.nicu@gmail.com> 
+
+#This library is free software; you can redistribute it and/or modify it under
+#the terms of the GNU Lesser General Public License version 3.0 as published
+#by the Free Software Foundation.
+
+#This library is distributed in the hope that it will be useful, but WITHOUT
+#ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+#FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
+#details.
+
+#You should have received a copy of the GNU Lesser General Public License
+#along with this library; if not, write to the Free Software Foundation, Inc.,
+#51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
 """
 Options for the script:
 -h -> help
 -d pathDirectory ->Working directory, with all the simulation files
 """
-
-## @brief
-# @author  Juan Pedro Brito Mendez <juanpebm@gmail.com>
-# @date
-# @remarks Do not distribute without further notice.
 
 import io, json, random
 import sys
@@ -40,7 +53,7 @@ gCalciumFiles=[
                ,"calcium__i.dat"
                ]
 
-#Info for the cheeses
+#Info for the pies
 gSynapticElements={"se_axn_ex_vacant.dat"           :"AxSeV"   #(E)Table with all the axonal excitatory synaptic elements of every neuron of the excitatory population (free + connected) at each recording time of the simulation        
                     ,"se_axn_ex_connected.dat"      :"AxSeC"   #(E)Table with connected the axonal excitatory synaptic elements of every neuron of the excitatory population at each recording time of the simulation                     
                     ,"se_axn_in_i_vacant.dat"       :"AxSeV"   #Table with all the axonal inhibitory synaptic elements of every neuron of the inhibitory population (free + connected) at each recording time of the simulation        
@@ -69,8 +82,6 @@ def parseLocalNeuronInformationFiles(pWorkingDirectory, pCalciumsFiles, pSynapti
     global gSimSteps    
     firstFile = True
     
-#     print "Starting calcium processing"
-
     #Calcium files
     for i in range(0,len(pCalciumsFiles)):
         
@@ -98,16 +109,13 @@ def parseLocalNeuronInformationFiles(pWorkingDirectory, pCalciumsFiles, pSynapti
             columns = line.split()
 
             if firstFile:
-#                 gSimSteps.append(float(columns[0]))
                 gSimSteps.append(int(float(columns[0])))
 
             #First line generate the number of entrys in the vector (Num Neurons)
             #First element is the simulation step
-
             if firstLine:
                 for j in range (1, len(columns)):                        
 
-#                     Local information
                     JSONTmpElement={"NId":lPreNeurons+(j-1)}            
                     
                     lActivity="I"
@@ -123,7 +131,7 @@ def parseLocalNeuronInformationFiles(pWorkingDirectory, pCalciumsFiles, pSynapti
                     JSONTmpElement["Calcium"]=[float(columns[j])]
                     JSONContainer.append(JSONTmpElement)                
 
-#                     Calculate the max and min calcium values
+					#Calculate the max and min calcium values
                     if float(columns[j])<gMinCalcium:   gMinCalcium=float(columns[j])
                     if float(columns[j])>gMaxCalcium:   gMaxCalcium=float(columns[j])
 
@@ -138,7 +146,7 @@ def parseLocalNeuronInformationFiles(pWorkingDirectory, pCalciumsFiles, pSynapti
                 firstLine=False;
             else:
                 for j in range (1, len(columns)):
-#                     Calculate the max and min calcium values                    
+					#Calculate the max and min calcium values                    
                     if float(columns[j])<gMinCalcium:   gMinCalcium=float(columns[j])
                     if float(columns[j])>gMaxCalcium:   gMaxCalcium=float(columns[j])
 
@@ -163,8 +171,6 @@ def parseLocalNeuronInformationFiles(pWorkingDirectory, pCalciumsFiles, pSynapti
         lPreNeurons =   len(JSONContainer);
         lPopulationId+=1
 
-#     print "Starting Synaptic Elements"
-    
     #Synaptic Element files
     for i in range(0,len(pSynapticElementFiles)):
           
@@ -204,7 +210,6 @@ def parseLocalNeuronInformationFiles(pWorkingDirectory, pCalciumsFiles, pSynapti
     f.close()
     for line in lines:
         columns = line.split()
-#         if firstIteration:
         JSONContainer[int(columns[0])]["SetPoint"]=float(columns[1])                                          
 
     #Number of vectors to fill     
@@ -215,17 +220,13 @@ def parseLocalNeuronInformationFiles(pWorkingDirectory, pCalciumsFiles, pSynapti
         for j in range(0,len(JSONContainer)):
             JSONContainer[j][lToken]=[(float( JSONContainer[j][( gSynapticElementsAll[lToken][0])][0] ) 
                                                 + float( JSONContainer[j][( gSynapticElementsAll[lToken][1])][0]) )]
-#             JSONContainer[j][lToken]=[42.42]
 
             #Each element of the neuron
             for k in range(1,len(JSONContainer[0][( gSynapticElementsAll[lToken][0])])):
-#                 print ( i,j,k )
                 JSONContainer[j][lToken].append(float( JSONContainer[j][( gSynapticElementsAll[lToken][0]) ][k] )
                                                 +float( JSONContainer[j][( gSynapticElementsAll[lToken][1]) ][k] ) )
        
     with io.open(pWorkingDirectory+"LocalNeuronInformation"+'.json', 'w', encoding='utf-8') as f:
-# --->>>> Problems with big data
-#         f.write(unicode(json.dumps(JSONContainer, indent=4, separators=(',', ': '), ensure_ascii=False)))
         f.write(unicode(json.dumps(JSONContainer,  separators=(',', ': '), ensure_ascii=False)))
 
 #Format "[as,as ... as]"
@@ -250,12 +251,12 @@ def parseGlobalParams(pWorkingDirectory, pFileContainer):
     global gMaxICalcium
     global gMinICalcium
     
-#     Maximos y minimos globales
+	#Maximos y minimos globales
     JSONContainer={"simSteps":gSimSteps}    
     JSONContainer["maxCalciumValue"]=gMaxCalcium
     JSONContainer["minCalciumValue"]=gMinCalcium
 
-#     Maximos y minimos locales
+	#Maximos y minimos locales
     JSONContainer["maxECalciumValue"]=gMaxECalcium
     JSONContainer["minECalciumValue"]=gMinECalcium
     JSONContainer["maxICalciumValue"]=gMaxICalcium
@@ -279,18 +280,10 @@ def parseGlobalParams(pWorkingDirectory, pFileContainer):
             for j in range (0, len(columns)):                        
                 lElementsContainer.append(int(columns[j])) 
 
-# Export as a vector
-#         JSONTmpElement = {}        
-#         JSONTmpElement={pFileContainer[pFile]:lElementsContainer}
-#                 
-#         #Append to the container
-#         JSONContainer.append(JSONTmpElement)
-
-# Export as a dictionary (Easy to parse)
+			# Export as a dictionary (Easy to parse)
             JSONContainer[pFileContainer[pFile]]=lElementsContainer
 
     with io.open(pWorkingDirectory+"GlobalSimulationParams"+'.json', 'w', encoding='utf-8') as f:
-#         f.write(unicode(json.dumps(JSONContainer, sort_keys=True, indent=4, separators=(',', ': '), ensure_ascii=False)))
         f.write(unicode(json.dumps(JSONContainer, separators=(',', ': '), ensure_ascii=False)))
 
 
@@ -322,24 +315,20 @@ def parseConnectivity(pWorkingDirectory, pConnectivityFiles):
         for line in lines:        
             columns = line.split()
             if prevToken!=int(float(columns[0])):
-#                 JSONTmpContainer[float(columns[0])]=[[int(columns[1]),int(columns[2])]]
                 JSONTmpContainer[int(float(columns[0]))]=[[int(columns[1]),int(columns[2])]]
                 prevToken=int(float(columns[0]))
             else:
-#                 JSONTmpContainer[float(columns[0])].append([int(columns[1]),int(columns[2])])
                 JSONTmpContainer[int(float(columns[0]))].append([int(columns[1]),int(columns[2])])
 
                 
         JSONContainer[lToken]=JSONTmpContainer
                         
     with io.open(pWorkingDirectory+"Connectivity"+'.json', 'w', encoding='utf-8') as f:
-#         f.write(unicode(json.dumps(JSONContainer, sort_keys=True, indent=4, separators=(',', ': '), ensure_ascii=False)))
         f.write(unicode(json.dumps(JSONContainer, sort_keys=True, separators=(',', ': '), ensure_ascii=False)))
 
 ####################################################################################
 #                        Generate files                                            #
 ####################################################################################
-
 
 def main():
     
@@ -353,7 +342,6 @@ def main():
     try:
         opts, args = getopt.getopt(sys.argv[1:], "hd:v", ["help", "directory="])
     except getopt.GetoptError as err:
-        # print help information and exit:
         print str(err) # will print something like "option -a not recognized"
         print "for help use --help"
         sys.exit(2)

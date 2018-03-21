@@ -1,8 +1,22 @@
- /**
- * @brief
- * @author  Juan Pedro Brito Mendez <juanpebm@gmail.com>
- * @date
- * @remarks Do not distribute without further notice.
+/*
+ * Copyright (c) 2017 CCS/GMRV/UPM/URJC.
+ *
+ * Authors: Juan P. Brito <juanpedro.brito@upm.es>
+ * 			Nicusor Cosmin Toader <cosmin.toader.nicu@gmail.com> 
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License version 3.0 as published
+ * by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
  */
 
 MSP.SimulationController = function ()
@@ -35,7 +49,6 @@ MSP.SimulationController.prototype =
 			this.stopVisualization();
 		else
 		{
-			//###No es necesartio hacerlo siempre, hacerlo solo en los cambios
 			var lCritialMoment=((_SimulationData.actFile+1)*_SimulationData.numSimStepsPerFile);
 
 			var lLastCriticalMoment=_SimulationData.totalSimulationSteps-_SimulationData.bufferSimulationSteps;
@@ -48,7 +61,6 @@ MSP.SimulationController.prototype =
 				switch(_SimulationData.actualSimulationLoadType) 
 				{
 					case _SimulationData.SimulationLoadType[0]:
-						//_SimulationData.LoadServerSimulationDataFiles(_SimulationData.actFile+1);
 						console.log("Unable to load simulation files from local disk");
 						break;
 					case _SimulationData.SimulationLoadType[1]:
@@ -125,12 +137,8 @@ MSP.SimulationController.prototype =
 		
 		var lLastCriticalMoment=_SimulationData.totalSimulationSteps-_SimulationData.bufferSimulationSteps;
 		
-		//Logica para saber que ficheros es necesario recargar.
 		var lSimFileId=Math.floor(this.actSimStep/_SimulationData.numSimStepsPerFile);
 		
-		//console.log("actSimStep: "+this.actSimStep);
-		
-		//Different interval values
 		if (lSimFileId!=_SimulationData.actFile)
 		{
 			console.log("Entrando en carga inmediata");
@@ -138,7 +146,6 @@ MSP.SimulationController.prototype =
 			switch(_SimulationData.actualSimulationLoadType) 
 			{		
 				case _SimulationData.SimulationLoadType[0]:
-					//_SimulationData.LoadServerSimulationDataFiles(_SimulationData.actFile+1);
 					console.log("Unable to load simulation files from local disk");
 					break;
 				case _SimulationData.SimulationLoadType[1]:
@@ -149,12 +156,8 @@ MSP.SimulationController.prototype =
 					break;
 			}
 			
-			//_SimulationData.loadRemoteSimulationFromServerInmediatly(lSimFileId);
 			_SimulationData.actFile=lSimFileId;
 			
-			//and in critical load region
-			//#### Para evitar cargar en la ultima region critica (que no hay ficheros)
-			//#### extraer en python el numero total de ficheros d ela simulacion y comprobar aki que no estas en el ultimo.
 			var lCritialMoment=((_SimulationData.actFile+1)*_SimulationData.numSimStepsPerFile);
 			if ( ((this.actSimStep + _SimulationData.bufferSimulationSteps)>=lCritialMoment)
 				&& (this.actSimStep<lLastCriticalMoment)
@@ -164,7 +167,6 @@ MSP.SimulationController.prototype =
 				switch(_SimulationData.actualSimulationLoadType) 
 				{		
 					case _SimulationData.SimulationLoadType[0]:
-						//_SimulationData.LoadServerSimulationDataFiles(_SimulationData.actFile+1);
 						console.log("Unable to load simulation files from local disk");
 						break;
 					case _SimulationData.SimulationLoadType[1]:
@@ -174,8 +176,6 @@ MSP.SimulationController.prototype =
 						_SimulationData.LoadWebDavSimulationDataFiles(lSimFileId+1);
 						break;
 				}
-				
-				//_SimulationData.LoadServerSimulationDataFiles(lSimFileId+1, false);
 			}				
 		}
 		else
@@ -191,7 +191,6 @@ MSP.SimulationController.prototype =
 				switch(_SimulationData.actualSimulationLoadType) 
 				{		
 					case _SimulationData.SimulationLoadType[0]:
-						//_SimulationData.LoadServerSimulationDataFiles(_SimulationData.actFile+1);
 						console.log("Unable to load simulation files from local disk");
 						break;
 					case _SimulationData.SimulationLoadType[1]:
@@ -201,8 +200,6 @@ MSP.SimulationController.prototype =
 						_SimulationData.LoadWebDavSimulationDataFiles(lSimFileId+1);
 						break;
 				}
-				
-				//_SimulationData.LoadServerSimulationDataFiles(lSimFileId+1, false);
 			}								
 		}
 

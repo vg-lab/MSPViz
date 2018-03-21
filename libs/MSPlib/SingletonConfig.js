@@ -1,15 +1,29 @@
-/**
- * @brief
- * @author  Juan Pedro Brito Mendez <juanpebm@gmail.com>
- * @date
- * @remarks Do not distribute without further notice.
+/*
+ * Copyright (c) 2017 CCS/GMRV/UPM/URJC.
+ *
+ * Authors: Juan P. Brito <juanpedro.brito@upm.es>
+ * 			Nicusor Cosmin Toader <cosmin.toader.nicu@gmail.com> 
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License version 3.0 as published
+ * by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
  */
-
+ 
 SigletonConfig = function()
 {
     this.padding	= 	100;
     this.width 		= 	$(window).width()-this.padding-50;
-    this.height 	= 	$(window).height()-150-30;
+    this.height 	= 	$(window).height()-180;
 
     this.theme		=	0;
 
@@ -22,6 +36,7 @@ SigletonConfig = function()
     this.neuronsScheme = null;
     this.connectionsScheme = null;
     this.calciumScheme = null;
+    
     //Scales for the canvas
     this.xScale;
     this.yScale;
@@ -96,7 +111,6 @@ SigletonConfig.prototype =
         this.calciumScheme = "Inferno";
     }
 
-        //Esta scala hay q calcularse con cada grupo de datos
         ,recalculatePosScales:function (pMinX, pMaxX, pMinY, pMaxY, YAxisInverted)
     {
         YAxisInverted || ( YAxisInverted = false );
