@@ -1,4 +1,4 @@
-body{
+body {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -53,7 +53,6 @@ body{
 }
 
 .node .selected {
-    /*stroke: black;*/
     stroke-width: 2px;
 }
 
@@ -74,7 +73,6 @@ path {
 }
 
 path.selected {
-    /*stroke: black;*/
     stroke-width: 2px;
 }
 
@@ -110,14 +108,6 @@ path.selected {
     stroke-width: 0.1vmin;
 }
 
-.textoL {
-    font: 0.8vw sans-serif;
-}
-
-.textoA {
-    font: 1vw sans-serif;
-}
-
 #colorSampleBand .axis path {
     fill: none;
     stroke: #000;
@@ -137,11 +127,6 @@ path.selected {
     shape-rendering: crispEdges;
     opacity: 1;
 }
-
-/* .x.axis path {
-  display: none;
-}
- */
 
 .text {
     fill: blue;
@@ -365,7 +350,7 @@ h1 {
 
 #jqxConfWindow_TabsConfig {
     float: left;
-    width: 300px; /* Set a specific width */
+    width: 300px;
 }
 
 #jqxWidgets {
@@ -528,7 +513,7 @@ html {
 
 }
 
-.btnCentro {
+.ellipseButton {
     font-size: 1.4vmin;
     background: #505869;
     padding: 0.8vmin 0.4vmin;
@@ -546,7 +531,7 @@ html {
     cursor: pointer;
 }
 
-.btnCentro:hover {
+.ellipseButton:hover {
     background: #99221f;
     color: white;
 }
@@ -556,7 +541,7 @@ html {
     margin: 0;
 }
 
-#listaFiltros {
+#filterList {
     width: 100%;
 }
 
@@ -564,7 +549,7 @@ html {
     margin-bottom: 1.4vmin;
 }
 
-.filtro {
+.filter {
     box-shadow: 0 0 0.4vw #888888;
     margin-bottom: 1vh;
     font-family: sans-serif;
@@ -598,7 +583,7 @@ html {
     font-size: 1.4vmin;
 }
 
-.btnFiltro {
+.filterButton {
     float: right;
     text-decoration: none;
     background-color: rgba(255, 255, 255, 0);
@@ -830,8 +815,30 @@ hr {
     margin-bottom: 1vh
 }
 
-.border-1{
+.border-1 {
     border: 0.1vmin solid #d0d0d0;
+}
+
+#jqxAbout_TabsConfig .logoContainer {
+    padding: 15px;
+    flex-grow: 1;
+}
+
+#jqxAbout_TabsConfig .logoContainer img {
+    width: 100%;
+}
+
+#jqxAbout_TabsConfig .logoContainer span {
+    width: 100%;
+    text-align: center;
+    display: block;
+    font-weight: bold;
+}
+
+#jqxAbout_TabsConfig .logosRow {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 @media screen and (max-width: 1919px) {
@@ -861,14 +868,6 @@ hr {
 
     .navViewButton.active {
         border-left: 4px solid #FF9800;
-    }
-
-    .textoL {
-        font: 14px sans-serif;
-    }
-
-    .textoA {
-        font: 14px sans-serif;
     }
 
     .text-input {

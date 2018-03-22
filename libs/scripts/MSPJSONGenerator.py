@@ -1,7 +1,7 @@
 #Copyright (c) 2017 CCS/GMRV/UPM/URJC.
 
 #Authors: Juan P. Brito <juanpedro.brito@upm.es>
-#			Nicusor Cosmin Toader <cosmin.toader.nicu@gmail.com> 
+#			Nicusor Cosmin Toader <cosmin.toader@urjc.es>
 
 #This library is free software; you can redistribute it and/or modify it under
 #the terms of the GNU Lesser General Public License version 3.0 as published

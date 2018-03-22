@@ -2,7 +2,7 @@
  * Copyright (c) 2017 CCS/GMRV/UPM/URJC.
  *
  * Authors: Juan P. Brito <juanpedro.brito@upm.es>
- * 			Nicusor Cosmin Toader <cosmin.toader.nicu@gmail.com> 
+ * 			Nicusor Cosmin Toader <cosmin.toader@urjc.es>
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License version 3.0 as published
@@ -19,50 +19,44 @@
  *
  */
 
-YAALocalDiskLib = function (pUrl, pProtocol)
-{
-	//Subdivision of pies
-	this.folderUrl 	= 	pUrl;
-	this.protocol 	= 	pProtocol;
+YAALocalDiskLib = function (pUrl, pProtocol) {
+  //Subdivision of pies
+  this.folderUrl = pUrl;
+  this.protocol = pProtocol;
 };
 
-YAALocalDiskLib.prototype = 
-{	
-	constructor: YAALocalDiskLib,
+YAALocalDiskLib.prototype = {
+  constructor: YAALocalDiskLib,
 
-	prepareURL: function (pURL, pOp) 
-	{
-		var lURLWellFormed=pURL;
-		
-		 if (!lURLWellFormed.endsWith("/")) {
-			 lURLWellFormed += "/";
-		 }
+  prepareURL: function (pURL, pOp) {
+    var lURLWellFormed = pURL;
 
-		 return lURLWellFormed;
-	},
-	
-	getFile: function (pFile, pFiletype, callback) 
-	{
-		var lUrl =  this.prepareURL(this.protocol + ":///" + this.folderUrl, '');
-		
-		console.log("Path-->"+lUrl+pFile);
-		$.ajax({
-			type: 'GET',
-			url: lUrl+pFile
-			,dataType: pFiletype,
-			
-			success: function(resp) 
-			{
-				if( callback ) {
-					callback(resp);
-				}
-			},
-			error: function(resp) 
-			{
-				console.debug("failed", resp);
-				alert("Sorry, an error occured getting " + url+pFile + ". Please check your internet connection");
-			}
-		});
-	},
+    if (!lURLWellFormed.endsWith("/")) {
+      lURLWellFormed += "/";
+    }
+
+    return lURLWellFormed;
+  },
+
+  getFile: function (pFile, pFiletype, callback) {
+    var lUrl = this.prepareURL(this.protocol + ":///" + this.folderUrl, '');
+
+    console.log("Path-->" + lUrl + pFile);
+    $.ajax({
+      type: 'GET',
+      url: lUrl + pFile
+      , dataType: pFiletype,
+
+      success: function (resp) {
+        if (callback) {
+          callback(resp);
+        }
+      },
+      error: function (resp) {
+        console.debug("failed", resp);
+        alert("Sorry, an error occured getting " + url + pFile + ". Please check your internet connection");
+      }
+    });
+  }
 };
 

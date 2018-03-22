@@ -3,7 +3,7 @@
  * Copyright (c) 2017 CCS/GMRV/UPM/URJC.
  *
  * Authors: Juan P. Brito <juanpedro.brito@upm.es>
- * 			Nicusor Cosmin Toader <cosmin.toader.nicu@gmail.com> 
+ * 			Nicusor Cosmin Toader <cosmin.toader@urjc.es>
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License version 3.0 as published
@@ -438,7 +438,7 @@
                 <span class="sectionHeader">Current filters</span>
             </div>
             <div class="centerFlex">
-                <div id="listaFiltros">
+                <div id="filterList">
 
                 </div>
             </div>
@@ -510,7 +510,7 @@
 
             <!-- Detail Microscopic View id selector -->
             <div id="idSelector" class="left center" style="display:none; ">
-                <div  class="noMargin numeriInputShort numeriInputWrapper" id="numericImputID"></div>
+                <div class="noMargin numeriInputShort numeriInputWrapper" id="numericImputID"></div>
             </div>
         </div>
     </div>
@@ -526,298 +526,424 @@
 <div id="jqxWindow_Info">
 
     <div id="windowHeader_info">
-		<span> <img src="./content/images/gears.png" alt="" style="margin-right: 15px"/>Information
+		<span>
+            <img src="./content/images/gears.png" style="margin-right: 5px"/>
+            About
 		</span>
     </div>
-
-    <div id='jqxAbout_TabsConfig'>
-        <ul>
-            <li style="margin-left: 30px;">Institutions</li>
-            <li>Help</li>
-            <li>Architecture</li>
-        </ul>
-        <div>
-            <table width="650" border="0" cellpadding="5">
-                <tr>
-                    <td align="center" valign="center">
+    <div style="overflow: hidden;">
+        <div id="jqxAbout_TabsConfig">
+            <ul>
+                <li>Institutions</li>
+                <li>Help</li>
+                <li>Architecture</li>
+                <li>License</li>
+            </ul>
+            <div style="padding: 15px;">
+                <div class="logosRow">
+                    <div class="logoContainer">
                         <a title="UPM" href="http://www.upm.es">
                             <img src="./content/images/UPM2.png" alt="Universidad Polit&eacutecnica de Madrid"/>
                         </a>
-                        <br/>
-                        Universidad Polit&eacutecnica de Madrid
-                    </td>
-                    <td align="center" valign="center">
+                        <span>Universidad Polit&eacutecnica de Madrid</span>
+                    </div>
+                    <div class="logoContainer">
                         <a title="URJC" href="http://www.urjc.es">
                             <img src="./content/images/logoURJC2.png" alt="Universidad Rey Juan Carlos"/>
                         </a>
-                        <br/>
-                        Universidad Rey Juan Carlos
-                    </td>
-                    <td align="center" valign="center">
+                        <span>Universidad Rey Juan Carlos</span>
+                    </div>
+                    <div class="logoContainer">
                         <a title="RWTH" href="https://www.rwth-aachen.de/">
                             <img src="./content/images/logoRWTH.png" alt="RWTH Aachen University"/>
                         </a>
-                        <br/>
-                        RWTH Aachen University
-                    </td>
-                    <td align="center" valign="center">
+                        <span>RWTH Aachen University</span>
+                    </div>
+                    <div class="logoContainer">
                         <a title="Julich Forschungszentrun"
                            href="http://www.fz-juelich.de/ias/jsc/DE/Home/home_node.html">
                             <img src="./content/images/logoJulich.png" alt="Julich Forschungszentrun"/>
                         </a>
-                        <br/>
-                        Julich Forschungszentrun
-                    </td>
-                </tr>
-                <tr>
-                    <td align="center" valign="center">
+                        <span>Julich Forschungszentrun</span>
+                    </div>
+                </div>
+                <div class="logosRow">
+                    <div class="logoContainer">
                         <a title="CCS" href="http://www.ccs.upm.es">
                             <img src="./content/images/CentCompSim2.png" alt="Center for Computational Simulation"/>
                         </a>
-                        <br/>
-                        Center for Computational Simulation
-                    </td>
-                    <td align="center" valign="center">
+                        <span>Center for Computational Simulation</span>
+                    </div>
+                    <div class="logoContainer">
                         <a title="GMRV" href="http://www.gmrv.es">
                             <img src="./content/images/logoGMRV.png" alt="Grupo de Modelado y Realidad Virtual"/>
                         </a>
-                        <br/>
-                        Grupo de Modelado y Realidad Virtual
-                    </td>
-                    <td align="center" valign="center">
+                        <span>Grupo de Modelado y Realidad Virtual</span>
+                    </div>
+                    <div class="logoContainer">
                         <a title="RWTH_VRG"
                            href="http://www.itc.rwth-aachen.de/cms/IT-Center/Forschung-Projekte/~eubl/Virtuelle-Realitaet/?lidx=1">
                             <img src="./content/images/logoVR.png" alt="RWTH Virtual Reality Group"/>
                         </a>
-                        <br/>
-                        RWTH Virtual Reality Group
-                    </td>
-                    <td align="center" valign="center">
+                        <span>RWTH Virtual Reality Group</span>
+
+                    </div>
+                    <div class="logoContainer">
                         <a title="Julich Supercomputing Center"
                            href="http://www.fz-juelich.de/ias/jsc/DE/Home/home_node.html">
                             <img src="./content/images/logoJulich.png" alt="Julich Supercomputing Center"/>
                         </a>
-                        <br/>
-                        Julich Supercomputing Center
-                    </td>
-                </tr>
-            </table>
-        </div>
+                        <span>Julich Supercomputing Center</span>
+                    </div>
+                </div>
+            </div>
+            <div style="padding: 15px">
+                <p style="text-align: center;">
+                    <strong><span style="text-decoration: underline;">MSPViz</span></strong>
+                </p>
+                <p style="text-align: justify;"> MSPViz is a visualization tool for Structural Plasticity Models. It
+                    uses a novel visualisation technique based on the representation of the neuronal information through
+                    the use of abstract levels and a set of representations into each level. This hierarchical
+                    representations, lets the user interact and change the representation modifying the degree of detail
+                    of the information to be analysed in an simple and intuitive way, through the navigation of
+                    different views at different levels of abstraction. The designed representations in each view only
+                    containing the necessary variables to achieve the desired tasks, avoiding overwhelming saturation of
+                    information. The multilevel structure and the design of the representations constitutes an approach
+                    that provides organized views that facilitates visual analysis tasks. Moreover, each view has been
+                    enhanced adding line and bar charts to analyse trends in simulation data, and also filtering and
+                    sorting capabilities can be applied on each view easing the analysis. Additionally, some other
+                    views, such as connectivity matrices and force directed layouts, have been incorporated, enriching
+                    the already existing views and improving the analysis process. Finally, this tool has been optimized
+                    to lower render and data loading times, even from remote sources such as WebDav servers.
+                    The data musb be in JSON format, the user can use the
+                    <a title="MSPJSONGenerator.py" href="./libs/scripts/MSPJSONGenerator.py">MSPJSONGenerator.py</a>
+                    script to transform the data from NEST to be able to load in the visualization tool.</p>
+                <p style="text-align: justify;">
+                    <strong>All the views lets the use of</strong>:
+                </p>
+                <p style="text-align: justify;">
+                <ul>
+                    <li><span style="text-decoration: underline;">Zooming: </span>
+                        Using the mouse wheel.</span></li>
+                    <li><span style="text-decoration: underline;">Panning:</span>
+                        Click on the background and moving the mouse.</span></li>
+                    <li><span style="text-decoration: underline;">Selection: </span>
+                        Pressing shift button and clicking over the neuron representation.
+                        Additionally, the macroscopic view lets multi selecion, pressing
+                        shift key and moving the mouse over the view. </span></li>
+                </ul>
 
-        <div>
+                <p style="text-align: justify;">
+                    <strong>Main menu (on the left)</strong>: The main menu are structured into thre different parts.
+                    The first one is on the top, where the user can select different views (at different levels of
+                    abstraction).
+                    These views are:
+                </p>
 
-            <p style="text-align: center;">
-                <strong><span style="text-decoration: underline;">MSPViz</span></strong>
-            </p>
-            <p style="text-align: justify;"> MSPViz is a visualization tool for Structural Plasticity Models. It uses a novel visualisation technique based on the representation of the neuronal information through the use of abstract levels and a set of representations into each level. This hierarchical representations, lets the user interact and change the representation modifying the degree of detail of the information to be analysed in an simple and intuitive way, through the navigation of different views at different levels of abstraction. The designed representations in each view only containing the necessary variables to achieve the desired tasks, avoiding overwhelming saturation of information. The multilevel structure and the design of the representations constitutes an approach that provides organized views that facilitates visual analysis tasks. Moreover, each view has been enhanced adding line and bar charts to analyse trends in simulation data, and also filtering and sorting capabilities can be applied on each view easing the analysis. Additionally, some other views, such as connectivity matrices and force directed layouts, have been incorporated, enriching the already existing views and improving the analysis process. Finally, this tool has been optimized to lower render and data loading times, even from remote sources such as WebDav servers. 
-                The data musb be in JSON format, the user can use the <a title="MSPJSONGenerator.py" href="./libs/scripts/MSPJSONGenerator.py">MSPJSONGenerator.py</a>
-                script to transform the data from NEST to be able to load in the visualization tool.</p>
-            <p style="text-align: justify;">
-                <strong>All the views lets the use of</strong>:
-            </p>
-            <p style="text-align: justify;">
-            <ul>
-				<li> <span style="text-decoration: underline;">Zooming: </span> 					
-				Using the mouse wheel.</span></li>
-				<li> <span style="text-decoration: underline;">Panning:</span> 					
-				Click on the background and moving the mouse.</span></li>
-				<li> <span style="text-decoration: underline;">Selection: </span> 					
-				Pressing shift button and clicking over the neuron representation.
-				Additionally, the macroscopic view lets multi selecion, pressing
-				shift key and moving the mouse over the view. </span></li>
-            </ul>
+                <ul>
+                    <li><span style="text-decoration: underline;">Global Connection:</span>
+                        This view shows the global connectivity
+                        data in the simulation, that is the total number of synaptic
+                        elements and connections.
+                    </li>
+                    <li><span style="text-decoration: underline;">Macroscopic:</span>
+                        This view is designed to have a global
+                        view of all neurons and synapses in the simulation, and
+                        at the same time, this view shows the connections between neurons
+                        in each time step of the simulation.
+                    </li>
+                    <li><span style="text-decoration: underline;">Connectivity Matrix:</span>
+                        This view shows the synaptic connection
+                        of neurons during the simulation in a Matrix way.
+                    </li>
+                    <li><span style="text-decoration: underline;">Microscopic:</span>
+                        This view allows to analyze and compare
+                        the synaptic elements in each neuron.
+                    </li>
+                    <li><span style="text-decoration: underline;">Detailed Microscopic:</span>
+                        This view is designed to visualize
+                        directly the number of synaptic elements in each neuron,
+                        showing in each time step how the synaptic elements appears
+                        and disappears in a certain neuron.
+                    </li>
+                </ul>
 
-            <p style="text-align: justify;">
-                <strong>Main menu (on the left)</strong>: The main menu are structured into thre different parts.
-                The first one is on the top, where the user can select different views (at different levels of abstraction).
-                These views are:
-            </p>
-                
-			<ul>
-                <li> <span style="text-decoration: underline;">Global Connection:</span> 
-                This view shows the global connectivity
-                data in the simulation, that is the total number of synaptic 
-                elements and connections. 
-                </li>
-                <li> <span style="text-decoration: underline;">Macroscopic:</span> 
-                This view is designed to have a global
-				view of all neurons and synapses in the simulation, and 
-				at the same time, this view shows the connections between neurons 
-				in each time step of the simulation.
-                </li>
-                <li> <span style="text-decoration: underline;">Connectivity Matrix:</span> 
-                 This view shows the synaptic connection 
-                of neurons during the simulation in a Matrix way.
-                </li>
-                <li> <span style="text-decoration: underline;">Microscopic:</span> 
-                This view allows to analyze and compare
-				the synaptic elements in each neuron.
-                </li>
-                <li> <span style="text-decoration: underline;">Detailed Microscopic:</span> 
-                This view is designed to visualize 
-                directly the number of synaptic elements in each neuron, 
-                showing in each time step how the synaptic elements appears 
-                and disappears in a certain neuron.
-                </li>                
-			</ul>
+                <p style="text-align: justify;">
+                    After the view selection, there is the main controls of the application, related with
+                    the most common tasks during the analysis.
+                </p>
 
-            <p style="text-align: justify;">
-                After the view selection, there is the main controls of the application, related with 
-                the most common tasks during the analysis.
-            </p>
-
-			<ul>
-				<li style="text-align: justify;"><span
-						style="line-height: 24px;"><span
-						style="text-decoration: underline;">File menu</span>: 
+                <ul>
+                    <li style="text-align: justify;"><span
+                            style="line-height: 24px;"><span
+                            style="text-decoration: underline;">File menu</span>:
 						Load the simulation files from different places, such as local simulation
 						or simulations stores on remote serves, following simple attps request 
 						or WebDav protocols. In this menu, the user could store and load different 
 						configuration related with the visualization, such as color paletes for 
 						each parameter under analysis.						
 						</span></li>
-				<li style="text-align: justify;"><span
-						style="line-height: 28.7999992370605px;"><span
-						style="text-decoration: underline;">Color preferences menu</span>: 
+                    <li style="text-align: justify;"><span
+                            style="line-height: 28px;"><span
+                            style="text-decoration: underline;">Color preferences menu</span>:
 						In this menu, the user can select different and standar color paletes for 
 						each parameter under analysis, such as the calcium concentration, the 
 						type of connection or the type of the neuronal element.						
 						</span></li>
-				<li style="text-align: justify;"><span
-						style="line-height: 28.7999992370605px;"><span
-						style="text-decoration: underline;">Global configuration menu</span>:
+                    <li style="text-align: justify;"><span
+                            style="line-height: 28px;"><span
+                            style="text-decoration: underline;">Global configuration menu</span>:
 						This menu lets the user to configure some generic visual parameters for 
 						the visualization, such as type of connection, the type of the synaptic elements
 						to visualize or the speed of the visualization.
 						</span></li>
-				<li style="text-align: justify;"><span
-						style="line-height: 28.7999992370605px;"><span
-						style="text-decoration: underline;">Global configuration menu</span>:
+                    <li style="text-align: justify;"><span
+                            style="line-height: 28px;"><span
+                            style="text-decoration: underline;">Global configuration menu</span>:
 						This menu lets the user to configure some generic visual parameters for 
 						the visualization, such as type of connection, the type of the synaptic elements
 						to visualize or the speed of the visualization.
 						</span></li>
-				<li style="text-align: justify;"><span
-						style="line-height: 28.7999992370605px;"><span
-						style="text-decoration: underline;">View configuration menu</span>:
+                    <li style="text-align: justify;"><span
+                            style="line-height: 28px;"><span
+                            style="text-decoration: underline;">View configuration menu</span>:
 						This menu lets the user to configure specific parameters 
 						of the active view, for example, wich connectios to show 
 						on the Macroscopic View or the number of historam
 						 steps on Detailed Micoscopic.
 						</span></li>
-				<li style="text-align: justify;"><span
-						style="line-height: 28.7999992370605px;"><span
-						style="text-decoration: underline;">Filter menu</span>:
+                    <li style="text-align: justify;"><span
+                            style="line-height: 28px;"><span
+                            style="text-decoration: underline;">Filter menu</span>:
 						This menu lets the user to filter the data within a specific visualization, 
 						selecting what data is displayed easing the analysis.
 						</span></li>
-				<li style="text-align: justify;"><span
-						style="line-height: 28.7999992370605px text-decoration: underline;">
+                    <li style="text-align: justify;"><span
+                            style="line-height: 28px text-decoration: underline;">
 						<span style="text-decoration: underline;">Sort menu:</span>
 						This menu lets the user to sort the data within a specific 
 						visualization using different criterias such as 
 						calcium concentration or number of connections.
 						</span></li>
-			</ul>
+                </ul>
 
-            <p style="text-align: justify;">
-				On the bottom part of the main menu there are two generic operations
-            </p>
+                <p style="text-align: justify;">
+                    On the bottom part of the main menu there are two generic operations
+                </p>
 
-			<ul>
-				<li> <span style="text-decoration: underline;">Download view image:</span> 	
-				To take high quality screenshots of the visual representaion of the data. </span></li>
-				
-				<li> <span style="text-decoration: underline;">Help/About: </span> 	
-				Information about this tool. </span></li>			
-			</ul>
+                <ul>
+                    <li><span style="text-decoration: underline;">Download view image:</span>
+                        To take high quality screenshots of the visual representaion of the data. </span></li>
 
-            
-            <p style="text-align: justify;">
-                <strong>Bottom controls:</strong>
-            </p>
-            <ul>
-                <li style="text-align: justify;"><span
-                        style="line-height: 24px;"><span
-                        style="text-decoration: underline;">Play Simulation</span>: Start
+                    <li><span style="text-decoration: underline;">Help/About: </span>
+                        Information about this tool. </span></li>
+                </ul>
+
+
+                <p style="text-align: justify;">
+                    <strong>Bottom controls:</strong>
+                </p>
+                <ul>
+                    <li style="text-align: justify;"><span
+                            style="line-height: 24px;"><span
+                            style="text-decoration: underline;">Play Simulation</span>: Start
 						the visualization of the simulation.</span></li>
-                <li style="text-align: justify;"><span
-                        style="line-height: 24px;"><span
-                        style="text-decoration: underline;">Stop Simulation</span>:
+                    <li style="text-align: justify;"><span
+                            style="line-height: 24px;"><span
+                            style="text-decoration: underline;">Stop Simulation</span>:
 				</span><span>Stop the visualization of the simulation.</span></li>
-                <li style="text-align: justify;"><span
-                        style="line-height: 24px;"><span
-                        style="text-decoration: underline;">Timeline</span>: Lets the user
+                    <li style="text-align: justify;"><span
+                            style="line-height: 24px;"><span
+                            style="text-decoration: underline;">Timeline</span>: Lets the user
 						go to an especitfic step of the simulation.</span></li>
-                <li style="text-align: justify;"><span
-                        style="line-height: 24px;"><span
-                        style="text-decoration: underline;">Step</span>: </span><span>Lets
+                    <li style="text-align: justify;"><span
+                            style="line-height: 24px;"><span
+                            style="text-decoration: underline;">Step</span>: </span><span>Lets
 						the user go to an especitfic step of the simulation.</span></li>
-                <li style="text-align: justify;"><span
-                        style="line-height: 24px;"><span
-                        style="text-decoration: underline;">Layouts</span>: </span><span>The different 
+                    <li style="text-align: justify;"><span
+                            style="line-height: 24px;"><span
+                            style="text-decoration: underline;">Layouts</span>: </span><span>The different
                         views have different layouts to place the elements on the screen following 
                         different paradigims. The layouts depends on the view under analysis.</span></li>
-            </ul>
-        </div>
-
-        <div>
-            <table width="650" border="0" cellpadding="5">
-                <tr>
-                    <td align="center" valign="center">
+                </ul>
+                </br>
+            </div>
+            <div style="padding: 15px">
+                <div class="logosRow">
+                    <div class="logoContainer">
                         <a title="HTML5" href="http://www.w3c.org">
                             <img src="./content/images/HTML5.png" alt="HTML5"/>
                         </a>
-                        <br/>
-                        HTML5
-                    </td>
-                    <td align="center" valign="center">
+                        <span>HTML5</span>
+                    </div>
+                    <div class="logoContainer">
                         <a title="CSS3" href="https://www.w3c.org/">
                             <img src="./content/images/Css3.png" alt="CSS3"/>
                         </a>
-                        <br/>
-                        CSS3
-                    </td>
-                    <td align="center" valign="center">
-                        <a title="JavaScript 5" href="http://www.w3c.org">
-                            <img src="./content/images/JS5.jpg" alt="JavaScript 5"/>
+                        <span>CSS3</span>
+                    </div>
+                    <div class="logoContainer">
+                        <a title="JavaScript" href="http://www.w3c.org">
+                            <img src="./content/images/JS5.jpg" alt="JavaScript"/>
                         </a>
-                        <br/>
-                        JavaScript 5
-                    </td>
-                </tr>
-                <tr>
-                    <td align="center" valign="center">
+                        <span>JavaScript</span>
+                    </div>
+                    <div class="logoContainer">
                         <a title="D3" href="http://d3js.org">
                             <img src="./content/images/D3.png" alt="Data Driven Documents"/>
                         </a>
-                        <br/>
-                        Data Driven Documents
-                    </td>
-                    <td align="center" valign="center">
+                        <span>D3.js</span>
+                    </div>
+                </div>
+                <div class="logosRow">
+                    <div class="logoContainer">
                         <a title="jqWidgets" href="http://www.jqwidgets.com">
                             <img src="./content/images/jqWidget.png" alt="jqWidgets"/>
                         </a>
-                        <br/>
-                        jqWidgets
-                    </td>
-                    <td align="center" valign="center">
+                        <span>jqWidgets</span>
+                    </div>
+                    <div class="logoContainer">
                         <a title="jQuery" href="https://jquery.com">
                             <img src="./content/images/jQuery.png" alt="jQuery"/>
                         </a>
-                        <br/>
-                        jQuery
-                    </td>
-                </tr>
-                <tr>
-                    <td align="center" valign="center">
-                        <a title="UNDERSCORE.JS" href="http://underscorejs.org/"> UNDERSCORE.JS</a>
-                    </td>
-                    <td align="center" valign="center">
-                        <a title="KolorWheel" href="http://www.javascriptoo.com/kolorwheel-js"> KolorWheel</a>
-                    </td>
-                </tr>
-            </table>
+                        <span>jQuery</span>
+                    </div>
+
+                    <div class="logoContainer">
+                        <a title="KolorWheel" href="http://www.javascriptoo.com/kolorwheel-js">
+                            <img src="./content/images/kolorWheel.png" alt="KolorWheel"/>
+                        </a>
+                        <span>KolorWheel</span>
+                    </div>
+                </div>
+            </div>
+            <div style="padding: 15px">
+                <p>
+                    <span><strong>MSPViz - a visualization tool for the Model of Structural Plasticity.</strong></span>
+                    </br>
+                    <span>Copyright (c) 2017 CCS/GMRV/UPM/URJC.</span>
+                </p>
+                <p>
+                    <span>Authors: </span>
+                    </br>
+                    <span style="padding-left:1em">Juan P. Brito &lt;juanpedro.brito@upm.es&gt;</span>
+                    </br>
+                    <span style="padding-left:1em">Nicusor Cosmin Toader &lt;cosmin.toader@urjc.es&gt;</span>
+                </p>
+                <p>
+                    This library is free software; you can redistribute it and/or modify it under
+                    the terms of the GNU Lesser General Public License version 3.0 as published
+                    by the Free Software Foundation.
+                </p>
+                <p>
+                    This library is distributed in the hope that it will be useful, but WITHOUT
+                    ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+                    FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+                    details.
+                </p>
+                <p>
+                    You should have received a copy of the GNU Lesser General Public License
+                    along with this library; if not, write to the Free Software Foundation, Inc.,
+                    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+                </p>
+
+                <hr>
+                <p><span><strong>MSPViz includes several libraries licensed as follows:</strong></span></p>
+                <ul>
+                    <li><strong>jQuery</strong>
+                        <p>The MIT License (MIT)</p>
+                        <p>Copyright JS Foundation and other contributors, https://js.foundation/</p>
+                        <p>Permission is hereby granted, free of charge, to any person obtaining a copy of
+                            this software and associated documentation files (the &quot;Software&quot;), to deal in the
+                            Software
+                            without
+                            restriction, including without limitation the rights to use, copy, modify, merge, publish,
+                            distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom
+                            the
+                            Software is furnished to do so, subject to the following conditions:</p>
+                        <p>The above copyright notice and this permission notice shall be included in all copies or
+                            substantial
+                            portions of the Software.</p>
+
+                        <p>THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+                            INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+                            PURPOSE AND
+                            NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+                            DAMAGES
+                            OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT
+                            OF OR IN
+                            CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+                    </li>
+                    <li><strong>D3</strong>
+                        <p>Copyright 2010-2017 Mike Bostock All rights reserved.</p>
+                        <p>Redistribution and use in source and binary forms, with or without modification, are
+                            permitted
+                            provided that the following conditions are met:</p>
+                        <p>* Redistributions of source code must retain the above copyright notice, this list of
+                            conditions
+                            and
+                            the following disclaimer.</p>
+                        <p>* Redistributions in binary form must reproduce the above copyright notice, this list of
+                            conditions
+                            and the following disclaimer in the documentation and/or other materials provided with the
+                            distribution.</p>
+                        <p>* Neither the name of the author nor the names of contributors may be used to endorse or
+                            promote
+                            products derived from this software without specific prior written permission.</p>
+                        <p>THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&quot; AND ANY
+                            EXPRESS
+                            OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+                            MERCHANTABILITY
+                            AND
+                            FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+                            CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+                            CONSEQUENTIAL
+                            DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+                            USE,
+                            DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+                            WHETHER
+                            IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
+                            WAY
+                            OUT OF
+                            THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</p>
+                    </li>
+                    <li><strong>jQWidgets</strong>
+                        <p>Creative Commons Attribution-NonCommercial 3.0 License</p>
+                        <p>jQWidgets is not free for commercial use, for more details:
+                            <a href="https://www.jqwidgets.com/license/">https://www.jqwidgets.com/license/</a>
+                        </p>
+                    </li>
+                    <li><strong>KolorWheel</strong>
+                        <p>The MIT License (MIT)</p>
+                        <p>Copyright (c) 2016 ZALKA Ern&#337;</p>
+                        <p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+                            and
+                            associated documentation files (the &quot;Software&quot;), to deal in the Software without
+                            restriction, including without limitation the rights to use, copy, modify, merge, publish,
+                            distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom
+                            the
+                            Software is furnished to do so, subject to the following conditions:</p>
+                        <p>The above copyright notice and this permission notice shall be included in all copies or
+                            substantial portions of the Software.</p>
+                        <p>THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+                            INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+                            PURPOSE
+                            AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+                            CLAIM,
+                            DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+                            FROM,
+                            OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</p>
+                    </li>
+                </ul>
+
+                <hr>
+                <p>
+                    <span><strong>MSPViz  also includes
+                        <a href="https://github.com/google/material-design-icons">Material Design icons by Google</a>
+                        that are licensed under the Apache License Version 2.0.</strong></span>
+                </p>
+                </br>
+            </div>
         </div>
     </div>
 </div>
