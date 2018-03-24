@@ -1,5 +1,5 @@
 <?php
-$simFolderPath = './content/Simulations/';
+$simFolderPath = './simulations/';
 $simFolderContent = scandir($simFolderPath);
 $simFoldersToCheck = [];
 $stdFiles = ["_SimulationFiles.json.scf"

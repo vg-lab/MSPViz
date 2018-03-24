@@ -2,79 +2,65 @@
 <html lang="en">
 <head>
     <title>MSP Visualizer</title>
-	<meta charset="utf-8">
+    <meta charset="utf-8">
 
-	<!-- Styles of components -->
-    <link rel="stylesheet" href="./libs/jqwidgets/styles/jqx.base.css" type="text/css" />
-	<link rel="stylesheet" href="./libs/jqwidgets/styles/jqx.custom.css" type="text/css" />
-    <link rel="stylesheet" href="./wrapperStyles.css" type="text/css" />
-	<link rel="stylesheet" href="./style.css" type="text/css" />
-    <!-- D4 library -->
-    <script type="text/javascript" src="./libs/d3/d3.v4.js"></script>
+    <!-- Styles of components -->
+    <link rel="stylesheet" href="./assets/js/jQWidgets/styles/jqx.base.css" type="text/css"/>
+    <link rel="stylesheet" href="./assets/styles/wrapperStyles.css" type="text/css"/>
+    <link rel="stylesheet" href="./assets/styles/style.css" type="text/css"/>
+    <!-- D3.v4 library -->
+    <script type="text/javascript" src="./assets/js/d3/d3.v4.min.js"></script>
     <script> var d4 = d3; </script>
     <!-- D3 library -->
-    <script type="text/javascript" src="./libs/d3/d3-scale-chromatic.v1.min.js"></script>
-	<script type="text/javascript" src="./libs/d3/d3.js"></script>
-    <script type="text/javascript" src="./libs/d3/d3-ease.v1.min.js"></script>
+    <script type="text/javascript" src="./assets/js/d3/d3-scale-chromatic.v1.min.js"></script>
+    <script type="text/javascript" src="./assets/js/d3/d3.min.js"></script>
+    <script type="text/javascript" src="./assets/js/d3/d3-ease.v1.min.js"></script>
 
     <!-- jQuery library -->
-    <script type="text/javascript" src="./libs/scripts/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="./assets/js/jQuery/jquery-1.11.1.min.js"></script>
 
-	<!-- underscore library -->
-    <script type="text/javascript" src="./libs/unders/underscore.js"></script>
-
-	<!-- KolorWheel -->
-    <script type="text/javascript" src="./libs/kolorWheel/KolorWheel.min.js"></script>
-    <script type="text/javascript" src="./libs/kolorWheel/colors.js"></script>
+    <!-- KolorWheel -->
+    <script type="text/javascript" src="./assets/js/kolorWheel/KolorWheel.min.js"></script>
+    <script type="text/javascript" src="./assets/js/kolorWheel/colors.js"></script>
 
     <!-- Interface objects -->
-    <script type="text/javascript" src="./libs/jqwidgets/jqxcore.js"></script>
-    <script type="text/javascript" src="./libs/jqwidgets/jqxbuttons.js"></script>
-    <script type="text/javascript" src="./libs/jqwidgets/jqxcheckbox.js"></script>  
-    <script type="text/javascript" src="./libs/jqwidgets/jqxmenu.js"></script>    
-    <script type="text/javascript" src="./libs/jqwidgets/jqxtabs.js"></script>
-	<script type="text/javascript" src="./libs/jqwidgets/jqxslider.js"></script>
-    <script type="text/javascript" src="./libs/jqwidgets/jqxnumberinput.js"></script>
-    <script type="text/javascript" src="./libs/jqwidgets/jqxwindow.js"></script>
-    <script type="text/javascript" src="./libs/jqwidgets/jqxcolorpicker.js"></script>
-    <script type="text/javascript" src="./libs/jqwidgets/jqxdropdownbutton.js"></script>
-    <script type="text/javascript" src="./libs/jqwidgets/jqxscrollview.js"></script>
-	<script type="text/javascript" src="./libs/jqwidgets/jqxscrollbar.js"></script>	
-	<script type="text/javascript" src="./libs/jqwidgets/jqxlistbox.js"></script>            
-    <script type="text/javascript" src="./libs/jqwidgets/jqxcombobox.js"></script>
-	<script type="text/javascript" src="./libs/jqwidgets/jqxradiobutton.js"></script>
-	<script type="text/javascript" src="./libs/jqwidgets/jqxprogressbar.js"></script>    
-	<script type="text/javascript" src="./libs/jqwidgets/jqxinput.js"></script> 
-	<script type="text/javascript" src="./libs/jqwidgets/jqxpasswordinput.js"></script>
-    <script type="text/javascript" src="./libs/jqwidgets/jqxdropdownlist.js"></script>
+    <script type="text/javascript" src="./assets/js/jQWidgets/jqxcore.js"></script>
+    <script type="text/javascript" src="./assets/js/jQWidgets/jqxbuttons.js"></script>
+    <script type="text/javascript" src="./assets/js/jQWidgets/jqxcheckbox.js"></script>
+    <script type="text/javascript" src="./assets/js/jQWidgets/jqxtabs.js"></script>
+    <script type="text/javascript" src="./assets/js/jQWidgets/jqxslider.js"></script>
+    <script type="text/javascript" src="./assets/js/jQWidgets/jqxnumberinput.js"></script>
+    <script type="text/javascript" src="./assets/js/jQWidgets/jqxwindow.js"></script>
+    <script type="text/javascript" src="./assets/js/jQWidgets/jqxcolorpicker.js"></script>
+    <script type="text/javascript" src="./assets/js/jQWidgets/jqxradiobutton.js"></script>
+    <script type="text/javascript" src="./assets/js/jQWidgets/jqxprogressbar.js"></script>
+    <script type="text/javascript" src="./assets/js/jQWidgets/jqxinput.js"></script>
     <!-- libs -->
-    <script type="text/javascript" src="./libs/MSPlib/Utils.js"></script>
-    <script type="text/javascript" src="./libs/MSPlib/JAWDL.js"></script>
-    <script type="text/javascript" src="./libs/MSPlib/YAALocalDiskLib.js"></script>        
-    <script type="text/javascript" src="./libs/MSPlib/SingletonConfig.js"></script>
-    <script type="text/javascript" src="./libs/MSPlib/ConnectivityMatrixView.js"></script>
-    <script type="text/javascript" src="./libs/MSPlib/MacroscopicViewElipse.js"></script>
-    <script type="text/javascript" src="./libs/MSPlib/GlobalConnectionsViewGraph.js"></script>
-    <script type="text/javascript" src="./libs/MSPlib/MacroscopicViewForceWebWorker.js"></script>
-    <script type="text/javascript" src="./libs/MSPlib/MacroscopicViewCanvas.js"></script>
-    <script type="text/javascript" src="./libs/MSPlib/MicroscopicView.js"></script>
-	<script type="text/javascript" src="./libs/MSPlib/GlobalConnectionsView.js"></script>
-	<script type="text/javascript" src="./libs/MSPlib/DetailMicroscopicView.js"></script>
-    <script type="text/javascript" src="./libs/MSPlib/ColorPicker.js"></script>
-    <script type="text/javascript" src="./libs/MSPlib/SimulationData.js"></script>
-    <script type="text/javascript" src="./libs/MSPlib/SimulationFilter.js"></script>
-    <script type="text/javascript" src="./libs/MSPlib/SimulationController.js"></script>
-    <script type="text/javascript" src="./libs/MSPlib/GraphDetailMicroscopicView.js"></script>
-    <script type="text/javascript" src="./libs/MSPlib/GraphMicroscopicView.js"></script>
-
+    <script type="text/javascript" src="./src/Utils.js"></script>
+    <script type="text/javascript" src="./src/JAWDL.js"></script>
+    <script type="text/javascript" src="./src/YAALocalDiskLib.js"></script>
+    <script type="text/javascript" src="./src/SingletonConfig.js"></script>
+    <script type="text/javascript" src="./src/ConnectivityMatrixView.js"></script>
+    <script type="text/javascript" src="./src/MacroscopicViewEllipse.js"></script>
+    <script type="text/javascript" src="./src/GlobalConnectionsViewGraph.js"></script>
+    <script type="text/javascript" src="./src/MacroscopicViewForceWebWorker.js"></script>
+    <script type="text/javascript" src="./src/MacroscopicViewCanvas.js"></script>
+    <script type="text/javascript" src="./src/MicroscopicView.js"></script>
+    <script type="text/javascript" src="./src/GlobalConnectionsView.js"></script>
+    <script type="text/javascript" src="./src/DetailMicroscopicView.js"></script>
+    <script type="text/javascript" src="./src/ColorPicker.js"></script>
+    <script type="text/javascript" src="./src/SimulationData.js"></script>
+    <script type="text/javascript" src="./src/SimulationFilter.js"></script>
+    <script type="text/javascript" src="./src/SimulationController.js"></script>
+    <script type="text/javascript" src="./src/GraphDetailMicroscopicView.js"></script>
+    <script type="text/javascript" src="./src/GraphMicroscopicView.js"></script>
     <script>
-        $(function()
-        {
-            $("#interface").load("./libs/MSPlib/InterfaceComponents.html");
-        });
+      $(function () {
+        $("#interface").load("./src/InterfaceComponents.html");
+      });
     </script>
 </head>
 <body>
-	<div id="interface"></div>
+<div id="interface"></div>
 </body>
 </html>
